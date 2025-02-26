@@ -13,9 +13,9 @@
 
 在vim官网下载windows的vim，把仓库文件放在vim下
 
+## 注意事项
 
-
-
+easymotion_插件有更改,以Plugins里为准
 
 
 
