@@ -10,8 +10,8 @@ let $VIM = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 
 " 将空格键设置为 <leader> 键,\会把<space>转义   let 用于操作变量（Variables）/set 用于操作选项（Options）
 let mapleader = "\<space>"
-" 设置 <leader> 键的延迟时间为 500 毫秒
-set timeoutlen=500  
+" 设置 <leader> 键的延迟时间为 1000 毫秒
+set timeoutlen=1000  
 
 " 用于配置会话保存选项(缓冲区、标签页布局——窗口和缓冲区）
 set sessionoptions=buffers,tabpages
@@ -320,6 +320,8 @@ Plugin 'vimwiki/vimwiki'
 " 日历插件
 Plugin 'itchyny/calendar.vim'
 
+" 在不同窗口/标签上显示 A/B/C 等编号，然后字母直接跳转
+Plugin 't9md/vim-choosewin'
 
 " 图标插件
 Plugin 'ryanoasis/vim-devicons'
@@ -999,39 +1001,42 @@ let g:fencview_checklines = 10
 map <silent> <leader>fa :FencAutoDetect<cr><cr>
 map <silent> <leader>fv :FencView<cr>
 
-
 " JoinLine多行内容合并，分隔符引号 {{{3
 " 将指定范围内的多行内容合并为一行，并使用指定的分隔符和引号
 function! JoinLine(line1, line2, ljfyh)
-"function! JoinLine(...)
-	"引号
-	let yh = ""
-	let ljf = ","
-	if match(&formatoptions,'\CM$')>0
-		set fo-=M
-		exec a:line1.','.a:line2.'join'
-		set fo+=M
-	else
-		exec a:line1.','.a:line2.'join'
-	endif
-	if strlen(a:ljfyh) == 0
-		let ljf = ";"
-	elseif strlen(a:ljfyh) == 1
-		let ljf = a:ljfyh
-		if ljf == "t"
-			let ljf = "\t"
-		elseif ljf == "&"
-			let ljf = "\\&"
-		endif
-	else
-		let ljf = strpart(a:ljfyh,0,1)
-		let yh = strpart(a:ljfyh,1)
-	endif
-	"silent! exe "s/ /" . a:yh . a:ljf . a:yh
-	"exe "norm I" . a:yh exe "norm A" . a:yh
-	exe "s/ /" . yh . ljf . yh
-	exe "s/^\\|$/" . yh
+    " 引号
+    let yh = ""
+    let ljf = ","
+    if strlen(a:ljfyh) == 0
+        let ljf = ";"
+    elseif strlen(a:ljfyh) == 1
+        let ljf = a:ljfyh
+        if ljf == "t"
+            let ljf = "\t"
+        elseif ljf == "&"
+            let ljf = "\\&"
+        endif
+    else
+        let ljf = strpart(a:ljfyh, 0, 1)
+        let yh = strpart(a:ljfyh, 1)
+    endif
+
+    " 保存当前行
+    let saved_line = getline(a:line1, a:line2)
+    " 合并行
+    let joined = join(map(saved_line, 'trim(v:val)'), ljf)
+    " 添加引号
+    if strlen(yh) > 0
+        let joined = substitute(joined, '\v([^' . escape(ljf, '[]') . ']+)', yh . '\1' . yh, 'g')
+    endif
+    " 替换当前行
+    call setline(a:line1, joined)
+    " 删除多余行
+    if a:line2 > a:line1
+        call deletebufline(bufnr('%'), a:line1 + 1, a:line2)
+    endif
 endfunction
+
 "-range=% 可以按照行号，-nargs=?可以变化参数，silent! exe可以不记录历史
 ":JL t 合并为tab分隔，适合到excel
 command! -range=% -nargs=? JL call JoinLine(<line1>,<line2>,<f-args>)
@@ -1142,10 +1147,10 @@ let g:ywpunc = {
 " 成对标点配对控制
 let g:ywpair = 1
 " 在普通模式和可视模式下按下 <Leader>rzf，触发标点符号转换 
-"vmap <Leader>rzf s<C-R>=Yw_strzhpunc2enpunc(@", '')<CR><ESC>
-"nmap <Leader>rzf s<C-R>=Yw_strzhpunc2enpunc(@", '')<CR><ESC>
-vnoremap <Leader>rzf s<C-R>=Yw_strzhpunc2enpunc(@", '')
-nnoremap <Leader>rzf s<C-R>=Yw_strzhpunc2enpunc(@", '')
+vmap <Leader>rzf s<C-R>=Yw_strzhpunc2enpunc(@", '')<CR><ESC>
+nmap <Leader>rzf s<C-R>=Yw_strzhpunc2enpunc(@", '')<CR><ESC>
+" vnoremap <Leader>rzf s<C-R>=Yw_strzhpunc2enpunc(@", '')
+" nnoremap <Leader>rzf s<C-R>=Yw_strzhpunc2enpunc(@", '')
 
 if !exists("g:ywpair")
 	let s:ywpair = 0
@@ -1207,6 +1212,11 @@ autocmd BufEnter *.md if &filetype !=# 'markdown' | set filetype=markdown | endi
 " vim-which-key {{{4
  
 nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
+" vim-choosewin(对于多tab窗口跳转很有用） {{{3
+" 使用 <leader>- 来选择窗口
+nmap  <leader>-  <Plug>(choosewin)
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " mswin {{{1
@@ -1307,9 +1317,6 @@ set termencoding=utf-8
 "指定 Vim 在打开文件时尝试检测的字符编码列表
 set fileencodings=utf-8,ucs-bom,chinese,gb18030,cp936,gbk,big5,euc-jp,euc-kr,latin1
 
-" 语法高亮(hi高亮要放在其后面)
-" syntax on     
-
 " 文件类型插件,当 filetype plugin on 被执行时，Vim 会根据当前打开文件的类型，自动加载相应的文件类型插件。
 filetype plugin on  
 
@@ -1331,6 +1338,14 @@ set nu
 set rnu           
 " 修改行号为浅灰色，默认主题的黄色行号很难看，换主题可以仿照修改
 highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
+
+" 去掉 sign column 的白色背景
+hi! SignColumn guifg=NONE guibg=NONE ctermbg=NONE
+
+" 修正补全目录的色彩：默认太难看
+hi! Pmenu guibg=gray guifg=black ctermbg=gray ctermfg=black
+hi! PmenuSel guibg=gray guifg=brown ctermbg=brown ctermfg=gray
+
 
 " 显示命令(右下角）
 set showcmd       
@@ -1416,7 +1431,6 @@ set listchars=space:.,tab:..,trail:-,eol:$
 " SpecialKey 高亮组主要用于高亮显示特殊键字符，像不可见字符（如空格、制表符等）
 highlight SpecialKey guifg=#808080
 
-
 "换行,折行 set lbr 在breakat字符处而不是最后一个字符处断行, 应该把默认的breakat中去掉空格
 set nolbr
 
@@ -1463,7 +1477,6 @@ set tabstop=2
 set history=1000  
 " 设置 Vim 的撤销级别数量
 set undolevels=1000
-
 
 " 不让vim发出讨厌的滴滴声和闪烁
 set noeb vb t_vb=
@@ -1571,13 +1584,11 @@ autocmd InsertChange * :set iminsert=2
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Markdown {{{2
 " Markdown 文件中的代码块和链接设置成特定的颜色显示
-highlight mkdCode guibg=#666666 guifg=#33CC33 guisp=#839496
-highlight mkdURL guibg=#778899 guifg=#073642 guisp=#839496
+" highlight mkdCode guibg=#666666 guifg=#33CC33 guisp=#839496
+" highlight mkdURL guibg=#778899 guifg=#073642 guisp=#839496
 
 " 当打开或创建 Markdown 文件（扩展名为 .md）时，会调用 InitMarkdownShortcut() 函数。
 autocmd BufRead,BufNewFile *.md call InitMarkdownShortcut()
-
-" 快捷键
 function! InitMarkdownShortcut()
 noremap <buffer> ]1 <esc>I# <esc>
 noremap <buffer> ]2 <esc>I## <esc>
@@ -1615,10 +1626,6 @@ function! MyFoldText()
 	return spaces . sub . ' --------(' . lines . ' lines)'
 endfunction
 set foldtext=foldtext()
-
-
-
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 折叠相关 {{{1
