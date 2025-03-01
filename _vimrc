@@ -5,8 +5,9 @@
 behave mswin
 
 " 设置路径(可以把vimrc放在指定文件夹）
-" 取得本文件所在的目录
+" _VIMRC文件所在的目录
 let $VIM = fnamemodify(resolve(expand('<sfile>:p')), ':h')
+let $VIM_PARENT = fnamemodify($VIM, ':h')
 
 " 将空格键设置为 <leader> 键,\会把<space>转义   let 用于操作变量（Variables）/set 用于操作选项（Options）
 let mapleader = "\<space>"
@@ -123,8 +124,8 @@ if (has("win32") || has("win64"))
 	let g:slash = '\'
 
 " TC路径设置
-	let g:COMMANDER_PATH = "d:/SoftDir/totalcmd_TheWhisperOfTheWind"
-	let g:COMMANDER_EXE = "d:/SoftDir/totalcmd_TheWhisperOfTheWind/TOTALCMD.EXE"
+	let g:COMMANDER_PATH = fnamemodify($VIM, ':h:h:h')
+  let g:COMMANDER_EXE = g:COMMANDER_PATH . g:slash . 'TOTALCMD.EXE'
 
 " 将终端编码设置为与当前编码相同,通常win下的encoding为cp936
 	let &termencoding=&encoding
@@ -501,7 +502,7 @@ let g:airline#extensions#tabline#show_close_button = 1
 let g:airline#extensions#tabline#fnametruncate = 16
 
 " 关闭空白符检测
-let g:airline#extensions#whitespace#enabled=0
+let g:airline#extensions#whitespace#enabled = 0
 
 " buffer相关快捷键
 " 不同buffer切换
@@ -1202,8 +1203,8 @@ endfunction " }}}
 
 " vim笔记配置 {{{3
 " vimwiki {{{4
-
-let g:vimwiki_list = [{'path': '$COMMANDER_PATH/Tools/vim/vimwiki/', 'syntax': 'markdown', 'ext': 'md','filetype': 'markdown' }]
+let $VIM_PARENT = fnamemodify($VIM, ':h')
+let g:vimwiki_list = [{'path': $VIM_PARENT. g:slash .'vimwiki', 'syntax': 'markdown', 'ext': 'md','filetype': 'markdown' }]
 
 " 后设置 .md 文件的文件类型为 markdown（覆盖 Vimwiki 的默认行为）
 autocmd BufEnter *.md if &filetype !=# 'markdown' | set filetype=markdown | endif
