@@ -126,6 +126,8 @@ if (has("win32") || has("win64"))
 " TC路径设置
 	let g:COMMANDER_PATH = fnamemodify($VIM, ':h:h:h')
   let g:COMMANDER_EXE = g:COMMANDER_PATH . g:slash . 'TOTALCMD.EXE'
+	" let g:COMMANDER_PATH = "d:/SoftDir/totalcmd_TheWhisperOfTheWind"
+	" let g:COMMANDER_EXE = "d:/SoftDir/totalcmd_TheWhisperOfTheWind/TOTALCMD.EXE"
 
 " 将终端编码设置为与当前编码相同,通常win下的encoding为cp936
 	let &termencoding=&encoding
@@ -324,6 +326,9 @@ Plugin 'itchyny/calendar.vim'
 " 在不同窗口/标签上显示 A/B/C 等编号，然后字母直接跳转
 Plugin 't9md/vim-choosewin'
 
+" 调整 vim 窗口
+Plugin 'simeji/winresizer'
+
 " 图标插件
 Plugin 'ryanoasis/vim-devicons'
 call vundle#end()   " 结束
@@ -385,7 +390,7 @@ endfunction
 " 在 Vim 命令模式下输入 :Dirvish \正常模式下按下-,即可打开当前工作目录的文件浏览器,q退出文件浏览器
 " 使用 :Dirvish /path/to/directory 命令可以打开指定目录的文件浏览器
 " 将光标移动到目录上，按下回车键（Enter）即可进入该目录。按下 - 键可以返回上级目录
-" 按下 o 键会在新窗口打开文件；按下 v 键会在垂直分割的新窗口打开文件；按下 s 键会在水平分割的新窗口打开文件
+" 按下 o 键会在新窗口打开文件；{visual>A在垂直分割的新窗口打开文件；按下 s 键会在水平分割的新窗口打开文件
 " 创建文件：按下 % 键，然后输入文件名，再按下回车键，即可在当前目录下创建新文件。
 " 创建目录：按下 d 键，接着输入目录名，最后按下回车键，就能在当前目录下创建新目录。
 " 将光标移动到要删除的文件或目录上，按下 D 键，然后确认删除操作
@@ -1218,6 +1223,12 @@ nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 " 使用 <leader>- 来选择窗口
 nmap  <leader>-  <Plug>(choosewin)
 
+" winresizer(调整window大小) {{{3
+" 调整内部window
+let g:winresizer_start_key = '<C-e>'
+" 调整GUI大小
+let g:winresizer_gui_enable = 1
+let g:winresizer_gui_start_key='<C-n>'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " mswin {{{1
@@ -1744,14 +1755,6 @@ nnoremap <leader>h <C-w>h
 nnoremap <leader>l <C-w>l
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
-
-" 窗口大小调整配置
-nnoremap s, <C-w><
-nnoremap s. <C-w>>
-nnoremap sj <C-w>-
-nnoremap sk <C-w>+
-nnoremap s= <C-w>=
-
 
 " M：在拼接两行时（重新格式化或者是手工使用J命令），如果前一行的结尾或后一行的开头是多字节字符，则不插入空格，适合中文
 map <silent> <leader>sj :exec match(&formatoptions,'\CM$')>0 ? 'set fo-=M' : 'set fo+=M'<CR>
