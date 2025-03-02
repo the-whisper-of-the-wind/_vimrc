@@ -80,7 +80,7 @@ function! ToggleCaption()
     endif
 endfunction
 endif
-
+ 
 " 终端
 if (!g:isGUI)
 
@@ -429,7 +429,8 @@ if !exists('g:airline_symbols')
   let g:airline_symbols.branch = ''
   let g:airline_symbols.dirty='⚡'
   let g:airline_symbols.linenr = ' L:'
-  let g:airline_symbols.colnr = ' C:'
+  let g:airline_symbols.maxlinenr = '☰'
+  let g:airline_symbols.colnr = '  C:'
 
 " 定义函数来获取文件大小
 function! GetFileSize()
@@ -459,16 +460,31 @@ function! AirlineGetFoldMethod()
     return &foldmethod
 endfunction
 
+" %{&fo} formatoptions(页面格式)
+" &fo 是 Vim 里一个可用于设置文本格式的选项，它控制着在插入模式下 Vim 对文本进行自动格式化的行为。通过设置不同的标志位到 &fo 选项中，可以让 Vim 在换行、插入标点符号等操作时按照特定的规则来处理文本
+" a：自动格式化段落。当你输入文本时，Vim 会自动根据当前的文本宽度进行换行。
+" t：使用 textwidth 选项进行自动换行。
+" c：在注释中也进行自动换行。
+" r：在插入模式下，按 Enter 键时自动插入注释符号。
+" o：在插入模式下，按 o 或 O 键时自动插入注释符号
+" q:含义：允许使用 gq 命令对注释进行格式化
+" l:含义：对长行不进行自动换行
+
+
+"输入和命令状态,&iminsert：插入模式下输入法的状态,0：表示在插入模式下使用英文输入法,其他非零值：可能对应不同的输入法状态;&imsearch：搜索模式下输入法的状态，和 iminsert 类似
+function! IMInsertSearch() 
+	return "i" . &iminsert . "s" . &imsearch
+endfunction
+
 " 使用 VimEnter 自动命令确保插件加载完成后再执行代码
 autocmd VimEnter * call AddInfo()
 
 function! AddInfo()
     " 获取原有的 airline_section_z 内容
     let original_section_z = g:airline_section_z
-    " 自定义 airline 的配置，在原有内容后添加文件大小、字数、折叠方式
-    let g:airline_section_z = original_section_z . ' /%{GetFileSize()} /%{GetWordCount()} /%{AirlineGetFoldMethod()}'
+    " 自定义 airline 的配置，在原有内容(文件类型、编码、查找域、行数、列数)后添加(文件大小、字数、折叠方式、页面格式FO、输入法状态)
+    let g:airline_section_z = original_section_z . ' /%{GetFileSize()} /%{GetWordCount()} /%{AirlineGetFoldMethod()} /%{&fo} /%{IMInsertSearch()}'
 endfunction
-
 
 " airline——tabline(tab、buffer、window) {{{4
 "buffer是缓存文件，window是用来显示buffer的窗口，tab则是当前widow的集合（布局），类似于平铺式窗口管理器,不同的tab代表着window的布局不同
@@ -946,6 +962,9 @@ nnoremap <leader>mk :SignatureListBufferMarks<CR>
   " m?           Open location list and display markers from current buffer
   " m<BS>        Remove all markers
 
+" g'：与 ' 命令类似，用于跳转到标记处，但 g' 会精确跳转到标记所在的行和列位置，而 ' 只跳转到标记所在行的行首
+
+
 " vim-fugitive(git插件) {{{3
 
 
@@ -1007,57 +1026,6 @@ let g:fencview_checklines = 10
 map <silent> <leader>fa :FencAutoDetect<cr><cr>
 map <silent> <leader>fv :FencView<cr>
 
-" JoinLine多行内容合并，分隔符引号 {{{3
-" 将指定范围内的多行内容合并为一行，并使用指定的分隔符和引号
-function! JoinLine(line1, line2, ljfyh)
-    " 引号
-    let yh = ""
-    let ljf = ","
-    if strlen(a:ljfyh) == 0
-        let ljf = ";"
-    elseif strlen(a:ljfyh) == 1
-        let ljf = a:ljfyh
-        if ljf == "t"
-            let ljf = "\t"
-        elseif ljf == "&"
-            let ljf = "\\&"
-        endif
-    else
-        let ljf = strpart(a:ljfyh, 0, 1)
-        let yh = strpart(a:ljfyh, 1)
-    endif
-
-    " 保存当前行
-    let saved_line = getline(a:line1, a:line2)
-    " 合并行
-    let joined = join(map(saved_line, 'trim(v:val)'), ljf)
-    " 添加引号
-    if strlen(yh) > 0
-        let joined = substitute(joined, '\v([^' . escape(ljf, '[]') . ']+)', yh . '\1' . yh, 'g')
-    endif
-    " 替换当前行
-    call setline(a:line1, joined)
-    " 删除多余行
-    if a:line2 > a:line1
-        call deletebufline(bufnr('%'), a:line1 + 1, a:line2)
-    endif
-endfunction
-
-"-range=% 可以按照行号，-nargs=?可以变化参数，silent! exe可以不记录历史
-":JL t 合并为tab分隔，适合到excel
-command! -range=% -nargs=? JL call JoinLine(<line1>,<line2>,<f-args>)
-nnoremap <Leader>j, :JL ,<cr>
-vnoremap <Leader>j, :JL ,<cr>
-nnoremap <Leader>j" :JL ,"<cr>
-vnoremap <Leader>j" :JL ,"<cr>
-nnoremap <Leader>j' :JL ,'<cr>
-vnoremap <Leader>j' :JL ,'<cr>
-nnoremap <Leader>j+ :JL +<cr>
-vnoremap <Leader>j+ :JL +<cr>
-nnoremap <Leader>jt :JL t<cr>
-vnoremap <Leader>jt :JL t<cr>
-nnoremap <Leader>j& :JL &<cr>
-vnoremap <Leader>j& :JL &<cr>
 
 
 " 中英文标点符号(输入法设置中文状态下使用英文,对于中文符号的处理一律 {{{3
@@ -1079,7 +1047,7 @@ let g:ywpunc = {
 			\'>' : '》',
 			\'-' : '－',
 			\'*' : '×',
-			\'/' : '／',
+			\'/' : '、',
 			\'+' : '＋',
 			\';' : '；',
 			\'?' : '？',
@@ -1379,7 +1347,16 @@ set incsearch
 " hls,hlsearch 高亮搜索,noh临时关闭，nohls关闭
 set hls
 " 执行重新绘制，并且取消通过 / 和 ? 匹配字符的高亮，修复代码高亮问题,刷新「比较模式」的代码高亮
-nnoremap <Tab> :nohlsearch<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
+" nnoremap <Tab> :nohlsearch<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
+" vim中<C-i>和<Tab>的键码相同,把 <Tab> 键映射成了其他功能，那么也将会改变 <C-i> 命令的缺省行为
+nnoremap <C-l> :nohlsearch<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
+nnoremap <C-i> <C-i>
+" <C-i>,<C-o>向前向后遍历列表 :jumps
+" g; 和 g, 命令反向或正向遍历改变列表 :changes
+" 标识上次修改方位的位置标记
+" 跳转到光标下的文件
+" Vim 会为编辑会话中的每个单独缓冲区维护一个改变列表，而与之不同的是，每个窗口都会创建一个单独的跳转列表
+
 
 " ignorecase
 " 搜索时忽略大小写/(通过元字符\c让查找模式忽略大小写,\C强制区分大小写——元字符可以出现在任何位置)
@@ -1408,6 +1385,8 @@ nnoremap <silent> <leader>? ?\V<C-r>=escape(@", getcmdtype().'?\')
 set showmatch     
 " 指定需要匹配的字符对(中英文所有的字符对)
 set showmatch matchpairs=(:),[:],{:},<:>,（:）,【:】,｛:｝,《:》
+" 添加软件包,在配对的关键字间跳转
+packadd! matchit
 
 " 设置自动补全的来源
 set complete=.,w,b,u,t,i,d 
@@ -1577,7 +1556,208 @@ endfunction
 " 6.vim命令补全（<C-x><C-v>）
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 输入法相关 {{{1
+" 快捷键 {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 保存<C-s>
+" 退出
+nnoremap <leader>q :q<CR>
+
+" 快速移动
+nnoremap <C-u> 10k
+vnoremap <C-u> 10k
+nnoremap <C-d> 10j
+vnoremap <C-d> 10j
+
+"翻页
+map <C-j> <C-f>
+map <C-k> <C-b>
+imap <C-j> <C-o><PageDown>
+imap <C-k> <C-o><PageUp>
+vmap <C-j> <S-PageDown>
+vmap <C-k> <S-PageUp>
+
+",.符号相关
+onoremap , iw
+onoremap . aW
+vnoremap , iw
+vnoremap . aW
+nnoremap ,, viw
+nnoremap ,. vaW
+"恢复上一次的选择
+nnoremap <A-BS> `<v`>
+
+" 映射 sh 组合键进行上下分屏
+nnoremap <silent> sh :split<CR>
+" 映射 sv 组合键进行左右分屏
+nnoremap <silent> sv :vsplit<CR>
+" 映射 sc 组合键关闭当前屏幕
+nnoremap <silent> sc :close<CR>
+" 映射 so 组合键关闭其他屏幕
+nnoremap <silent> so :only<CR>
+
+" 设置window分割线及边缘颜色
+set fillchars+=vert:│
+highlight VertSplit gui=NONE term=NONE guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE
+
+" 窗口跳转配置
+nnoremap <leader>h <C-w>h
+nnoremap <leader>l <C-w>l
+nnoremap <leader>j <C-w>j
+nnoremap <leader>k <C-w>k
+
+" 切换语法高亮开关
+map <silent> <leader>ss :exec exists('syntax_on') ? 'syn off' : 'syn on'<CR>
+
+"当前窗口随着其它的窗口(同样置位此选项的窗口)一起滚动( 多个窗口都开启了 scrollbind 状态后 )
+"set scb      scrollbind 同步滚屏滚动
+map <silent> <leader>sb :set scb! scb?<CR>
+
+" Ctrl 方向键 上下移动块和缩进
+function! MoveUp()
+	let line=line(".")
+	if (line > 1)
+		silent execute "move ".(line-2)
+	endif
+endfunction
+
+function! MoveDown()
+	let line=line(".")
+	if (line < line("$"))
+		silent execute "move ".(line+1)
+	endif
+endfunction
+
+function! VisualMoveUp()
+	let line=line("'<")
+	if (line > 1)
+		silent execute "'<,'>move ".(line-2)
+		silent execute "normal!gv"
+	else
+		silent execute "normal!gv"
+	endif
+endfunction
+
+function! VisualMoveDown()
+let line=line("'>")
+if (line < line("$"))
+	silent execute "'<,'>move ".(line+1)
+	silent execute "normal!gv"
+else
+	silent execute "normal!gv"
+endif
+endfunction
+
+vnoremap <silent> <C-Left>  <Esc>:'<,'><<CR>gv
+vnoremap <silent> <C-Right> <Esc>:'<,'>><CR>gv
+vnoremap <silent> <C-Up>    <Esc>:call VisualMoveUp()<CR>
+vnoremap <silent> <C-Down>  <Esc>:call VisualMoveDown()<CR>
+nnoremap <silent> <C-Left>  <Esc><<
+nnoremap <silent> <C-Right> <Esc>>>
+nnoremap <silent> <C-Up>    <Esc>:call MoveUp()<CR>
+nnoremap <silent> <C-Down>  <Esc>:call MoveDown()<CR>
+
+" 防止水平滑动的时候失去选择
+xnoremap <  <gv
+xnoremap >  >gv
+
+" 上下移动选中文本
+vnoremap J :move '>+1<CR>gv-gv
+vnoremap K :move '<-2<CR>gv-gv
+
+" 可以跨行（用gj、gk）也可以
+noremap j gj
+noremap k gk
+
+" 历史命令
+cnoremap <c-n> <down>
+cnoremap <c-p> <up>
+
+" insert和command模式下,<C-w>删除至上个单词的开头,<C-u>删除至上个单词的行首
+inoremap <C-d> <C-w>
+
+" 输入状态下移动
+inoremap <Up> <C-o>k
+inoremap <Down> <C-o>j
+inoremap <C-h> <C-o>h
+inoremap <C-j> <C-o>j
+inoremap <C-k> <C-o>k
+inoremap <C-l> <C-o><right>
+inoremap <C-b> <C-o>b
+inoremap <C-w> <C-o>w
+
+" 将 Ctrl + F1 组合键映射为一系列操作
+imap <C-F1> <c-o>:reg<cr>
+noremap <C-F1> :reg<cr>
+
+"重复执行上一次的命令
+noremap <Leader>, @:
+" 执行存储在 q 寄存器中的宏
+noremap <Leader>. @q
+
+"复制当前行不带回车(V复制当前行后p粘贴会粘贴到下一行)
+noremap <Leader>Y 0y$
+"复制全文并不移动光标
+noremap <Leader>G :%y<cr>
+"上下两行互换
+noremap <Leader>D ddpj
+
+" 在文件名上按,gt时，在新的tab中打开
+nmap <leader>gt :tabnew <cfile><cr>
+nmap <leader>gf :tabe <c-r>=getline('.')<CR><CR>
+nmap gf :tabe <c-r>=getline('.')<CR><CR>
+vmap gf y:tabe "<CR>
+noremap gz :!start <C-R>=eval("g:COMMANDER_EXE")<CR> /A /T /O /S /L="<c-r>=getline('.')<CR>"<CR><CR>
+vmap gz y:!start <C-R>=eval("g:COMMANDER_EXE")<CR> /A /T /O /S /L="""<CR><CR>
+
+" 动态地添加或移除 colorcolumn（颜色列）
+function! SetColorColumn()
+	let col_num = virtcol(".")
+	let cc_list = split(&cc, ',')
+	if count(cc_list, string(col_num)) <= 0
+		execute "set cc+=".col_num
+	else
+		execute "set cc-=".col_num
+	endif
+endfunction
+map <silent> <leader>ch :call SetColorColumn()<CR>
+
+"编码相关 
+map <silent> <leader>ffd :set ff=dos<cr>
+map <silent> <leader>ffu :set ff=unix<cr>
+map <silent> <leader>fcc :set fenc=cp936<cr>
+map <silent> <leader>fcu :set fenc=utf-8<cr>
+
+"高亮相关filetype
+map <silent> <leader>ftk :set ft=<cr>
+map <silent> <leader>ftt :set ft=txt<cr>
+map <silent> <leader>fth :set ft=html<cr>
+map <silent> <leader>ftp :set ft=python<cr>
+map <silent> <leader>ftj :set ft=javascript<cr>
+map <silent> <leader>fta :set ft=autohotkey<cr>
+
+"Switch to current dir
+map <leader>cd :cd %:p:h<cr>
+map <silent> <M-d> :cd %:p:h<cr>
+
+" 行设置
+"将所有行都空一行
+nmap <silent> <leader>vk :%s/\(\s*\n\)\+/\r\r/<cr>:noh<cr>
+vmap <silent> <leader>vk :s/\(\s*\n\)\+/\r\r/<cr>:noh<cr>
+
+"remove blink lines 去掉多余的空行
+nmap <silent> <leader>vr :%g/^\s*$/d<cr>:noh<cr>
+vmap <silent> <leader>vr :g/^\s*$/d<cr>:noh<cr>
+
+"more blink lines to one line 多余的空行换成一行(要选中空行)
+nmap <silent> <leader>vR :%s/\(^\s*\n\)\{2,}/\r/<cr>:noh<cr>
+vmap <silent> <leader>vR :s/\(^\s*\n\)\{2,}/\r/<cr>:noh<cr>
+
+"zap duplicate lines to one line 去掉重复行
+nmap <silent> <leader>vd :%s/^\(.*\)\(\n\1\)\+$/\1/<cr>:noh<cr>
+vmap <silent> <leader>vd :s/^\(.*\)\(\n\1\)\+$/\1/<cr>:noh<cr>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 输入法相关(status栏显示） {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "默认在非中文状态
 " 用于控制在插入模式下输入法的初始状态。iminsert = 0 表示在进入插入模式时，输入法默认处于英文输入状态
@@ -1714,183 +1894,68 @@ imap [9 <esc>$a {{{9<esc>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 基础快捷键 {{{1
+"行合并 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 保存<C-s>
-" 退出
-nnoremap <leader>q :q<CR>
+" JoinLine多行内容合并，分隔符引号
+" 将指定范围内的多行内容合并为一行，并使用指定的分隔符和引号
+function! JoinLine(line1, line2, ljfyh)
+    " 引号
+    let yh = ""
+    let ljf = ","
+    if strlen(a:ljfyh) == 0
+        let ljf = ";"
+    elseif strlen(a:ljfyh) == 1
+        let ljf = a:ljfyh
+        if ljf == "t"
+            let ljf = "\t"
+        elseif ljf == "&"
+            let ljf = "\\&"
+        endif
+    else
+        let ljf = strpart(a:ljfyh, 0, 1)
+        let yh = strpart(a:ljfyh, 1)
+    endif
 
-" 快速移动
-nnoremap <C-u> 10k
-vnoremap <C-u> 10k
-nnoremap <C-d> 10j
-vnoremap <C-d> 10j
+    " 保存当前行
+    let saved_line = getline(a:line1, a:line2)
+    " 合并行
+    let joined = join(map(saved_line, 'trim(v:val)'), ljf)
+    " 添加引号
+    if strlen(yh) > 0
+        let joined = substitute(joined, '\v([^' . escape(ljf, '[]') . ']+)', yh . '\1' . yh, 'g')
+    endif
+    " 替换当前行
+    call setline(a:line1, joined)
+    " 删除多余行
+    if a:line2 > a:line1
+        call deletebufline(bufnr('%'), a:line1 + 1, a:line2)
+    endif
+endfunction
 
-"翻页
-map <C-j> <C-f>
-map <C-k> <C-b>
-imap <C-j> <C-o><PageDown>
-imap <C-k> <C-o><PageUp>
-vmap <C-j> <S-PageDown>
-vmap <C-k> <S-PageUp>
+"-range=% 可以按照行号，-nargs=?可以变化参数，silent! exe可以不记录历史
+":JL t 合并为tab分隔，适合到excel
+command! -range=% -nargs=? JL call JoinLine(<line1>,<line2>,<f-args>)
+nnoremap <Leader>j, :JL ,<cr>
+vnoremap <Leader>j, :JL ,<cr>
+nnoremap <Leader>j" :JL ,"<cr>
+vnoremap <Leader>j" :JL ,"<cr>
+nnoremap <Leader>j' :JL ,'<cr>
+vnoremap <Leader>j' :JL ,'<cr>
+nnoremap <Leader>j+ :JL +<cr>
+vnoremap <Leader>j+ :JL +<cr>
+nnoremap <Leader>jt :JL t<cr>
+vnoremap <Leader>jt :JL t<cr>
+nnoremap <Leader>j& :JL &<cr>
+vnoremap <Leader>j& :JL &<cr>
 
-"恢复上一次的选择
-nnoremap <A-BS> `<v`>
-
-" 映射 sh 组合键进行上下分屏
-nnoremap <silent> sh :split<CR>
-" 映射 sv 组合键进行左右分屏
-nnoremap <silent> sv :vsplit<CR>
-" 映射 sc 组合键关闭当前屏幕
-nnoremap <silent> sc :close<CR>
-" 映射 so 组合键关闭其他屏幕
-nnoremap <silent> so :only<CR>
-
-" 设置window分割线及边缘颜色
-set fillchars+=vert:│
-highlight VertSplit gui=NONE term=NONE guibg=NONE guifg=NONE ctermbg=NONE ctermfg=NONE
-
-" 窗口跳转配置
-nnoremap <leader>h <C-w>h
-nnoremap <leader>l <C-w>l
-nnoremap <leader>j <C-w>j
-nnoremap <leader>k <C-w>k
+"合并行尾(合并后不加空格)
+nmap <leader>vj :%s#\n#<cr>
+vmap <leader>vj :s#\n#<cr>
 
 " M：在拼接两行时（重新格式化或者是手工使用J命令），如果前一行的结尾或后一行的开头是多字节字符，则不插入空格，适合中文
 map <silent> <leader>sj :exec match(&formatoptions,'\CM$')>0 ? 'set fo-=M' : 'set fo+=M'<CR>
 
 
-"当前窗口随着其它的窗口(同样置位此选项的窗口)一起滚动( 多个窗口都开启了 scrollbind 状态后 )
-"set scb      scrollbind 同步滚屏滚动
-map <silent> <leader>sb :set scb! scb?<CR>
-
-
-" Ctrl 方向键 上下移动块和缩进
-function! MoveUp()
-	let line=line(".")
-	if (line > 1)
-		silent execute "move ".(line-2)
-	endif
-endfunction
-
-function! MoveDown()
-	let line=line(".")
-	if (line < line("$"))
-		silent execute "move ".(line+1)
-	endif
-endfunction
-
-function! VisualMoveUp()
-	let line=line("'<")
-	if (line > 1)
-		silent execute "'<,'>move ".(line-2)
-		silent execute "normal!gv"
-	else
-		silent execute "normal!gv"
-	endif
-endfunction
-
-function! VisualMoveDown()
-let line=line("'>")
-if (line < line("$"))
-	silent execute "'<,'>move ".(line+1)
-	silent execute "normal!gv"
-else
-	silent execute "normal!gv"
-endif
-endfunction
-
-vnoremap <silent> <C-Left>  <Esc>:'<,'><<CR>gv
-vnoremap <silent> <C-Right> <Esc>:'<,'>><CR>gv
-vnoremap <silent> <C-Up>    <Esc>:call VisualMoveUp()<CR>
-vnoremap <silent> <C-Down>  <Esc>:call VisualMoveDown()<CR>
-nnoremap <silent> <C-Left>  <Esc><<
-nnoremap <silent> <C-Right> <Esc>>>
-nnoremap <silent> <C-Up>    <Esc>:call MoveUp()<CR>
-nnoremap <silent> <C-Down>  <Esc>:call MoveDown()<CR>
-
-" 防止水平滑动的时候失去选择
-xnoremap <  <gv
-xnoremap >  >gv
-
-" 上下移动选中文本
-vnoremap J :move '>+1<CR>gv-gv
-vnoremap K :move '<-2<CR>gv-gv
-
-" 可以跨行（用gj、gk）也可以
-noremap j gj
-noremap k gk
-
-" 历史命令
-cnoremap <c-n> <down>
-cnoremap <c-p> <up>
-
-" insert和command模式下,<C-w>删除至上个单词的开头,<C-u>删除至上个单词的行首
-inoremap <C-d> <C-w>
-
-" 输入状态下移动
-inoremap <Up> <C-o>k
-inoremap <Down> <C-o>j
-inoremap <C-h> <C-o>h
-inoremap <C-j> <C-o>j
-inoremap <C-k> <C-o>k
-inoremap <C-l> <C-o><right>
-inoremap <C-b> <C-o>b
-inoremap <C-w> <C-o>w
-
-" 将 Ctrl + F1 组合键映射为一系列操作
-imap <C-F1> <c-o>:reg<cr>
-noremap <C-F1> :reg<cr>
-
-"重复执行上一次的命令
-noremap <Leader>, @:
-" 执行存储在 q 寄存器中的宏
-noremap <Leader>. @q
-
-"复制当前行不带回车(V复制当前行后p粘贴会粘贴到下一行)
-noremap <Leader>Y 0y$
-"复制全文并不移动光标
-noremap <Leader>G :%y<cr>
-"上下两行互换
-noremap <Leader>D ddpj
-
-" 在文件名上按,gt时，在新的tab中打开
-nmap <leader>gt :tabnew <cfile><cr>
-nmap <leader>gf :tabe <c-r>=getline('.')<CR><CR>
-nmap gf :tabe <c-r>=getline('.')<CR><CR>
-vmap gf y:tabe "<CR>
-noremap gz :!start <C-R>=eval("g:COMMANDER_EXE")<CR> /A /T /O /S /L="<c-r>=getline('.')<CR>"<CR><CR>
-vmap gz y:!start <C-R>=eval("g:COMMANDER_EXE")<CR> /A /T /O /S /L="""<CR><CR>
-
-" 动态地添加或移除 colorcolumn（颜色列）
-function! SetColorColumn()
-	let col_num = virtcol(".")
-	let cc_list = split(&cc, ',')
-	if count(cc_list, string(col_num)) <= 0
-		execute "set cc+=".col_num
-	else
-		execute "set cc-=".col_num
-	endif
-endfunction
-map <silent> <leader>ch :call SetColorColumn()<CR>
-
-"编码相关 
-map <silent> <leader>ffd :set ff=dos<cr>
-map <silent> <leader>ffu :set ff=unix<cr>
-map <silent> <leader>fcc :set fenc=cp936<cr>
-map <silent> <leader>fcu :set fenc=utf-8<cr>
-
-"高亮相关filetype
-map <silent> <leader>ftk :set ft=<cr>
-map <silent> <leader>ftt :set ft=txt<cr>
-map <silent> <leader>fth :set ft=html<cr>
-map <silent> <leader>ftp :set ft=python<cr>
-map <silent> <leader>ftj :set ft=javascript<cr>
-map <silent> <leader>fta :set ft=autohotkey<cr>
-
-"Switch to current dir
-map <leader>cd :cd %:p:h<cr>
-map <silent> <M-d> :cd %:p:h<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2139,9 +2204,6 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 map <silent> <leader>ez :tabe d:\02_LearningResources\1_Software\Regular Expression\Regular Expression.md<cr>
-
-
-
 
 
 
