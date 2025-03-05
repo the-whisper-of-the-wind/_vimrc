@@ -1,7 +1,8 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 先决设置 {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 实现Windows 风格功能(并不会自动映射所有 Windows 风格的快捷键，需要手动配置,在后面会额外配置)
+" 实现Windows 风格功能(可以根据mswin.vim的内容设置)
+" set 'selection', 'selectmode', 'mousemodel' and 'keymodel' for MS-Windows
 behave mswin
 
 " 设置路径(可以把vimrc放在指定文件夹）
@@ -41,7 +42,6 @@ if (g:isGUI)
 " set cursorcolumn
 " 自定义当前行背景颜色,默认#666666(对高亮的定义要放在语法高亮的后面)
 hi cursorline guibg=#525252
-
 
 " gvim标题栏透明
 " 绑定 F10 键来切换标题栏的透明状态
@@ -98,7 +98,6 @@ if (!g:isGUI)
   " hi CursorColumn guibg=#333333
 
 endif
-
 
 " 设置普通模式下光标的颜色为浅蓝色（guibg——GUI;117——终端,浅蓝色编号 117）
 hi Cursor guifg=NONE guibg=#ADD8E6 ctermfg=NONE ctermbg=117
@@ -329,9 +328,15 @@ Plugin 't9md/vim-choosewin'
 " 调整 vim 窗口
 Plugin 'simeji/winresizer'
 
+" 多游标插件
+Plugin 'mg979/vim-visual-multi', {'branch': 'master'}
+
+" grep插件(暂时不用，等熟练了其他功能来看）
+Plugin 'mhinz/vim-grepper'
+
 " 图标插件
-Plugin 'ryanoasis/vim-devicons'
 call vundle#end()   " 结束
+Plugin 'ryanoasis/vim-devicons'
 " Vundle命令
 " 安装插件————:PluginInstall
 " 更新插件————:PluginUpdate
@@ -339,7 +344,7 @@ call vundle#end()   " 结束
 " 列出已安装插件————:PluginList
 
 " 插件配置 {{{2
-" nerdtree {{{3
+" nerdtree(书签、直观显示目录结构) {{{3
 " 设置显示书签
 let NERDTreeShowBookmarks=1
 
@@ -386,7 +391,7 @@ endfunction
 " 快捷键
 " x——收起该节点的父节点
 
-" vim-dirvish {{{3
+" vim-dirvish(查找文件) {{{3
 " 在 Vim 命令模式下输入 :Dirvish \正常模式下按下-,即可打开当前工作目录的文件浏览器,q退出文件浏览器
 " 使用 :Dirvish /path/to/directory 命令可以打开指定目录的文件浏览器
 " 将光标移动到目录上，按下回车键（Enter）即可进入该目录。按下 - 键可以返回上级目录
@@ -429,7 +434,7 @@ if !exists('g:airline_symbols')
   let g:airline_symbols.branch = ''
   let g:airline_symbols.dirty='⚡'
   let g:airline_symbols.linenr = ' L:'
-  let g:airline_symbols.maxlinenr = '☰'
+  let g:airline_symbols.maxlinenr = '☰ '
   let g:airline_symbols.colnr = '  C:'
 
 " 定义函数来获取文件大小
@@ -570,12 +575,14 @@ let g:rainbow_active = 1
 " indentLine {{{3
 " 启用 indentLine 插件
 let g:indentLine_enabled = 1
-
+ 
 " 指定缩进线所使用的字符
 let g:indentLine_char = '|'
-
+ 
 " 用于设置缩进线在终端模式下的颜色
-let g:indentLine_color_term = 0
+let g:indentLine_color_term = 239
+" GVim
+let g:indentLine_color_gui = '#7eade5'
 
 " vim-easymotion {{{3
 " 启用默认快捷键
@@ -833,6 +840,11 @@ let g:NERDSpaceDelims = 1
 " 先设置系统全局默认变量
 set commentstring=//%s "cms(缺省在未知或者没有扩展名的时候为 "/*%s*/")
 
+let g:NERDCustomDelimiters = {
+    \ 'vim': { 'left': '"' },
+    \ }
+
+
 " h NERDCommenter
 " Normal模式下，几乎所有命令前面都可以指定行数
 " Visual模式下执行命令，会对选中的特定区块进行注释/反注释
@@ -970,6 +982,7 @@ nnoremap <leader>mk :SignatureListBufferMarks<CR>
 
 " coc.nvim插件 {{{3
 
+" <C-n> 正向遍历其列表项，<C-p> 对其进行反向遍历
 " " 启用 coc.nvim 的命令行补全
 inoremap <silent><expr> <C-Space> coc#refresh()
 
@@ -979,11 +992,6 @@ function! s:check_back_space() abort
    return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
- inoremap <silent><expr> <Tab>
-   \ coc#pum#visible() ? coc#pum#next(1) :
-   \ <SID>check_back_space() ? "\<Tab>" :
-   \ coc#refresh()
-inoremap <expr><S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
 
 
 
@@ -1031,13 +1039,14 @@ map <silent> <leader>fv :FencView<cr>
 " 中英文标点符号(输入法设置中文状态下使用英文,对于中文符号的处理一律 {{{3
 " 定义英文标点符号到中文标点符号的映射
 let g:ywpunc = {
-			\'''':['‘', '’'],
-			\'"':['“', '”'],
+			\'''' : ['‘', '’'],
+			\'"' : ['“', '”'],
 			\'...' : '……',
-			\'!': '！',
-			\',': '，',
-			\'.': '。',
-			\"`":'～',
+      \'^' : '……',
+			\'!' : '！',
+			\',' : '，',
+			\'.' : '。',
+			\"`" : '～',
 			\':' : '：',
 			\'(' : '（',
 			\')' : '）',
@@ -1157,7 +1166,8 @@ function! Yw_strzhpunc2enpunc(str, m)
 		let transtr .= tranchar
 	endfor
 	return transtr
-endfunction " }}}
+endfunction 
+" }}}
 
 " {{{ 标点中英互换
 function! s:Yw_zhpunc2enpunc(c, m) 
@@ -1172,7 +1182,8 @@ function! s:Yw_zhpunc2enpunc(c, m)
 		let tranchar = a:c
 	endif
 	return tranchar
-endfunction " }}}
+endfunction 
+" }}}
 
 " vim笔记配置 {{{3
 " vimwiki {{{4
@@ -1181,27 +1192,33 @@ let g:vimwiki_list = [{'path': $VIM_PARENT. g:slash .'vimwiki', 'syntax': 'markd
 
 " 后设置 .md 文件的文件类型为 markdown（覆盖 Vimwiki 的默认行为）
 autocmd BufEnter *.md if &filetype !=# 'markdown' | set filetype=markdown | endif
+
 " calendar {{{4
 
 " vim-which-key {{{4
- 
 nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
-" vim-choosewin(对于多tab窗口跳转很有用） {{{3
-" 使用 <leader>- 来选择窗口
+  " vim-choosewin(对于多tab窗口跳转很有用） {{{3
+  " 使用 <leader>- 来选择窗口
 nmap  <leader>-  <Plug>(choosewin)
 
-" winresizer(调整window大小) {{{3
+  " winresizer(调整window大小) {{{3
 " 调整内部window
 let g:winresizer_start_key = '<C-e>'
 " 调整GUI大小
 let g:winresizer_gui_enable = 1
-let g:winresizer_gui_start_key='<C-n>'
+" let g:winresizer_gui_start_key='<C-m>'
+
+" vim-visual-multi {{{3
+
+" vim-grepper {{{3
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " mswin {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 重新映射 Ctrl+Q 为 Ctrl+V 的功能
+" insert,command模式下<C-v>用来插入字符;normal模式下快区域选中
 noremap <C-Q> <C-V>
 
 " 允许退格键删除缩进、换行符和行首内容,
@@ -1496,31 +1513,36 @@ endif
 set viminfo='10,\"100,:20,%,n$VIMRUNTIME/.viminfo
 au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
 
-" 根据给定方向搜索当前光标下的单词，结合下面两个绑定使用
-function! VisualSearch(direction) range
-	let l:saved_reg = @"
-	execute "normal! vgvy"
-	let l:pattern = escape(@", '\\/.*$^~[]')
-	let l:pattern = substitute(l:pattern, "\n$", "", "")
-	if a:direction == 'b'
-		execute "normal ?" . l:pattern . "<cr>"
-	else
-		execute "normal /" . l:pattern . "<cr>"
-	endif
-	let @/ = l:pattern
-	let @" = l:saved_reg
-endfunction
-
-" 用 */# 向 前/后 搜索光标下的单词
-"搜索然后找到下一个
-vnoremap <silent> * :call VisualSearch('f')<CR>
-"搜索然后找到上一个
-vnoremap <silent> # :call VisualSearch('b')<CR>
 
 "继续搜索光标下文字
 nmap <leader>/ /<C-R>=expand("<cWORD>")<CR>
 "vmap <Leader>/ "ry/<C-R>r 原来的没有处理回车
 vmap <leader>/ "ry/<c-r>=substitute(escape('<c-r>r', '\^$~/.[]'),'\r','\\n','ge')<CR>
+
+"选中后进行查找替换
+" substitute 命令 
+nmap <Leader>r :%s/<C-R>=expand("<cWORD>")<CR>
+vmap <Leader>r "ry:%s/<c-r>=substitute(escape('<c-r>r', '\^$~/.[]'),'\r','\\n','ge')<CR>
+
+" global命令
+nmap <Leader>g :g/<C-R>=expand("<cWORD>")<CR>/d
+vmap <Leader>g "ry:g/<c-r>=substitute(escape('<c-r>r', '\^$~/.[]'),'\r','\\n','ge')<CR>/d
+
+" 快速删除当前文件中不包含当前选中内容的所有行
+nmap <Leader>v :v/<C-R>=expand("<cWORD>")<CR>/d
+vmap <Leader>v "ry:v/<c-r>=substitute(escape('<c-r>r', '\^$~/.[]'),'\r','\\n','ge')<CR>/d
+
+"在搜索中只需要这个就够了
+inoremap <M-/> <C-r>=substitute(@/,'\v^\\[<V]\|\\\>$','','g')<CR>
+
+
+"先查询出来,不足是必须要保存为文件才行，但lv出来的可以跳转
+nmap <Leader>c :exec 'lv /' . input('/', expand('<cword>')) . '/gj % <bar> lw'<CR>
+vmap <Leader>c "ry:lv /<C-R>r/gj % <bar> lw<CR>
+"然后再
+"将当前文件的全部内容复制到一个新的标签页中，然后在新标签页里删除每行末尾的竖线 | 及其前面的所有内容
+nmap <Leader>p ggVGy:exec 'tabnew'<CR>P:exec '%s/.*\|//g'<CR>
+
 
 
 " 删除buffer时不关闭窗口
@@ -1609,60 +1631,15 @@ nnoremap <leader>k <C-w>k
 map <silent> <leader>ss :exec exists('syntax_on') ? 'syn off' : 'syn on'<CR>
 
 "当前窗口随着其它的窗口(同样置位此选项的窗口)一起滚动( 多个窗口都开启了 scrollbind 状态后 )
-"set scb      scrollbind 同步滚屏滚动
+"set scb(scrollbind 同步滚屏滚动)
 map <silent> <leader>sb :set scb! scb?<CR>
 
-" Ctrl 方向键 上下移动块和缩进
-function! MoveUp()
-	let line=line(".")
-	if (line > 1)
-		silent execute "move ".(line-2)
-	endif
-endfunction
-
-function! MoveDown()
-	let line=line(".")
-	if (line < line("$"))
-		silent execute "move ".(line+1)
-	endif
-endfunction
-
-function! VisualMoveUp()
-	let line=line("'<")
-	if (line > 1)
-		silent execute "'<,'>move ".(line-2)
-		silent execute "normal!gv"
-	else
-		silent execute "normal!gv"
-	endif
-endfunction
-
-function! VisualMoveDown()
-let line=line("'>")
-if (line < line("$"))
-	silent execute "'<,'>move ".(line+1)
-	silent execute "normal!gv"
-else
-	silent execute "normal!gv"
-endif
-endfunction
-
-vnoremap <silent> <C-Left>  <Esc>:'<,'><<CR>gv
-vnoremap <silent> <C-Right> <Esc>:'<,'>><CR>gv
-vnoremap <silent> <C-Up>    <Esc>:call VisualMoveUp()<CR>
-vnoremap <silent> <C-Down>  <Esc>:call VisualMoveDown()<CR>
-nnoremap <silent> <C-Left>  <Esc><<
-nnoremap <silent> <C-Right> <Esc>>>
-nnoremap <silent> <C-Up>    <Esc>:call MoveUp()<CR>
-nnoremap <silent> <C-Down>  <Esc>:call MoveDown()<CR>
-
-" 防止水平滑动的时候失去选择
-xnoremap <  <gv
-xnoremap >  >gv
-
-" 上下移动选中文本
+" visual模式下,上下移动选中文本
 vnoremap J :move '>+1<CR>gv-gv
 vnoremap K :move '<-2<CR>gv-gv
+" visual模式下防止行水平滑动的时候失去选择,选中部分的单独左右移动由 vim-peekaboo 插件提供
+xnoremap <  <gv
+xnoremap >  >gv
 
 " 可以跨行（用gj、gk）也可以
 noremap j gj
@@ -1956,8 +1933,6 @@ vmap <leader>vj :s#\n#<cr>
 map <silent> <leader>sj :exec match(&formatoptions,'\CM$')>0 ? 'set fo-=M' : 'set fo+=M'<CR>
 
 
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 缩写(abbreviations) {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2206,7 +2181,93 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 map <silent> <leader>ez :tabe d:\02_LearningResources\1_Software\Regular Expression\Regular Expression.md<cr>
 
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 笔记 {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 模式(mode) {{{2
+"
+" 操作符待决模式（Operator-Pending mode） {{{3
 
+" 插入-普通模式(<C-o>) {{{3
+
+
+" 插入模式 {{{3
+" <C-r>{register}   不离开插入模式，粘贴寄存器中的文本
+" 表达式寄存器(=)做一些运算
+" Vim 可以用字符编码（Character Code）插入任意字符。使用此功能可以很方便地输入键盘上找不到的符号
+" 如果你想知道文档中任意字符的编码，只需把光标移到它上面并按 ga 命令,如果想知道文档中不存在的字符的编码，该命令就无能为力了。在这种情况下，你或许得去查一下 unicode 表
+" 插入模式中输入 <C-v>{code}   <C-v>映射为<C-q>
+" 插入一个编码超过 3 位数的字符,可以用 4 位十六进制编码来输入这些字符，即输入 <C-v>u{code}
+" 如果 <C-v>(<C-q>) 命令后面跟一个非数字键，它会插入这个按键本身所代表的字符
+" 用 :h digraph-table查看列表(二和字母 不同进制)
+
+" 可视模式 {{{3
+" v      激活面向字符的可视模式
+" V      激活面向行的可视模式
+" <C-v>  激活面向列块的可视模式
+" gv     重选上次的高亮选区
+" o        切换高亮选区的活动端
+
+" 命令模式(★★★★★) {{{3
+
+" 用行号作为地址  符号 % 也有特殊含义，它代表当前文件中的所有行
+"   符号   地址
+"   1      文件的第一行
+"   $      文件的最后一行
+"   0      虚拟行，位于文件第一行上方
+"   .      光标所在行
+"   'm     包含位置标记 m 的行
+"   '<     高亮选区的起始行
+"   '>     高亮选区的结束行
+"   %      整个文件（:1,$ 的简写形式）
+
+" 使用‘:t’和‘:m’命令复制和移动行
+" :copy 命令（及其简写形式 :t）  :t不会使用寄存器
+
+" 命令       用途
+" :6t.       把第 6 行复制到当前行下方
+" :t6        把当前行复制到第 6 行下方
+" :t.        为当前行创建一个副本（类似于普通模式下的 yyp）
+" :t$        把当前行复制到文本结尾
+" :'<,'>t0   把高亮选中的行复制到文件开
+
+" 用 ‘:m’ 命令移动行
+
+" 在指定范围上执行普通模式命令(:normal)
+" 可以执行.命令和宏命令
+
+" 把当前单词插入到命令行
+" 在 Vim 的命令行下， <C-r><C-w> 映射项会复制光标下的单词并把它插入到命 令行中
+" <C-r><C-a>插入光标下的字串
+" 
+" 回溯历史命令
+" 把历史 中的两条记录合并成一条;  输入 q:，先结识一下命令行窗口_参见 :h cmdwin
+" 命令行窗口的好处在于它允许我们使用 Vim 完整的、区分模式的编辑能力来修 改历史命令。我们可以用任何习以为常的动作命令进行移动，也可以在高亮选区上操 作，或是切换到插入模式中。我们甚至还能对命令行窗口中的内容执行 Ex 命令。
+" 当处于命令行模式下时，我们可以用 <C-f> 映射项切换 到命令行窗口,此前已经输入到命令行上的内容仍然会得以保留中
+"命令       动作
+"q/         打开查找命令历史的命令行窗口
+"q:         打开 Ex 命令历史的命令行窗口
+"<Ctrl-f>   从命令行模式切换到命令行窗口
+
+" 运行 Shell 命令
+" 在 Vim 的命令行模式中，给命令加一个叹号前缀（参见 :h :! ）就可以调用 外部程序
+
+" 选择模式(很少用mswin) {{{3
+" 按 <C-g> 可以在可视模式及选择模式间切换
+" 有一处地方会用到选择模式。有一个模拟 TextMate 的 snippet 功能的插件，它会用选择模式来高亮当前的占位符
+
+" 模式(patterns) {{{2
+" 替换 {{{3
+ " substitute 命令
+" substitute 命令允许先查找一段文本，再用另一段文本将其替换掉
+" :[range]s[ubstitute]/{pattern}/{string}/[flags]
+" 利用标志位调整 substitute 命令的行为   :h s_flags
+" 标志位 g 使得 subsititute 命令可在全局范围内执行，即可以修改一行内的所有匹配，而不仅仅是第一处匹配。
+" 标志位 c 让我们有机会可以确认或拒绝每一处修改。
+" 标志位 n 会抑制正常的替换行为，即让 Vim 不执行替换操作，而只是报告本次substitute 命令匹配的个数。
+" 标志位 & 仅仅用于指示 Vim 重用上一次 substitute 命令所用过的标志位。
+" ……
+" 用寄存器的内容替换
 
 
 
