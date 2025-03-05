@@ -423,6 +423,8 @@ let g:airline_theme='lucius'
 " 加载 airline 插件
 let g:airline#extensions#default#enabled = 1
 
+" 决定buffer栏的格式是否使用powerline字符
+let g:airline_powerline_fonts = 1
 " powerline字符
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
@@ -840,10 +842,10 @@ let g:NERDSpaceDelims = 1
 " 先设置系统全局默认变量
 set commentstring=//%s "cms(缺省在未知或者没有扩展名的时候为 "/*%s*/")
 
+" 给文件类型规定格式
 let g:NERDCustomDelimiters = {
     \ 'vim': { 'left': '"' },
     \ }
-
 
 " h NERDCommenter
 " Normal模式下，几乎所有命令前面都可以指定行数
@@ -1335,6 +1337,8 @@ set nu
 set rnu           
 " 修改行号为浅灰色，默认主题的黄色行号很难看，换主题可以仿照修改
 highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
+" 修改当前行号颜色
+highlight CursorLineNr guifg=#FF8000
 
 " 去掉 sign column 的白色背景
 hi! SignColumn guifg=NONE guibg=NONE ctermbg=NONE
@@ -1471,7 +1475,8 @@ set noimc
 set switchbuf=useopen,usetab,newtab
 
 " 置行与行之间的额外间距。设置为 1 表示在每行文本之间增加 1 个单位的间距
-set linespace=1
+" 一般不超过2,否则airline的powerline字符会明显错位
+set linespace=2
 
 "用空格替代tab
 set expandtab 
