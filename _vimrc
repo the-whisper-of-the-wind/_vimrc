@@ -28,7 +28,7 @@ else
 	let g:isGUI = 0
 endif
 
-"gvim
+" gvim
 if (g:isGUI)
 
 " vim内置的配色方案(elflord,evening,industry,peachpuff,ron,shine,sorbet等)
@@ -139,11 +139,9 @@ if (has("win32") || has("win64"))
 	autocmd! bufwritepost .vimrc source $VIMRUNTIME\_vimrc
 
 " 设置英文等宽nerd字体
-  " set guifont=JetBrainsMonoNL_NFM:h10:cANSI:qDRAFT
-  set guifont=JetBrainsMonoNL_NFM:h10
+  set guifont=JetBrainsMonoNL_NFM:cANSI:qDRAFT:h10
 " 设置中文等宽nerd字体
-  " set guifontwide=LXGWWenKaiMono_Nerd_Font:h10:cGB2312:qDRAFT
-  set guifontwide=LXGWWenKaiMono_Nerd_Font:h10
+  set guifontwide=LXGWWenKaiMono_Nerd_Font:cGB2312:qDRAFT:h10
 " 在 GUI 中快速改变字体大小
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
 command! Biggerwide  :let &guifontwide = substitute(&guifontwide, '\d\+$', '\=submatch(0)+1', '')
@@ -357,7 +355,7 @@ let NERDTreeShowHidden=1
 " " 设置显示行号
 " let NERDTreeShowLineNumbers=1
 
-" " 改变文件夹的箭头图标
+" 改变文件夹的箭头图标
 let NERDTreeDirArrowCollapsible="󰡄"
 let NERDTreeDirArrowExpandable=""
 
@@ -430,13 +428,16 @@ if !exists('g:airline_symbols')
     let g:airline_symbols = {}
   endif
   let g:airline_left_sep = ''
-  let g:airline_left_alt_sep = ''
+  let g:airline_left_alt_sep = '╱'
+  " let g:airline_left_alt_sep = ''
+  " let g:airline_left_alt_sep = ''
   let g:airline_right_sep = ''
-  let g:airline_right_alt_sep = ''
+  let g:airline_right_alt_sep = '╱'
+  " let g:airline_right_alt_sep = ''
   let g:airline_symbols.branch = ''
   let g:airline_symbols.dirty='⚡'
   let g:airline_symbols.linenr = ' L:'
-  let g:airline_symbols.maxlinenr = '☰ '
+  let g:airline_symbols.maxlinenr = '☰'
   let g:airline_symbols.colnr = '  C:'
 
 " 定义函数来获取文件大小
@@ -526,8 +527,8 @@ let g:airline#extensions#tabline#show_tab_count = 2
 " 设置为 1 时，会在 tabline 中为每个 Tab 显示关闭按钮；设置为 0 则不显示。
 let g:airline#extensions#tabline#show_close_button = 1
 
-" 用于控制文件名的截断长度，当文件名长度超过 16 个字符时，会将文件名截断显示
-let g:airline#extensions#tabline#fnametruncate = 16
+" 用于控制文件名的截断长度，当文件名长度超过 10 个字符时，会将文件名截断显示
+let g:airline#extensions#tabline#fnametruncate = 10
 
 " 关闭空白符检测
 let g:airline#extensions#whitespace#enabled = 0
@@ -826,6 +827,8 @@ noremap <space><space> :call quickui#menu#open()<cr>
 
 " 弹出窗口
 let g:Lf_WindowPosition = 'popup'
+" Show icons, icons are shown by default
+let g:Lf_ShowDevIcons = 1
 
 " 设置 LeaderF 文件查找快捷键
 nnoremap <C-p> :Leaderf file<CR>
@@ -1338,7 +1341,7 @@ set rnu
 " 修改行号为浅灰色，默认主题的黄色行号很难看，换主题可以仿照修改
 highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
 " 修改当前行号颜色
-highlight CursorLineNr guifg=#FF8000
+highlight CursorLineNr guifg=#FAA93F
 
 " 去掉 sign column 的白色背景
 hi! SignColumn guifg=NONE guibg=NONE ctermbg=NONE
@@ -1463,6 +1466,11 @@ set clipboard+=unnamed
 " 设置 Vim 帮助文档所使用的语言
 set helplang=cn
 
+"h fo-table 正确地处理中文字符的折行和拼接行尾不要空格 set fo+=M,向 formatoptions 选项中添加新的标志，而不影响已有的标志
+set formatoptions+=mM   
+"不要自动加上注释,从 formatoptions 选项中移除指定的标志
+set formatoptions-=cro  
+
 "上下边界始终保留行数,当光标移动到距离屏幕顶部或底部只有 2 行时，Vim 会自动滚动屏幕，以确保光标上下至少各有 2 行可见内容
 set scrolloff=2    
 
@@ -1496,6 +1504,9 @@ set noeb vb t_vb=
 if (g:isGUI)
 	au GUIEnter * set vb t_vb=
 endif
+
+" 控制 Vim 显示消息的方式
+set shortmess=tI
 
 " 进入任何一个缓冲区时，Vim 的当前工作目录会自动切换到该文件所在的目录
 " 排除 filetype 为 fugitive 的情况
@@ -1804,6 +1815,7 @@ set foldtext=foldtext()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 折叠相关 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"foldmethod(fdm)的方式，有 indent,syntax等语法
 " manual  手工定义折叠
 " indent  更多的缩进表示更高级别的折叠
 " expr    用表达式来定义折叠
@@ -1818,8 +1830,6 @@ set nocindent     " cindent C/C++风格缩进
 " 允许下方显示目录,在系统支持 wildmenu 特性启用文本模式的菜单
 set wildmenu      
 
-"fold的方式，有 indent,syntax 语法,设置折叠方法为缩进折叠
-set foldmethod=syntax  
 "fdc行前显示多长折叠符号
 set foldcolumn=5 
 "折叠到第几层，默认为0
@@ -1838,16 +1848,10 @@ set foldminlines=0
 augroup vimscript_folding
   autocmd!
   " 设置文件类型为 vim 时的折叠方式为 marker
-  autocmd FileType vim setlocal foldmethod=marker
+  autocmd FileType vim set foldmethod=marker
   " 自定义折叠标记（默认是 {{{ 和 }}}，此处显式声明）
-  autocmd FileType vim setlocal foldmarker={{{,}}}
-  " 设置自动缩进与格式化选项
-  autocmd FileType vim setlocal autoindent smartindent
-  autocmd FileType vim setlocal formatoptions=croql
+  autocmd FileType vim set foldmarker={{{,}}}
 augroup END
-
-
-
 
 " 折叠模式设置映射
 map <silent> <leader>fdm :set fdm=marker<cr>
