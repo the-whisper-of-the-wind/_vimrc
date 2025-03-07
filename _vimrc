@@ -7,6 +7,7 @@ behave mswin
 
 " 设置路径(可以把vimrc放在指定文件夹）
 " _VIMRC文件所在的目录
+" Gvim on windows 是用配置文件 _vimrc 代替了 .vimrc，用 vimfiles目录 代替 .vim目录 
 let $VIM = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 let $VIM_PARENT = fnamemodify($VIM, ':h')
 
@@ -31,11 +32,11 @@ endif
 " gvim
 if (g:isGUI)
 
-" vim内置的配色方案(elflord,evening,industry,peachpuff,ron,shine,sorbet等)
-  colo evening "夜晚风格
+" vim内置的配色方案(desert,elflord,evening,industry,peachpuff,ron,shine,sorbet等)
+  colo evening
 " vim的第三方配置方案（插件）
  "colo solarized
-
+ "colo onedark
 " 高亮显示当前光标所在的行
 	set cursorline
 " 高亮显示当前光标所在的列
@@ -248,6 +249,9 @@ Plugin 'VundleVim/Vundle.vim'
 " 配色方案
 " Plugin 'flazz/vim-colorschemes'
 Plugin 'ghifarit53/tokyonight-vim'
+Plugin 'joshdick/onedark.vim'
+" 语法高亮
+Plugin 'sheerun/vim-polyglot'
 " 文件目录树
 Plugin 'preservim/nerdtree'                       
 
@@ -332,6 +336,9 @@ Plugin 'mg979/vim-visual-multi', {'branch': 'master'}
 " grep插件(暂时不用，等熟练了其他功能来看）
 Plugin 'mhinz/vim-grepper'
 
+" ctags
+Plugin 'vim-scripts/taglist.vim'
+
 " 图标插件
 call vundle#end()   " 结束
 Plugin 'ryanoasis/vim-devicons'
@@ -413,7 +420,7 @@ endfunction
 " 状态栏 {{{4
 " 主题 参数：sol/papercolor/silver/base16/angr/jellybeans/lucius等
 let g:airline_theme='lucius'   
-
+" let g:airline_theme='onedark'
 " 关闭状态显示空白符号计数
  let g:airline#extensions#whitespace#enabled = 0
  let g:airline#extensions#whitespace#symbol = '!'
@@ -439,6 +446,17 @@ if !exists('g:airline_symbols')
   let g:airline_symbols.linenr = ' L:'
   let g:airline_symbols.maxlinenr = '☰'
   let g:airline_symbols.colnr = '  C:'
+
+
+
+" buffer栏配色
+" highlight airline_tabsel gui=bold guifg=#00ffff guibg=#000000
+" highlight airline_tabsel gui=bold guifg=#00ffff guibg=#333333
+" 右侧tab栏配色
+" highlight airline_tabmod gui=bold guifg=#FFFFFF guibg=#333333
+
+" highlight airline_tablabel_right gui=bold guifg=#000000 guibg=#FFFFFF
+
 
 " 定义函数来获取文件大小
 function! GetFileSize()
@@ -1219,6 +1237,220 @@ let g:winresizer_gui_enable = 1
 " vim-grepper {{{3
 
 
+""""""""""""""""""""""""""""""
+" 代码 {{{1
+""""""""""""""""""""""""""""""
+" ctags {{{2
+if (g:isWin)
+	map <silent> <leader>st :!ctags.exe -R *<CR>
+endif
+set previewheight=12
+"和ctags配合使用。用ctags创建了tags文件后，在你要查看定义的函数或变量上按
+"nmap '' :ptag <C-R><C-W><cr><C-w><C-w>
+nmap '' :ptag <C-R><C-W><cr>
+nmap 'c :pclose<cr>
+"用于cscope，当用cscope创建了tags后，在你光标所在的函数上
+"按ctrl-] ctrl-[会跳转到该函数的调用处
+"map <C-]><C-[> :cs f 3 <cword><cr>
+
+
+" Tag list (ctags) {{{2
+if g:isWin == 1
+	let Tlist_Ctags_Cmd = 'ctags'
+else
+	let Tlist_Ctags_Cmd = '/usr/bin/ctags'
+endif
+let Tlist_Use_Right_Window = 1         "在右侧窗口中显示taglist窗口
+"let Tlist_Use_Left_Window=0
+
+let Tlist_Auto_Open=0 "启动VIM后，自动打开taglist窗口
+let Tlist_Auto_Update=1
+let Tlist_Hightlight_Tag_On_BufEnter=1
+let Tlist_Display_Prototype=0
+let Tlist_Compact_Format=1             "不显示F1帮助
+let Tlist_Show_One_File = 1            "不同时显示多个文件的tag，只显示当前文件的
+let Tlist_Exit_OnlyWindow = 1          "如果taglist窗口是最后一个窗口，则退出vim
+let Tlist_WinWidth = 30
+
+"Tlist_Exit_OnlyWindow "最后一个窗口时退出VIM
+"Tlist_Show_Menu "显示taglist菜单
+"Tlist_Max_Submenu_Items和Tlist_Max_Tag_Length;菜单条目数和所显示tag名字的长度；
+"Tlist_Use_SingleClick "单击tag就跳转
+"Tlist_Close_On_Select "选择了tag后自动关闭taglist窗口
+"Tlist_File_Fold_Auto_Close "只显示当前文件tag，其它文件的tag都被折叠起来。
+"Tlist_GainFocus_On_ToggleOpen "希望输入焦点在taglist窗口中
+"Tlist_Process_File_Always "taglist始终解析文件中的tag，不管taglist窗口有没有打开
+"Tlist_WinHeight和Tlist_WinWidth可以设置taglist窗口的高度和宽度。
+"Tlist_Use_Horiz_Window为１设置taglist窗口横向显示；
+map <silent> <leader>tl :TlistOpen<cr>
+nmap <F8> <ESC>:TlistToggle<CR>
+"在taglist窗口中，可以使用下面的快捷键：
+"<CR> 跳到光标下tag所定义的位置，用鼠标双击此tag功能也一样
+"o 在一个新打开的窗口中显示光标下tag
+"<Space> 显示光标下tag的原型定义
+"u 更新taglist窗口中的tag
+"s 更改排序方式，在按名字排序和按出现顺序排序间切换
+"x taglist窗口放大和缩小，方便查看较长的tag
+"+ 打开一个折叠，同zo
+"- 将tag折叠起来，同zc
+"* 打开所有的折叠，同zR
+"= 将所有tag折叠起来，同zM
+"[[ 跳到前一个文件
+"]] 跳到后一个文件
+"q 关闭taglist窗口
+"<F1> 显示帮助
+
+"ctrl+] 查找光标下的标签（可查看函数定义）
+"ctrl+t 返回跳转到标签的前一次位置（即上一个标签）
+"ctrl+o 返回源文件
+
+"ctags for windows
+"http://ctags.sourceforge.net
+"cscope for windows
+"http://sourceforge.net/projects/mslk/files/Cscope/
+
+" 用来更新目标窗口内容及更新目标文件名的函数。
+" 当双击或者输入CTRL-]时调用这个函数。
+function! SToc(tag)
+  " 高亮标题
+  exe 'match Todo /\%' . line(".") . 'l/'
+  " 获取目标窗口当前的编号
+	let nr=bufwinnr(bufname(g:xbn))
+  " 跳到目标窗口
+	exe nr."wincmd w"
+  " 在目标窗口中打开tag
+	silent! exe "tag " . a:tag
+  " 更新目标窗口中的文件名（全局变量）
+	let g:xbn=bufname('%')
+endfunction
+
+" 负责初始化的函数
+function! IToc()
+  " 如果当前编辑区无文件，则打开一个临时窗口
+  if bufname('%')=="" | view _blah_  | endif
+  " 初始化全局变量，这个变量用来跟踪当前编辑区的文件名
+	let g:xbn=bufname('%')
+  " 打开一个窗口并做导航
+  vsp __目录__
+  " 不需要实体文件
+  setlocal buftype=nofile
+  " 简单的语法高亮
+  syn match Comment "[^-]"
+  " 从tags读取信息并转换成“用户友好”的格式显示
+  call append(line('$'),
+    \map(taglist("^"),
+    \'substitute(printf("%-30s%s",v:val["name"],' .
+    \'(has_key(v:val,"author")?v:val["author"]:""))," ","-","g")'
+    \))
+  " 定义导航键
+  map <2-LeftMouse> :call SToc('/'.expand("<cword>"))<CR>zt
+  nmap <C-]> <2-LeftMouse>
+endfunction
+
+" 定义打开导航窗口的命令
+command! -nargs=0 Toc call IToc()
+
+
+
+
+" cscope 注意和Surround快捷键冲突 {{{2
+"(1) 我们假设我们要阅读的代码放在D:\src\myproject下。然后打开命令行，进入源代码所在的目录，为cscope建立搜索文件列表。在命令行中执行以下命令：
+"D:\src>dir /s /b *.c *.cpp *.java *.h > cscope.files
+"
+"(linux 中用  find /my/project/dir -name '*.c' -o -name '*.h' > /foo/cscope.files )
+"D:\src>cscope -Rbkq
+"执行结束后你可以在当前目录下发现cscope.out文件，这就是cscope建立的符号数据库。上面这个命令中，-b参数使得cscope不启动自带的用户界面，而仅仅建立符号数据库
+
+if has("cscope") && executable("cscope")
+  set csto=1
+  set cst
+	set cscopequickfix=c-,d-,e-,g-,i-,s-,t-
+	if (g:isWin)
+		map <silent> <leader>cs :!dir /s /b *.c *.cpp *.java *.h > cscope.files & cscope -Rbkq<CR>
+	endif
+
+  " add any database in current directory
+  function! CscopeAdd()
+    set nocsverb
+    if filereadable(expand('%:h:p') . "/cscope.out")
+      exe 'cs add ' . expand('%:h:p') . '/cscope.out'
+    elseif filereadable(expand('%:h:p') . "/../cscope.out")
+      exe 'cs add ' . expand('%:h:p') . '/../cscope.out'
+    elseif filereadable("cscope.out")
+      cs add cscope.out
+    endif
+    set csverb
+  endfunction
+
+  autocmd BufRead *.c,*.cpp,*.h call CscopeAdd()
+
+	" 映射 [[[2
+	" 查找C语言符号，即查找函数名、宏、枚举值等出现的地方
+	nmap css :cs find s <C-R>=expand("<cword>")<CR><CR>
+	" 查找函数、宏、枚举等定义的位置，类似ctags所提供的功能
+	nmap csg :cs find g <C-R>=expand("<cword>")<CR><CR>
+	" 查找本函数调用的函数
+	nmap csd :cs find d <C-R>=expand("<cword>")<CR><CR>
+	" 查找调用本函数的函数
+	nmap csc :cs find c <C-R>=expand("<cword>")<CR><CR>
+	" 查找指定的字符串
+	nmap cst :cs find t <C-R>=expand("<cword>")<CR><CR>
+	" 查找egrep模式，相当于egrep功能，但查找速度快多了
+	nmap cse :cs find e <C-R>=expand("<cword>")<CR><CR>
+	" 查找并打开文件，类似vim的find功能
+	nmap csf :cs find f <C-R>=expand("<cfile>")<CR><CR>
+	" 查找包含本文件的文件
+	nmap csi :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+	" 生成新的数据库
+	nmap csn :lcd %:p:h<CR>:!my_cscope<CR>
+	" 自己来输入命令
+	nmap cs<Space> :cs find
+	" 建立连接
+	nmap csa :call CscopeAdd()<CR>
+
+	nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+	nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+	" scs分隔在当前，vert放在右边nmap <C-@>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-_>s :scs find s <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-_>g :scs find g <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-_>d :scs find d <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-_>c :scs find c <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-_>t :scs find t <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-_>e :scs find e <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-_>f :scs find f <C-R>=expand("<cfile>")<CR><CR>
+	nmap <C-_>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+endif
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 配色方案 {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+if  g:colors_name ==# 'evening'
+        " 当使用 sevening 配色方案时
+  " buffer配色
+        highlight airline_tabsel gui=bold guifg=#00ffff guibg=#333333
+    " 文件更改后/右侧tab配色
+        highlight airline_tabmod gui=bold guifg=#FFFFFF guibg=#333333
+    " 右侧buffers
+        highlight airline_tablabel_right gui=bold guifg=#4C0099 guibg=#E0E0E0
+
+    " elseif &background ==# 'onedark'
+        " " 当使用 onedark 配色方案时
+        " highlight airline_tablabel_right gui=bold guifg=#000000 guibg=#FFFFFF
+    endif
+
+
+" 高亮搜索
+highlight Search guibg=#FABD2F guifg=black ctermbg=3 ctermfg=0
+highlight CurSearch guibg=#FF8000 guifg=black ctermbg=3 ctermfg=0
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " mswin {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1484,7 +1716,7 @@ set switchbuf=useopen,usetab,newtab
 
 " 置行与行之间的额外间距。设置为 1 表示在每行文本之间增加 1 个单位的间距
 " 一般不超过2,否则airline的powerline字符会明显错位
-set linespace=2
+set linespace=3
 
 "用空格替代tab
 set expandtab 
@@ -2278,6 +2510,25 @@ map <silent> <leader>ez :tabe d:\02_LearningResources\1_Software\Regular Express
 " ……
 " 用寄存器的内容替换
 
-" 查找
+" global命令 {{{3
+
+" :[range] global[!] /{pattern}/ [cmd]
+
+
+" 工具 {{{2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
