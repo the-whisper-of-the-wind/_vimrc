@@ -137,13 +137,14 @@ if (has("win32") || has("win64"))
 	map <silent> <leader>ee :tabe $VIMRUNTIME\_vimrc<cr>
 " 重新加载 $VIMRUNTIME/_vimrc 配置文件
 	map <silent> <leader>er :source $VIMRUNTIME\_vimrc<cr>
+" 重新加载配置文件
 	autocmd! bufwritepost .vimrc source $VIMRUNTIME\_vimrc
 
 " 设置英文等宽nerd字体
   set guifont=JetBrainsMonoNL_NFM:cANSI:qDRAFT:h10
 " 设置中文等宽nerd字体
   set guifontwide=LXGWWenKaiMono_Nerd_Font:cGB2312:qDRAFT:h10
-" 在 GUI 中快速改变字体大小
+" 在 GUI 中快速改变字体大小(设置字体把字号放在最后)
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
 command! Biggerwide  :let &guifontwide = substitute(&guifontwide, '\d\+$', '\=submatch(0)+1', '')
 command! Smaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
@@ -476,11 +477,6 @@ function! GetFileSize()
     endif
 endfunction
 
-" 定义函数来获取文档字数
-function! GetWordCount()
-    return wordcount().words . ' words'
-endfunction
-
 " 定义函数获取折叠方式
 function! AirlineGetFoldMethod()
     return &foldmethod
@@ -509,7 +505,7 @@ function! AddInfo()
     " 获取原有的 airline_section_z 内容
     let original_section_z = g:airline_section_z
     " 自定义 airline 的配置，在原有内容(文件类型、编码、查找域、行数、列数)后添加(文件大小、字数、折叠方式、页面格式FO、输入法状态)
-    let g:airline_section_z = original_section_z . ' /%{GetFileSize()} /%{GetWordCount()} /%{AirlineGetFoldMethod()} /%{&fo} /%{IMInsertSearch()}'
+    let g:airline_section_z = original_section_z . ' /%{GetFileSize()} /%{AirlineGetFoldMethod()} /%{&fo} /%{IMInsertSearch()}'
 endfunction
 
 " airline——tabline(tab、buffer、window) {{{4
@@ -1241,17 +1237,20 @@ let g:winresizer_gui_enable = 1
 " 代码 {{{1
 """"""""""""""""""""""""""""""
 " ctags {{{2
+" “-R”表示递归创建，也就包括源代码根目录（当前目录）下的所有子目录。“*”表示所有文件。这条命令会在当前目录下产生一个“tags”文件， 当用户在当前目录中运行vi时，会自动载入此tags文件
 if (g:isWin)
 	map <silent> <leader>st :!ctags.exe -R *<CR>
 endif
 set previewheight=12
 "和ctags配合使用。用ctags创建了tags文件后，在你要查看定义的函数或变量上按
 "nmap '' :ptag <C-R><C-W><cr><C-w><C-w>
+" 在上方打开查看函数的文件
 nmap '' :ptag <C-R><C-W><cr>
+" 关闭查看函数的文件
 nmap 'c :pclose<cr>
 "用于cscope，当用cscope创建了tags后，在你光标所在的函数上
 "按ctrl-] ctrl-[会跳转到该函数的调用处
-"map <C-]><C-[> :cs f 3 <cword><cr>
+"map <C-]><C-[> :cs f 2 <cword><cr>
 
 
 " Tag list (ctags) {{{2
@@ -1351,9 +1350,8 @@ endfunction
 command! -nargs=0 Toc call IToc()
 
 
-
-
 " cscope 注意和Surround快捷键冲突 {{{2
+
 "(1) 我们假设我们要阅读的代码放在D:\src\myproject下。然后打开命令行，进入源代码所在的目录，为cscope建立搜索文件列表。在命令行中执行以下命令：
 "D:\src>dir /s /b *.c *.cpp *.java *.h > cscope.files
 "
@@ -1366,10 +1364,10 @@ if has("cscope") && executable("cscope")
   set cst
 	set cscopequickfix=c-,d-,e-,g-,i-,s-,t-
 	if (g:isWin)
-		map <silent> <leader>cs :!dir /s /b *.c *.cpp *.java *.h > cscope.files & cscope -Rbkq<CR>
+		map <silent> <leader>os :!dir /s /b *.c *.cpp *.java *.h > cscope.files & cscope -Rbkq<CR>
 	endif
 
-  " add any database in current directory
+  " add any database in current directory(cscope.out默认编码解析不了中文)
   function! CscopeAdd()
     set nocsverb
     if filereadable(expand('%:h:p') . "/cscope.out")
@@ -1384,29 +1382,30 @@ if has("cscope") && executable("cscope")
 
   autocmd BufRead *.c,*.cpp,*.h call CscopeAdd()
 
+
 	" 映射 [[[2
 	" 查找C语言符号，即查找函数名、宏、枚举值等出现的地方
-	nmap css :cs find s <C-R>=expand("<cword>")<CR><CR>
+	nmap oss :cs find s <C-R>=expand("<cword>")<CR><CR>
 	" 查找函数、宏、枚举等定义的位置，类似ctags所提供的功能
-	nmap csg :cs find g <C-R>=expand("<cword>")<CR><CR>
+	nmap osg :cs find g <C-R>=expand("<cword>")<CR><CR>
 	" 查找本函数调用的函数
-	nmap csd :cs find d <C-R>=expand("<cword>")<CR><CR>
+	nmap osd :cs find d <C-R>=expand("<cword>")<CR><CR>
 	" 查找调用本函数的函数
-	nmap csc :cs find c <C-R>=expand("<cword>")<CR><CR>
+	nmap osc :cs find c <C-R>=expand("<cword>")<CR><CR>
 	" 查找指定的字符串
-	nmap cst :cs find t <C-R>=expand("<cword>")<CR><CR>
+	nmap ost :cs find t <C-R>=expand("<cword>")<CR><CR>
 	" 查找egrep模式，相当于egrep功能，但查找速度快多了
-	nmap cse :cs find e <C-R>=expand("<cword>")<CR><CR>
+	nmap ose :cs find e <C-R>=expand("<cword>")<CR><CR>
 	" 查找并打开文件，类似vim的find功能
-	nmap csf :cs find f <C-R>=expand("<cfile>")<CR><CR>
+	nmap osf :cs find f <C-R>=expand("<cfile>")<CR><CR>
 	" 查找包含本文件的文件
-	nmap csi :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+	nmap osi :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 	" 生成新的数据库
-	nmap csn :lcd %:p:h<CR>:!my_cscope<CR>
+	nmap osn :lcd %:p:h<CR>:!my_cscope<CR>
 	" 自己来输入命令
-	nmap cs<Space> :cs find
+	nmap os<Space> :cs find
 	" 建立连接
-	nmap csa :call CscopeAdd()<CR>
+	nmap osa :call CscopeAdd()<CR>
 
 	nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
 	nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
@@ -1431,7 +1430,6 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 配色方案 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 if  g:colors_name ==# 'evening'
         " 当使用 sevening 配色方案时
   " buffer配色
