@@ -1367,7 +1367,8 @@ if has("cscope") && executable("cscope")
 		map <silent> <leader>os :!dir /s /b *.c *.cpp *.java *.h > cscope.files & cscope -Rbkq<CR>
 	endif
 
-  " add any database in current directory(cscope.out默认编码解析不了中文)
+  " add any database in current directory
+  " (cscope.out默认编码解析不了中文)
   function! CscopeAdd()
     set nocsverb
     if filereadable(expand('%:h:p') . "/cscope.out")
