@@ -229,125 +229,107 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 插件 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 设置Vundle插件管理( 在插件固定后可以把脚本放在不同文件夹下，不借助插件管理器 ) {{{2
-
-" 去除VI一致性(必须);使用vim自己的键盘模式,而不是兼容vi的模式
-set nocompatible      
-
-" 关闭 Vim 的文件类型检测功能
-filetype off                 
-
-" 将 Vundle.vim 插件所在的目录添加到 Vim 的运行时路径（Runtime Path)
+" 将 Plug.vim 插件所在的目录添加到 Vim 的运行时路径（Runtime Path),默认是autoload
 " rtp 代表运行时路径，这是 Vim 搜索插件、脚本、帮助文件等资源的目录列表。Vim 启动时会按照 rtp 里指定的目录顺序来查找所需资源。
 " + 符号的作用是把后面指定的目录添加到现有的 rtp 列表里，而不会覆盖原有的目录
-set rtp+=$VIM\Plugins\Vundle.vim
+" set rtp+=
+set runtimepath+=d:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\test
 
-" 指定插件安装
-call vundle#begin('$VIM\Plugins')
+call plug#begin('$VIM\Plugins')
 
-" 插件管理器
-Plugin 'VundleVim/Vundle.vim'                
 " 配色方案
 " Plugin 'flazz/vim-colorschemes'
-Plugin 'ghifarit53/tokyonight-vim'
-Plugin 'joshdick/onedark.vim'
-" 语法高亮
-Plugin 'sheerun/vim-polyglot'
+Plug 'ghifarit53/tokyonight-vim'
+Plug 'joshdick/onedark.vim'
+
 " 文件目录树
-Plugin 'preservim/nerdtree'                       
+Plug 'preservim/nerdtree'                       
 
 " 目录查看器
-Plugin 'justinmk/vim-dirvish'
+Plug 'justinmk/vim-dirvish'
 
 " 美化底部插件
-Plugin 'vim-airline/vim-airline'                 
+Plug 'vim-airline/vim-airline'                 
 " 主题插件
-Plugin 'vim-airline/vim-airline-themes'    
+Plug 'vim-airline/vim-airline-themes'    
 
 " 彩虹括号插件
-Plugin 'luochen1990/rainbow'
+Plug 'luochen1990/rainbow'
 
 " 代码缩进线
-Plugin 'Yggdroot/indentLine'
+Plug 'Yggdroot/indentLine'
 
 " 移动插件
-Plugin 'easymotion/vim-easymotion'
+Plug 'easymotion/vim-easymotion'
 
-" surround插件(添加环绕、修改环绕和删除环绕)
-Plugin 'tpope/vim-surround'
+Plug 'tpope/vim-surround'
 
 " 基础控件UI
-Plugin 'skywind3000/vim-quickui'
+Plug 'skywind3000/vim-quickui'
 
 " 模糊查找
-Plugin 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 
 " 注释插件
-Plugin 'preservim/nerdcommenter'
+Plug 'preservim/nerdcommenter'
 
 " Markdown预览(要安装node.js和yarn,建议可以安装在插件目录下(为了保持尽可能开箱即用），并添加对应的环境变量）
-Plugin 'iamcco/markdown-preview.nvim'
+Plug 'iamcco/markdown-preview.nvim'
 
 " 即时创建表
-Plugin 'dhruvasagar/vim-table-mode'
+Plug 'dhruvasagar/vim-table-mode'
 
 " 对齐插件
-Plugin 'junegunn/vim-easy-align'
+Plug 'junegunn/vim-easy-align'
 
 " Markdown图像粘贴
-Plugin 'img-paste-devs/img-paste.vim'
+Plug 'img-paste-devs/img-paste.vim'
 
 " Markdown目录生成插件
-Plugin 'mzlogin/vim-markdown-toc'
+Plug 'mzlogin/vim-markdown-toc'
 
 " 用于文本过滤和对齐
-Plugin 'godlygeek/tabular'
+Plug 'godlygeek/tabular'
 " Markdown Vim 模式
-Plugin 'preservim/vim-markdown'
+Plug 'preservim/vim-markdown'
 
 " Mark插件
-Plugin 'kshenoy/vim-signature'
+Plug 'kshenoy/vim-signature'
 " 查看寄存器
-Plugin 'junegunn/vim-peekaboo'
+Plug 'junegunn/vim-peekaboo'
 
 " git插件
-Plugin 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 
 " coc.nvim 插件
-Plugin 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " 在弹出窗口中显示键绑定
-Plugin 'liuchengxu/vim-which-key'
+Plug 'liuchengxu/vim-which-key'
 
 " vim笔记用到的插件
-Plugin 'vimwiki/vimwiki'
+Plug 'vimwiki/vimwiki'
 
 " 日历插件
-Plugin 'itchyny/calendar.vim'
+Plug 'itchyny/calendar.vim'
 
 " 在不同窗口/标签上显示 A/B/C 等编号，然后字母直接跳转
-Plugin 't9md/vim-choosewin'
+Plug 't9md/vim-choosewin'
 
 " 调整 vim 窗口
-Plugin 'simeji/winresizer'
+Plug 'simeji/winresizer'
 
 " 多游标插件
-Plugin 'mg979/vim-visual-multi', {'branch': 'master'}
-
-" grep插件(暂时不用，等熟练了其他功能来看）
-Plugin 'mhinz/vim-grepper'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
 " ctags
-Plugin 'vim-scripts/taglist.vim'
+Plug 'vim-scripts/taglist.vim'
+Plug 'preservim/tagbar'
 
 " 图标插件
-call vundle#end()   " 结束
-Plugin 'ryanoasis/vim-devicons'
-" Vundle命令
-" 安装插件————:PluginInstall
-" 更新插件————:PluginUpdate
-" 卸载插件————:PluginClean(删除Plugin行)
-" 列出已安装插件————:PluginList
+Plug 'ryanoasis/vim-devicons'
+call plug#end()
+
 
 " 插件配置 {{{2
 " nerdtree(书签、直观显示目录结构) {{{3
@@ -366,6 +348,7 @@ let NERDTreeShowHidden=1
 " 改变文件夹的箭头图标
 let NERDTreeDirArrowCollapsible="󰡄"
 let NERDTreeDirArrowExpandable=""
+
 
 " " 将选中的项移动到窗口的中央位置
 let NERDTreeAutoCenter=1
@@ -423,8 +406,8 @@ endfunction
 let g:airline_theme='lucius'   
 " let g:airline_theme='onedark'
 " 关闭状态显示空白符号计数
- let g:airline#extensions#whitespace#enabled = 0
- let g:airline#extensions#whitespace#symbol = '!'
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#whitespace#symbol = '!'
 
 " 加载 airline 插件
 let g:airline#extensions#default#enabled = 1
@@ -448,15 +431,6 @@ if !exists('g:airline_symbols')
   let g:airline_symbols.maxlinenr = '☰'
   let g:airline_symbols.colnr = '  C:'
 
-
-
-" buffer栏配色
-" highlight airline_tabsel gui=bold guifg=#00ffff guibg=#000000
-" highlight airline_tabsel gui=bold guifg=#00ffff guibg=#333333
-" 右侧tab栏配色
-" highlight airline_tabmod gui=bold guifg=#FFFFFF guibg=#333333
-
-" highlight airline_tablabel_right gui=bold guifg=#000000 guibg=#FFFFFF
 
 
 " 定义函数来获取文件大小
@@ -505,7 +479,7 @@ function! AddInfo()
     " 获取原有的 airline_section_z 内容
     let original_section_z = g:airline_section_z
     " 自定义 airline 的配置，在原有内容(文件类型、编码、查找域、行数、列数)后添加(文件大小、字数、折叠方式、页面格式FO、输入法状态)
-    let g:airline_section_z = original_section_z . ' /%{GetFileSize()} /%{AirlineGetFoldMethod()} /%{&fo} /%{IMInsertSearch()}'
+    let g:airline_section_z = original_section_z . ' [%{GetFileSize()}] [%{AirlineGetFoldMethod()}] [%{&fo}] [%{IMInsertSearch()}]'
 endfunction
 
 " airline——tabline(tab、buffer、window) {{{4
@@ -837,19 +811,46 @@ call quickui#menu#install('Help (&?)', [
 " 双击<space>打开目录
 noremap <space><space> :call quickui#menu#open()<cr>
 
-" 模糊查找 {{{3
+" leaderf( 模糊查找 ) {{{3
+" 安装模糊匹配算法的 C 扩展,提高性能(需python支持)
 
 " 弹出窗口
 let g:Lf_WindowPosition = 'popup'
 " Show icons, icons are shown by default
 let g:Lf_ShowDevIcons = 1
+let g:Lf_StlSeparator = { 'left': '', 'right': '' }
+
+
+" 在普通模式下不显示 Leaderf 的帮助信息
+let g:Lf_HideHelp = 1
+" 禁用 Leaderf 的缓存功能，每次查找都会重新生成结果
+let g:Lf_UseCache = 0
+" 在查找时忽略当前缓冲区的名称
+let g:Lf_IgnoreCurrentBufferName = 1
+
+
 
 " 设置 LeaderF 文件查找快捷键
-nnoremap <C-p> :Leaderf file<CR>
+nnoremap <leader>ff :Leaderf file<CR>
 " 设置 LeaderF 缓冲区查找快捷键
-nnoremap <leader>b :Leaderf buffer<CR>
-" 定义快捷键 <Leader>m 来打开最近文件列表
-nnoremap <A-r> :Leaderf mru<CR>
+nnoremap <leader>fb :Leaderf buffer<CR>
+" 打开最近文件列表
+nnoremap <leader>fm :Leaderf mru<CR>
+" 查找当前文件中的行
+noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
+
+" 使用 rg（ripgrep）在当前缓冲区中搜索当前光标所在的单词
+noremap <leader>fg :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR>
+" <C-F> 会使用 rg 在整个项目中搜索当前光标所在的单词
+noremap <leader>fgg :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
+" 在可视模式下按下 gf，会使用 rg 精确搜索选中的文本
+xnoremap bf :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR>
+" 按下 go 会召回上一次的 rg 搜索
+" noremap go :<C-U>Leaderf! rg --recall<CR>
+
+
+let g:Lf_Rg = $VIM.g:slash.'cmdtools\ripgrep-14.1.1-i686-pc-windows-msvc\rg.exe'
+
 
 " 注释插件 {{{3
 
@@ -1230,7 +1231,6 @@ let g:winresizer_gui_enable = 1
 
 " vim-visual-multi {{{3
 
-" vim-grepper {{{3
 
 
 """"""""""""""""""""""""""""""
@@ -1350,6 +1350,17 @@ endfunction
 command! -nargs=0 Toc call IToc()
 
 
+" tagbar(支持更多的语言) {{{2
+nmap <F7> :TagbarToggle<CR>
+let g:tagbar_left = 1
+let g:tagbar_ctags_bin = $VIM . g:slash . 'ctags-p6.1.20250302.0-x64\ctags.exe'
+
+" 进入 Tagbar 窗口的缓冲区时，重新映射 <Space> 键
+autocmd FileType tagbar nmap <buffer> <Space> <Nop>
+
+let tagbar_width = 30
+
+
 " cscope 注意和Surround快捷键冲突 {{{2
 
 "(1) 我们假设我们要阅读的代码放在D:\src\myproject下。然后打开命令行，进入源代码所在的目录，为cscope建立搜索文件列表。在命令行中执行以下命令：
@@ -1386,27 +1397,27 @@ if has("cscope") && executable("cscope")
 
 	" 映射 [[[2
 	" 查找C语言符号，即查找函数名、宏、枚举值等出现的地方
-	nmap oss :cs find s <C-R>=expand("<cword>")<CR><CR>
+	nmap css :cs find s <C-R>=expand("<cword>")<CR><CR>
 	" 查找函数、宏、枚举等定义的位置，类似ctags所提供的功能
-	nmap osg :cs find g <C-R>=expand("<cword>")<CR><CR>
+	nmap csg :cs find g <C-R>=expand("<cword>")<CR><CR>
 	" 查找本函数调用的函数
-	nmap osd :cs find d <C-R>=expand("<cword>")<CR><CR>
+	nmap csd :cs find d <C-R>=expand("<cword>")<CR><CR>
 	" 查找调用本函数的函数
-	nmap osc :cs find c <C-R>=expand("<cword>")<CR><CR>
+	nmap csc :cs find c <C-R>=expand("<cword>")<CR><CR>
 	" 查找指定的字符串
-	nmap ost :cs find t <C-R>=expand("<cword>")<CR><CR>
+	nmap cst :cs find t <C-R>=expand("<cword>")<CR><CR>
 	" 查找egrep模式，相当于egrep功能，但查找速度快多了
-	nmap ose :cs find e <C-R>=expand("<cword>")<CR><CR>
+	nmap cse :cs find e <C-R>=expand("<cword>")<CR><CR>
 	" 查找并打开文件，类似vim的find功能
-	nmap osf :cs find f <C-R>=expand("<cfile>")<CR><CR>
+	nmap csf :cs find f <C-R>=expand("<cfile>")<CR><CR>
 	" 查找包含本文件的文件
-	nmap osi :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+	nmap csi :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 	" 生成新的数据库
-	nmap osn :lcd %:p:h<CR>:!my_cscope<CR>
+	nmap csn :lcd %:p:h<CR>:!my_cscope<CR>
 	" 自己来输入命令
-	nmap os<Space> :cs find
+	nmap cs<Space> :cs find
 	" 建立连接
-	nmap osa :call CscopeAdd()<CR>
+	nmap csa :call CscopeAdd()<CR>
 
 	nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
 	nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
@@ -1538,11 +1549,16 @@ inoremap <F4> <C-O><C-W>c
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 通用设置 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 去除VI一致性(必须);使用vim自己的键盘模式,而不是兼容vi的模式
+set nocompatible      
+
 " 设置 Vim 菜单的语言
 set langmenu=zh_CN.UTF-8
 " 设置 Vim 提示信息的语言
 language message zh_CN.UTF-8
 
+"编码html说明
+"http://edyfox.codecarver.org/html/vim_fileencodings_detection.html
 "默认编码部分
 set encoding=utf-8
 "终端和win下的Console 窗口的编码,用于设置 Vim 与终端之间通信所使用的字符编码
@@ -1715,7 +1731,7 @@ set switchbuf=useopen,usetab,newtab
 
 " 置行与行之间的额外间距。设置为 1 表示在每行文本之间增加 1 个单位的间距
 " 一般不超过2,否则airline的powerline字符会明显错位
-set linespace=3
+set linespace=2
 
 "用空格替代tab
 set expandtab 
@@ -1783,12 +1799,15 @@ vmap <Leader>v "ry:v/<c-r>=substitute(escape('<c-r>r', '\^$~/.[]'),'\r','\\n','g
 inoremap <M-/> <C-r>=substitute(@/,'\v^\\[<V]\|\\\>$','','g')<CR>
 
 
-"先查询出来,不足是必须要保存为文件才行，但lv出来的可以跳转
+"先查询出来,不足是必须要保存为文件才行，但lv( lvim ,location list) 中进行搜索,出来的可以跳转
 nmap <Leader>c :exec 'lv /' . input('/', expand('<cword>')) . '/gj % <bar> lw'<CR>
 vmap <Leader>c "ry:lv /<C-R>r/gj % <bar> lw<CR>
-"然后再
-"将当前文件的全部内容复制到一个新的标签页中，然后在新标签页里删除每行末尾的竖线 | 及其前面的所有内容
+"然后再将当前文件的全部内容复制到一个新的标签页中，然后在新标签页里删除每行末尾的竖线 | 及其前面的所有内容
 nmap <Leader>p ggVGy:exec 'tabnew'<CR>P:exec '%s/.*\|//g'<CR>
+
+"grep和findstr都不支持中文 
+
+
 
 
 
@@ -2414,11 +2433,6 @@ command! -nargs=? SS call Session("SAVE",<f-args>)
 " 调用 Session 函数加载会话
 command! -nargs=? SL call Session("LOAD",<f-args>)
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 打开文件相关 {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-map <silent> <leader>ez :tabe d:\02_LearningResources\1_Software\Regular Expression\Regular Expression.md<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2515,9 +2529,6 @@ map <silent> <leader>ez :tabe d:\02_LearningResources\1_Software\Regular Express
 
 
 " 工具 {{{2
-
-
-
 
 
 
