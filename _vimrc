@@ -1,7 +1,7 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 先决设置 {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 实现Windows 风格功能(可以根据mswin.vim的内容设置)
+" 实现Windows风格功能(可以根据mswin.vim的内容设置)
 " set 'selection', 'selectmode', 'mousemodel' and 'keymodel' for MS-Windows
 behave mswin
 
@@ -13,8 +13,8 @@ let $VIM_PARENT = fnamemodify($VIM, ':h')
 
 " 将空格键设置为 <leader> 键,\会把<space>转义   let 用于操作变量（Variables）/set 用于操作选项（Options）
 let mapleader = "\<space>"
-" 设置 <leader> 键的延迟时间为 1000 毫秒
-set timeoutlen=1000  
+" 设置 <leader> 键的延迟时间为 500 毫秒
+set timeoutlen=500  
 
 " 用于配置会话保存选项(缓冲区、标签页布局——窗口和缓冲区）
 set sessionoptions=buffers,tabpages
@@ -234,6 +234,8 @@ endif
 " + 符号的作用是把后面指定的目录添加到现有的 rtp 列表里，而不会覆盖原有的目录
 " set rtp+=
 set runtimepath+=d:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\test
+set runtimepath+=d:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\after
+
 
 call plug#begin('$VIM\Plugins')
 
@@ -243,7 +245,9 @@ Plug 'ghifarit53/tokyonight-vim'
 Plug 'joshdick/onedark.vim'
 
 " 文件目录树
-Plug 'preservim/nerdtree'                       
+" 按需加载
+Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }                      
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " 目录查看器
 Plug 'justinmk/vim-dirvish'
@@ -295,6 +299,8 @@ Plug 'preservim/vim-markdown'
 
 " Mark插件
 Plug 'kshenoy/vim-signature'
+" 书签
+Plug 'MattesGroeger/vim-bookmarks'
 " 查看寄存器
 Plug 'junegunn/vim-peekaboo'
 
@@ -303,9 +309,6 @@ Plug 'tpope/vim-fugitive'
 
 " coc.nvim 插件
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-" 在弹出窗口中显示键绑定
-Plug 'liuchengxu/vim-which-key'
 
 " vim笔记用到的插件
 Plug 'vimwiki/vimwiki'
@@ -326,12 +329,16 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'vim-scripts/taglist.vim'
 Plug 'preservim/tagbar'
 
+Plug 'airblade/vim-gitgutter'
+
 " 图标插件
 Plug 'ryanoasis/vim-devicons'
+
 call plug#end()
 
 
 " 插件配置 {{{2
+
 " nerdtree(书签、直观显示目录结构) {{{3
 " 设置显示书签
 let NERDTreeShowBookmarks=1
@@ -426,7 +433,11 @@ if !exists('g:airline_symbols')
   let g:airline_right_alt_sep = '╱'
   " let g:airline_right_alt_sep = ''
   let g:airline_symbols.branch = ''
+  " 文件被追踪
   let g:airline_symbols.dirty='⚡'
+  " 文件违背追踪
+  let g:airline_symbols.notexists = ''
+  let g:airline#extensions#branch#vcs_checks = ['untracked', 'dirty']
   let g:airline_symbols.linenr = ' L:'
   let g:airline_symbols.maxlinenr = '☰'
   let g:airline_symbols.colnr = '  C:'
@@ -555,6 +566,7 @@ for i in range(1, 9)
 endfor
 
 " rainbow {{{3
+" 在nerdtree中禁用
 " 启动彩虹括号插件
 let g:rainbow_active = 1 
 
@@ -814,8 +826,9 @@ noremap <space><space> :call quickui#menu#open()<cr>
 " leaderf( 模糊查找 ) {{{3
 " 安装模糊匹配算法的 C 扩展,提高性能(需python支持)
 
-" 弹出窗口
-let g:Lf_WindowPosition = 'popup'
+" 弹出窗口(tab进入normal模式不能使用很多功能)
+" let g:Lf_WindowPosition = 'popup'
+let g:Lf_WindowPosition = 'bottom'
 " Show icons, icons are shown by default
 let g:Lf_ShowDevIcons = 1
 let g:Lf_StlSeparator = { 'left': '', 'right': '' }
@@ -827,7 +840,6 @@ let g:Lf_HideHelp = 1
 let g:Lf_UseCache = 0
 " 在查找时忽略当前缓冲区的名称
 let g:Lf_IgnoreCurrentBufferName = 1
-
 
 
 " 设置 LeaderF 文件查找快捷键
@@ -849,7 +861,18 @@ xnoremap bf :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR>
 " noremap go :<C-U>Leaderf! rg --recall<CR>
 
 
-let g:Lf_Rg = $VIM.g:slash.'cmdtools\ripgrep-14.1.1-i686-pc-windows-msvc\rg.exe'
+let g:Lf_Rg = $VIM.g:slash.'cmdtools/ripgrep-14.1.1-i686-pc-windows-msvc/rg.exe'
+
+let g:Lf_Ctags = $VIM.g:slash."cmdtools/ctags-p6.1.20250302.0-x64/ctags.exe"
+
+let g:Lf_PreviewInPopup = 1
+" open the preview window automatically
+let g:Lf_PreviewResult = {'Rg': 1 }
+" search word under cursor, the pattern is treated as regex, and enter normal mode directly
+noremap <C-F> :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
+
+
+
 
 
 " 注释插件 {{{3
@@ -996,6 +1019,19 @@ nnoremap <leader>mk :SignatureListBufferMarks<CR>
 
 " g'：与 ' 命令类似，用于跳转到标记处，但 g' 会精确跳转到标记所在的行和列位置，而 ' 只跳转到标记所在行的行首
 
+" vim-bookmarks {{{3
+highlight BookmarkSign guifg=#0080FF guibg=NONE ctermfg=NONE ctermbg=1
+highlight BookmarkAnnotationSign guifg=#0080FF guibg=NONE ctermfg=NONE ctermbg=1
+highlight BookmarkLine guifg=#FF8000 guibg=#525252 ctermfg=NONE ctermbg=1
+highlight BookmarkAnnotationLine guifg=#FF8000 guibg=#525252 ctermfg=NONE ctermbg=1
+
+let g:bookmark_sign = '󰍎'
+let g:bookmark_annotation_sign = '##'
+
+let g:bookmark_highlight_lines = 1
+" 在状态行上显示注释文本
+let g:bookmark_display_annotation = 1
+let g:bookmark_location_list = 0
 
 " vim-fugitive(git插件) {{{3
 
@@ -1215,9 +1251,6 @@ autocmd BufEnter *.md if &filetype !=# 'markdown' | set filetype=markdown | endi
 
 " calendar {{{4
 
-" vim-which-key {{{4
-nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
-
   " vim-choosewin(对于多tab窗口跳转很有用） {{{3
   " 使用 <leader>- 来选择窗口
 nmap  <leader>-  <Plug>(choosewin)
@@ -1226,11 +1259,10 @@ nmap  <leader>-  <Plug>(choosewin)
 " 调整内部window
 let g:winresizer_start_key = '<C-e>'
 " 调整GUI大小
-let g:winresizer_gui_enable = 1
+let g:winresizer_gui_enable = 0
 " let g:winresizer_gui_start_key='<C-m>'
 
 " vim-visual-multi {{{3
-
 
 
 """"""""""""""""""""""""""""""
@@ -1353,7 +1385,7 @@ command! -nargs=0 Toc call IToc()
 " tagbar(支持更多的语言) {{{2
 nmap <F7> :TagbarToggle<CR>
 let g:tagbar_left = 1
-let g:tagbar_ctags_bin = $VIM . g:slash . 'ctags-p6.1.20250302.0-x64\ctags.exe'
+let g:tagbar_ctags_bin = $VIM.g:slash."cmdtools/ctags-p6.1.20250302.0-x64/ctags.exe"
 
 " 进入 Tagbar 窗口的缓冲区时，重新映射 <Space> 键
 autocmd FileType tagbar nmap <buffer> <Space> <Nop>
@@ -1594,8 +1626,8 @@ highlight CursorLineNr guifg=#FAA93F
 hi! SignColumn guifg=NONE guibg=NONE ctermbg=NONE
 
 " 修正补全目录的色彩：默认太难看
-hi! Pmenu guibg=gray guifg=black ctermbg=gray ctermfg=black
-hi! PmenuSel guibg=gray guifg=brown ctermbg=brown ctermfg=gray
+" hi! Pmenu guibg=gray guifg=black ctermbg=gray ctermfg=black
+" hi! PmenuSel guibg=gray guifg=brown ctermbg=brown ctermfg=gray
 
 
 " 显示命令(右下角）
@@ -1672,6 +1704,14 @@ if has('patch-8.2.4500')
   " 用于映射 <cr>（回车）和 <esc>（退出）键，当弹出菜单可见时执行相应操作
   " 动态补全撤销<C-e>  确认<C-y>
 endif
+" vim自带的补全
+" 1.关键字补全（<C-n> 向下查找匹配的关键字和 <C-p>向上查找）
+" 2.路径补全（<C-x><C-f>）在插入模式下，输入部分文件路径后，按下 <C-x><C-f> 可以触发路径补全。Vim 会根据当前目录下的文件和文件夹名称进行补全。
+" 3.行补全（<C-x><C-l>）在插入模式下，按下 <C-x><C-l> 可以进行行补全。Vim 会查找当前文件中与你已输入内容匹配的整行文本并进行补全。
+" 4.拼写建议补全（<C-x><C-k>）当你输入一个可能拼写错误的单词时，按下 <C-x><C-k>，Vim 会根据拼写字典提供可能的正确拼写建议。你需要先设置好拼写检查功能（set spell）。
+" 5.标签补全（<C-x><C-]>）如果你使用 ctags 工具为项目生成了标签文件（通常是 tags 文件），在插入模式下输入部分标签名后按下 <C-x><C-]>，Vim 会根据标签文件进行补全。
+" 6.vim命令补全（<C-x><C-v>）
+
 
 " nobackup 关闭备份 backup
 set nobackup      
@@ -1688,8 +1728,9 @@ set noswapfile
 
 " 用于控制不可见字符的显示
 " set list
-" tab:.：将制表符显示为 .;trail:-：将行尾的空白字符显示为 -; eol:$：将行尾符显示为 $。 space:.：将普通空格显示为 .
-set listchars=space:.,tab:..,trail:-,eol:$
+" tab:.：将制表符显示为 .;trail:-：将行尾的空白字符显示为 -; eol:$：将行尾符显示为 $(有点不好看)。 space:.：将普通空格显示为 .
+" set listchars=space:.,tab:>-,trail:-,eol:$
+set listchars=space:.,tab:>-,trail:-
 " SpecialKey 高亮组主要用于高亮显示特殊键字符，像不可见字符（如空格、制表符等）
 highlight SpecialKey guifg=#808080
 
@@ -1777,13 +1818,13 @@ set viminfo='10,\"100,:20,%,n$VIMRUNTIME/.viminfo
 au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
 
 
-"继续搜索光标下文字
+"继续搜索光标下文字 expand("<cWORD>") 的功能是获取当前光标所在的字串
 nmap <leader>/ /<C-R>=expand("<cWORD>")<CR>
-"vmap <Leader>/ "ry/<C-R>r 原来的没有处理回车
+"vmap <Leader>/ "ry/<C-R>r 原来的没有处理回车 使用寄存器
 vmap <leader>/ "ry/<c-r>=substitute(escape('<c-r>r', '\^$~/.[]'),'\r','\\n','ge')<CR>
 
 "选中后进行查找替换
-" substitute 命令 
+" substitute 命令(全局替换)
 nmap <Leader>r :%s/<C-R>=expand("<cWORD>")<CR>
 vmap <Leader>r "ry:%s/<c-r>=substitute(escape('<c-r>r', '\^$~/.[]'),'\r','\\n','ge')<CR>
 
@@ -1795,7 +1836,7 @@ vmap <Leader>g "ry:g/<c-r>=substitute(escape('<c-r>r', '\^$~/.[]'),'\r','\\n','g
 nmap <Leader>v :v/<C-R>=expand("<cWORD>")<CR>/d
 vmap <Leader>v "ry:v/<c-r>=substitute(escape('<c-r>r', '\^$~/.[]'),'\r','\\n','ge')<CR>/d
 
-"在搜索中只需要这个就够了
+"在搜索中只需要这个就够了,利用了/ 寄存器,/属于只读寄存器，作用是存储最近一次的搜索模式
 inoremap <M-/> <C-r>=substitute(@/,'\v^\\[<V]\|\\\>$','','g')<CR>
 
 
@@ -1835,13 +1876,6 @@ endfunction
 
 
 
-" vim自带的补全
-" 1.关键字补全（<C-n> 向下查找匹配的关键字和 <C-p>向上查找）
-" 2.路径补全（<C-x><C-f>）在插入模式下，输入部分文件路径后，按下 <C-x><C-f> 可以触发路径补全。Vim 会根据当前目录下的文件和文件夹名称进行补全。
-" 3.行补全（<C-x><C-l>）在插入模式下，按下 <C-x><C-l> 可以进行行补全。Vim 会查找当前文件中与你已输入内容匹配的整行文本并进行补全。
-" 4.拼写建议补全（<C-x><C-k>）当你输入一个可能拼写错误的单词时，按下 <C-x><C-k>，Vim 会根据拼写字典提供可能的正确拼写建议。你需要先设置好拼写检查功能（set spell）。
-" 5.标签补全（<C-x><C-]>）如果你使用 ctags 工具为项目生成了标签文件（通常是 tags 文件），在插入模式下输入部分标签名后按下 <C-x><C-]>，Vim 会根据标签文件进行补全。
-" 6.vim命令补全（<C-x><C-v>）
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 快捷键 {{{1
@@ -1850,6 +1884,13 @@ endfunction
 " 退出
 nnoremap <leader>q :q<CR>
 
+" 一般来说,windows下通过AHK脚本把Capslk映射为Esc,在vim中为了保持通用性,将;;设置为esc，需要单个输入;的时候不影响，需要输入;;的时候停顿一下  
+" Esc键在键盘上较远,Ctrl-[要两手配合,Ctrl-c被占用
+inoremap ;; <ESC>
+cnoremap ;; <ESC>
+nnoremap ;; <Esc>
+vnoremap ;; <Esc>
+
 " 快速移动
 nnoremap <C-u> 10k
 vnoremap <C-u> 10k
@@ -1857,12 +1898,12 @@ nnoremap <C-d> 10j
 vnoremap <C-d> 10j
 
 "翻页
-map <C-j> <C-f>
-map <C-k> <C-b>
-imap <C-j> <C-o><PageDown>
-imap <C-k> <C-o><PageUp>
-vmap <C-j> <S-PageDown>
-vmap <C-k> <S-PageUp>
+noremap <C-j> <C-f>
+noremap <C-k> <C-b>
+inoremap <C-j> <C-o><PageDown>
+inoremap <C-k> <C-o><PageUp>
+vnoremap <C-j> <S-PageDown>
+vnoremap <C-k> <S-PageUp>
 
 ",.符号相关
 onoremap , iw
@@ -1928,9 +1969,6 @@ inoremap <C-l> <C-o><right>
 inoremap <C-b> <C-o>b
 inoremap <C-w> <C-o>w
 
-" 将 Ctrl + F1 组合键映射为一系列操作
-imap <C-F1> <c-o>:reg<cr>
-noremap <C-F1> :reg<cr>
 
 "重复执行上一次的命令
 noremap <Leader>, @:
@@ -1945,12 +1983,12 @@ noremap <Leader>G :%y<cr>
 noremap <Leader>D ddpj
 
 " 在文件名上按,gt时，在新的tab中打开
-nmap <leader>gt :tabnew <cfile><cr>
-nmap <leader>gf :tabe <c-r>=getline('.')<CR><CR>
-nmap gf :tabe <c-r>=getline('.')<CR><CR>
-vmap gf y:tabe "<CR>
-noremap gz :!start <C-R>=eval("g:COMMANDER_EXE")<CR> /A /T /O /S /L="<c-r>=getline('.')<CR>"<CR><CR>
-vmap gz y:!start <C-R>=eval("g:COMMANDER_EXE")<CR> /A /T /O /S /L="""<CR><CR>
+nnoremap <leader>gt :tabnew <cfile><cr>
+nnoremap <leader>gf :tabe <c-r>=getline('.')<CR><CR>
+nnoremap gf :tabe <c-r>=getline('.')<CR><CR>
+vnoremap gf y:tabe "<CR>
+" noremap gz :!start <C-R>=eval("g:COMMANDER_EXE")<CR> /A /T /O /S /L="<c-r>=getline('.')<CR>"<CR><CR>
+" vnoremap gz y:!start <C-R>=eval("g:COMMANDER_EXE")<CR> /A /T /O /S /L="""<CR><CR>
 
 " 动态地添加或移除 colorcolumn（颜色列）
 function! SetColorColumn()
@@ -2037,30 +2075,6 @@ inoremap <buffer> ]4 <esc>I#### <esc>
 inoremap <buffer> ]5 <esc>I##### <esc>
 endfunction
 
-" ini文件（折叠） {{{2
-" 如果当前行的第一个字符不是 [，则认为这一行是可折叠的。
-autocmd FileType dosini setl foldexpr=getline(v:lnum)[0]!=\"\[\"
-" expr 表示使用自定义的折叠表达式（即前面设置的 foldexpr）来决定如何折叠代码
-autocmd FileType dosini setl fdm=expr
-" 表示初始时所有折叠都是关闭的
-autocmd FileType dosini setl fdl=0
-
-" 自定义折叠文本显示函数
-function! MyFoldText()
-	let line = getline(v:foldstart)
-	let line2 = getline(v:foldstart + 1)
-	let sub = substitute(line . "|" . line2, '/\*\|\*/\|{{{\d\=', '', 'g')
-	let ind = indent(v:foldstart)
-	let lines = v:foldend-v:foldstart + 1
-	let i = 0
-	let spaces = ''
-	while i < (ind - ind/4)
-		let spaces .= ' '
-		let i = i+1
-	endwhile
-	return spaces . sub . ' --------(' . lines . ' lines)'
-endfunction
-set foldtext=foldtext()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 折叠相关 {{{1
@@ -2510,6 +2524,11 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " 按 <C-g> 可以在可视模式及选择模式间切换
 " 有一处地方会用到选择模式。有一个模拟 TextMate 的 snippet 功能的插件，它会用选择模式来高亮当前的占位符
 
+" Ex模式 {{{3
+" 普通模式下用 Q 键进入 Ex 模式
+" 输入visual/vi返回
+
+
 " 模式(patterns) {{{2
 " 替换 {{{3
  " substitute 命令
@@ -2529,7 +2548,6 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 
 
 " 工具 {{{2
-
 
 
 
