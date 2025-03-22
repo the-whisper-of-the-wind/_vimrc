@@ -13,7 +13,10 @@ let $VIM_PARENT = fnamemodify($VIM, ':h')
 
 " 将空格键设置为 <leader> 键,\会把<space>转义   let 用于操作变量（Variables）/set 用于操作选项（Options）
 let mapleader = "\<space>"
-" 设置 <leader> 键的延迟时间为 500 毫秒
+" :重新映射
+noremap <space> :
+
+" 设置延迟时间为 500 毫秒
 set timeoutlen=500  
 
 " 用于配置会话保存选项(缓冲区、标签页布局——窗口和缓冲区）
@@ -100,19 +103,19 @@ if (!g:isGUI)
 
 endif
 
-" 设置普通模式下光标的颜色为浅蓝色（guibg——GUI;117——终端,浅蓝色编号 117）
-hi Cursor guifg=NONE guibg=#ADD8E6 ctermfg=NONE ctermbg=117
+" 设置普通模式下光标的颜色为白色
+hi Cursor guifg=#000000 guibg=#FFFFFF ctermfg=0 ctermbg=256
 " 设置插入模式下光标的颜色为橙色（橙色相近编号 208）
 augroup InsertModeCursor
     autocmd!
     autocmd InsertEnter * hi Cursor guifg=NONE guibg=#FFA500 ctermfg=NONE ctermbg=208
-    autocmd InsertLeave * hi Cursor guifg=NONE guibg=#ADD8E6 ctermfg=NONE ctermbg=117
+    autocmd InsertLeave * hi Cursor guifg=#000000 guibg=#FFFFFF ctermfg=0 ctermbg=256
 augroup END
 " 设置命令模式下光标的颜色为红色（红色编号 1）
 augroup CmdlineModeCursor
     autocmd!
     autocmd CmdlineEnter * hi Cursor guifg=NONE guibg=Red ctermfg=NONE ctermbg=1
-    autocmd CmdlineLeave * hi Cursor guifg=NONE guibg=#ADD8E6 ctermfg=NONE ctermbg=117
+    autocmd CmdlineLeave * hi Cursor guifg=#000000 guibg=#FFFFFF ctermfg=0 ctermbg=256
 augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -233,8 +236,8 @@ endif
 " rtp 代表运行时路径，这是 Vim 搜索插件、脚本、帮助文件等资源的目录列表。Vim 启动时会按照 rtp 里指定的目录顺序来查找所需资源。
 " + 符号的作用是把后面指定的目录添加到现有的 rtp 列表里，而不会覆盖原有的目录
 " set rtp+=
-set runtimepath+=d:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\test
-set runtimepath+=d:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\after
+set runtimepath+=$VIM\test
+set runtimepath+=$VIM\after
 
 
 call plug#begin('$VIM\Plugins')
@@ -267,6 +270,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'easymotion/vim-easymotion'
 
 Plug 'tpope/vim-surround'
+Plug 'jiangmiao/auto-pairs'
 
 " 基础控件UI
 Plug 'skywind3000/vim-quickui'
@@ -317,7 +321,7 @@ Plug 'vimwiki/vimwiki'
 Plug 'itchyny/calendar.vim'
 
 " 在不同窗口/标签上显示 A/B/C 等编号，然后字母直接跳转
-Plug 't9md/vim-choosewin'
+Plug 't9md/vim-choosewin', {'on':'ChooseWin'}
 
 " 调整 vim 窗口
 Plug 'simeji/winresizer'
@@ -329,7 +333,8 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'vim-scripts/taglist.vim'
 Plug 'preservim/tagbar'
 
-Plug 'airblade/vim-gitgutter'
+" 在 sign 列中显示 git diff 标记
+Plug 'airblade/vim-gitgutter', {'on':'GitGutterToggle'}
 
 " 图标插件
 Plug 'ryanoasis/vim-devicons'
@@ -738,7 +743,13 @@ nnoremap <leader>[ viw<esc>bi[[<esc>ea]]<esc>
 " 在普通模式下，ds 用于删除已有的环绕字符。它后面接要删除的环绕字符。
 "  'word'        ds'          word               
 
-"quickui {{{4
+" auto-pairs {{{3
+
+let g:AutoPairsShortcutToggle = '<M-;>'
+
+
+
+"quickui {{{3
 
 " 更改边框字符
 let g:quickui_border_style = 2
@@ -1076,7 +1087,7 @@ endfunction
 
 
 
-" fencview plugin {{{3
+" fencview plugin(在plugin文件夹而非插件管理器安装) {{{3
 "在.vimrc中加入上面安装的fencview插件指令,复制到iconv.dll到windows的path目录之中
 "打开文件时自动识别编码
 let g:fencview_autodetect=0        
@@ -1250,6 +1261,15 @@ let g:vimwiki_list = [{'path': $VIM_PARENT. g:slash .'vimwiki', 'syntax': 'markd
 autocmd BufEnter *.md if &filetype !=# 'markdown' | set filetype=markdown | endif
 
 " calendar {{{4
+noremap <silent> <leader>cal :Calendar<cr>
+" :Calendar 2000 1 1
+" :Calendar -view=year
+" :Calendar -view=year -split=vertical -width=27
+" :Calendar -view=year -split=horizontal -position=below -height=12
+" :Calendar -first_day=monday
+" :Calendar -view=clock
+" 可以使用 < 键和 > 键在视图之间切换
+" 按 E 键查看事件列表，按 T 键查看任务列表。 另外，按 ？键查看快速帮助。
 
   " vim-choosewin(对于多tab窗口跳转很有用） {{{3
   " 使用 <leader>- 来选择窗口
@@ -1264,7 +1284,16 @@ let g:winresizer_gui_enable = 0
 
 " vim-visual-multi {{{3
 
+" vim-gitgutter {{{3
+" 在修改块之间跳转
+nmap ]c <Plug>(GitGutterNextHunk)
+nmap [c <Plug>(GitGutterPrevHunk)
 
+set updatetime=100
+
+nnoremap <leader>git :GitGutterToggle<cr>
+
+command! Gqf GitGutterQuickFix | copen
 """"""""""""""""""""""""""""""
 " 代码 {{{1
 """"""""""""""""""""""""""""""
@@ -1729,8 +1758,8 @@ set noswapfile
 " 用于控制不可见字符的显示
 " set list
 " tab:.：将制表符显示为 .;trail:-：将行尾的空白字符显示为 -; eol:$：将行尾符显示为 $(有点不好看)。 space:.：将普通空格显示为 .
-" set listchars=space:.,tab:>-,trail:-,eol:$
-set listchars=space:.,tab:>-,trail:-
+set listchars=space:.,tab:>-,trail:-,eol:$
+" set listchars=space:.,tab:>-,trail:-
 " SpecialKey 高亮组主要用于高亮显示特殊键字符，像不可见字符（如空格、制表符等）
 highlight SpecialKey guifg=#808080
 
@@ -1787,6 +1816,9 @@ set history=1000
 " 设置 Vim 的撤销级别数量
 set undolevels=1000
 
+"显示最多行，不用@@
+set display=lastline 
+
 " 不让vim发出讨厌的滴滴声和闪烁
 set noeb vb t_vb=
 if (g:isGUI)
@@ -1796,13 +1828,17 @@ endif
 " 控制 Vim 显示消息的方式
 set shortmess=tI
 
+"自动改变到当前文件目录,dirvish:'autochdiGitGutterPreviewHunkr'is not supported
+" set autochdir 
 " 进入任何一个缓冲区时，Vim 的当前工作目录会自动切换到该文件所在的目录
-" 排除 filetype 为 fugitive 的情况
-autocmd BufEnter * if &filetype !=# 'fugitive' | :cd %:p:h | endif
-autocmd BufEnter * if &filetype !=# 'fugitive' | :lcd %:p:h | endif
-autocmd BufEnter * if &filetype !=# 'fugitive' | :syntax sync fromstart | endif
-" 文件写入后，若 filetype 不为 fugitive，将当前工作目录切换到文件所在目录
-autocmd BufWritePost * if &filetype !=# 'fugitive' | :lcd %:p:h | endif
+" silent! :即使命令执行过程中出现错误，也不会显示错误信息。这样可以避免一些不必要的错误提示影响操作
+augroup auto_ch_dir
+    autocmd!
+    autocmd BufEnter * silent! :cd %:p:h
+    autocmd BufEnter * silent! :lcd %:p:h
+    autocmd BufEnter * silent! :syntax sync fromstart
+    autocmd BufWritePost * silent! :lcd %:p:h
+augroup END
 
 "打开文件 光标定位到上次编辑的地方
 if has("autocmd")
@@ -1816,7 +1852,6 @@ endif
 "set viminfo='10,\"100,:20,%,n~/.viminfo
 set viminfo='10,\"100,:20,%,n$VIMRUNTIME/.viminfo
 au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
-
 
 "继续搜索光标下文字 expand("<cWORD>") 的功能是获取当前光标所在的字串
 nmap <leader>/ /<C-R>=expand("<cWORD>")<CR>
@@ -1912,6 +1947,7 @@ vnoremap , iw
 vnoremap . aW
 nnoremap ,, viw
 nnoremap ,. vaW
+
 "恢复上一次的选择
 nnoremap <A-BS> `<v`>
 
@@ -2016,9 +2052,29 @@ map <silent> <leader>ftp :set ft=python<cr>
 map <silent> <leader>ftj :set ft=javascript<cr>
 map <silent> <leader>fta :set ft=autohotkey<cr>
 
-"Switch to current dir
-map <leader>cd :cd %:p:h<cr>
-map <silent> <M-d> :cd %:p:h<cr>
+
+"复制注释中的命令到：里面，方便调用
+" 出去所在行的第一个字符
+" nmap <leader><space> 0ly$:"
+" 复制选中的内容的命令到：
+vmap <leader><space> y:"
+
+"添加删除vim中段落注释
+map <leader>r{ :'{,'}s/^"/<CR>
+
+"set ro      readonly
+" 将文件设置为只读模式
+map <silent> <leader>sro :set ro! ro?<CR>
+"set ma      modifiable
+" 将文件设置为可修改模式(默认是可修改)
+map <silent> <leader>sma :set ma! ma?<CR>
+
+"光标可以到任意位置，set virtualedit="all"
+" 允许所有模式的虚拟编辑(比如行末空白)
+map <silent> <leader>sv :exec match(&virtualedit,'all')==0 ? 'set ve=' : 'set ve=all'<CR>
+"set ve=onemore
+"set ve=all
+
 
 " 行设置
 "将所有行都空一行
@@ -2209,6 +2265,7 @@ map <silent> <leader>sj :exec match(&formatoptions,'\CM$')>0 ? 'set fo-=M' : 'se
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 缩写(abbreviations) {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+iab if if()<Left>
 iab idate <c-r>=strftime("%Y-%m-%d")<CR>
 iab itime <c-r>=strftime("%H:%M")<CR>
 iab ifile <c-r>=expand("%:t")<CR>
@@ -2548,7 +2605,6 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 
 
 " 工具 {{{2
-
 
 
 
