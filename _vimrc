@@ -776,6 +776,7 @@ call quickui#menu#install("&File", [
 			\ ])
 
 
+
 if has('win32') || has('win64') || has('win16')
 	call quickui#menu#install('&File', [
 				\ [ "start &cmd", 'silent !start /b cmd /c c:\drivers\clink\clink.cmd' ],
@@ -788,6 +789,16 @@ call quickui#menu#install("&File", [
 			\ [ "--", ],
 			\ [ "e&xit", 'qa' ],
 			\ ])
+
+call quickui#menu#install("&Leaderf", [
+			\ [ "LeaderF &File", 'Leaderf file', 'Open file with leaderf'],
+			\ [ "LeaderF &Mru", 'Leaderf mru --regexMode', 'Open recently accessed files'],
+			\ [ "LeaderF &Buffer", 'Leaderf buffer', 'List current buffers in leaderf'],
+			\ [ "LeaderF &Line", 'Leaderf line', '查找当前文件中的行'],
+			\ [ "LeaderF buf&Tag", 'Leaderf bufTag', 'bufTag'],
+			\ [ "--", ],
+			\ ])
+
 
 
 call quickui#menu#install("&Git", [
@@ -838,8 +849,8 @@ noremap <space><space> :call quickui#menu#open()<cr>
 " 安装模糊匹配算法的 C 扩展,提高性能(需python支持)
 
 " 弹出窗口(tab进入normal模式不能使用很多功能)
-" let g:Lf_WindowPosition = 'popup'
-let g:Lf_WindowPosition = 'bottom'
+let g:Lf_WindowPosition = 'popup'
+" let g:Lf_WindowPosition = 'bottom'
 " Show icons, icons are shown by default
 let g:Lf_ShowDevIcons = 1
 let g:Lf_StlSeparator = { 'left': '', 'right': '' }
@@ -853,14 +864,6 @@ let g:Lf_UseCache = 0
 let g:Lf_IgnoreCurrentBufferName = 1
 
 
-" 设置 LeaderF 文件查找快捷键
-nnoremap <leader>ff :Leaderf file<CR>
-" 设置 LeaderF 缓冲区查找快捷键
-nnoremap <leader>fb :Leaderf buffer<CR>
-" 打开最近文件列表
-nnoremap <leader>fm :Leaderf mru<CR>
-" 查找当前文件中的行
-noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
 
 " 使用 rg（ripgrep）在当前缓冲区中搜索当前光标所在的单词
 noremap <leader>fg :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR>
