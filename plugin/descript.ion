@@ -1,0 +1,5 @@
+fencview.vim 编码插件（额外安装）
+textobj textobj option
+MultipleSearch.vim 同时突出显示多个搜索，每个搜索具有不同的颜色
+indent-object.vim 定义了一个新的文本对象，表示相同缩进级别的代码行。对 python/vim 脚本等很有用
+enhanced-object.vim 增强了text-obj对中文的支持(Ez)
