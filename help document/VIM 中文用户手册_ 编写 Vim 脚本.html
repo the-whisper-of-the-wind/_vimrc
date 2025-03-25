@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)https://vimcdoc.sourceforge.net/doc/usr_41.html -->
+<html><script id="allow-copy_script">(function agent() {
+    let unlock = false
+    document.addEventListener('allow_copy', (event) => {
+      unlock = event.detail.unlock
+    })
+
+    const copyEvents = [
+      'copy',
+      'cut',
+      'contextmenu',
+      'selectstart',
+      'mousedown',
+      'mouseup',
+      'mousemove',
+      'keydown',
+      'keypress',
+      'keyup',
+    ]
+    const rejectOtherHandlers = (e) => {
+      if (unlock) {
+        e.stopPropagation()
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation()
+      }
+    }
+    copyEvents.forEach((evt) => {
+      document.documentElement.addEventListener(evt, rejectOtherHandlers, {
+        capture: true,
+      })
+    })
+  })()</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<![endif]-->
+<title>VIM 中文用户手册: 编写 Vim 脚本</title>
+<link rel="stylesheet" href="./VIM 中文用户手册_ 编写 Vim 脚本_files/vim-stylesheet.css" type="text/css">
+<link rel="canonical" href="https://yianwillis.github.io/vimcdoc/doc/usr_41.html">
+<script type="text/javascript" src="./VIM 中文用户手册_ 编写 Vim 脚本_files/vimcdoc.js.下载"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<nav id="banner">
+<form action="https://vimcdoc.sourceforge.net/doc/tags.html" target="tag_iframe">
+  <input type="text" name="tag" id="tag" placeholder="标签搜索">
+</form>
+<iframe name="tag_iframe" src="./VIM 中文用户手册_ 编写 Vim 脚本_files/saved_resource.html"></iframe>
+<a href="https://vimcdoc.sourceforge.net/doc/help.html">帮助总览</a> ·
+<hr>
+<a href="https://vimcdoc.sourceforge.net/doc/quickref.html">快速参考</a> ·
+<a href="https://vimcdoc.sourceforge.net/doc/index.html">命令索引</a> ·
+<a href="https://vimcdoc.sourceforge.net/doc/eval.html#functions">函数列表</a> ·
+<a href="https://vimcdoc.sourceforge.net/doc/quickref.html#option-list">选项列表</a> ·
+<hr>
+<a href="https://vimcdoc.sourceforge.net/doc/usr_toc.html">用户手册</a> ·
+<a href="https://vimcdoc.sourceforge.net/doc/help.html#reference_toc">参考手册</a> ·
+</nav>
+
+<header>
+<h2>usr_41</h2>
+</header>
+<article id="outer">
+<section class="inner">
+<b class="vimtag"> <a name="usr_41.txt">usr_41.txt</a> </b>    适用于 Vim 9.0 版本。   最近更新: 2022年8月
+
+                     <code class="vim">VIM 用户手册 - by Bram Moolenaar</code>
+                                <code class="vim">译者</code>: lang2、Willis
+
+                              编写 Vim 脚本
+
+
+Vim 脚本语言在很多地方用到，包括 vimrc 文件，语法文件，等等。本章讨论 Vim 脚本
+相关的知识。这样的内容有很多，所以本章也比较长。
+
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.1">41.1</a>   简介
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.2">41.2</a>   变量
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.3">41.3</a>   表达式
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.4">41.4</a>   条件语句
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.5">41.5</a>   执行一个表达式
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.6">41.6</a>   使用函数
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.7">41.7</a>   定义一个函数
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.8">41.8</a>   列表和字典
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.9">41.9</a>   空白
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.10">41.10</a>  续行
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.11">41.11</a>  注释
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.12">41.12</a>  文件格式
+
+           下一章:  <a href="https://vimcdoc.sourceforge.net/doc/usr_42.html#usr_42.txt">usr_42.txt</a>   添加新的菜单
+           前一章:  <a href="https://vimcdoc.sourceforge.net/doc/usr_40.html#usr_40.txt">usr_40.txt</a>   创建新的命令
+             目录:  <a href="https://vimcdoc.sourceforge.net/doc/usr_toc.html#usr_toc.txt">usr_toc.txt</a> 
+
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.1">41.1</a> </b>  简介                                    <b class="vimtag"> <a name="vim-script-intro">vim-script-intro</a> </b> <b class="vimtag"> <a name="script">script</a> </b></h4>
+你最初接触到 Vim 脚本是在 vimrc 文件里。当 Vim 启动时它将读取该文件的内容并执
+行其中的命令。你可以在其中设置选项，定义映射，选择插件还有很多别的。你也可以在
+其中使用任何冒号命令 (以 ":" 开头的命令；这些命令有时也被称作 Ex 命令或命令行
+命令)。
+
+语法文件其实也是 Vim 脚本。专为某种文件类型设定选项的文件也是。一个很复杂的
+宏可以被单独的定义在一个 Vim 脚本文件中。你可以自己想到其它的应用。
+
+Vim 脚本有两种风格: 老式和  <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a> 。因为此帮助文件是为新手准备的，我们会教你更
+新更方便的  <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  语法。老式脚本是特别为 Vim 设计的，而  <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本更像其它语
+言，如 JavaScript 和 TypeScript。
+
+要试试 Vim 脚本的最好办法是编辑一个脚本文件然后执行。基本上: 
+<code class="example">        :edit test.vim</code>
+<code class="example">        [插入想要的脚本行]</code>
+<code class="example">        :w</code>
+<code class="example">        :source %</code>
+<code class="example"></code>
+让我们从一个简单的例子开始: 
+<code class="example"></code>
+<code class="example">        vim9script</code>
+<code class="example">        var i = 1</code>
+<code class="example">        while i &lt; 5</code>
+<code class="example">          echo "count is" i</code>
+<code class="example">          i += 1</code>
+<code class="example">        endwhile</code>
+
+本例的输出是:
+
+<code class="section">        count is 1 </code>
+<code class="section">        count is 2 </code>
+<code class="section">        count is 3 </code>
+<code class="section">        count is 4 </code>
+
+第一行的 "vim9script" 命令明确了这是新的  <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本文件。这对控制文件其余部分
+如何使用很重要。推荐放在头一行，包括在任何注释之前。
+                                                        <b class="vimtag"> <a name="vim9-declarations">vim9-declarations</a> </b>
+"var i = 1" 命令声明并初始化 "i" 变量。通常的用法是: 
+<code class="example"></code>
+<code class="example">        var {变量} = {表达式}</code>
+<code class="example"></code>
+在例子中变量名是 "i" 而表达式是一个简单的数值 1。
+
+":while" 命令开始一个循环。通常的用法是: 
+<code class="example"></code>
+<code class="example">        while {条件}</code>
+<code class="example">          {语句}</code>
+<code class="example">        endwhile</code>
+<code class="example"></code>
+只要条件为真， <code class="badlink">while</code>  和  <code class="badlink">endwhile</code>  包围的语句就会被执行。在例子中使用的条件是
+表达式 "i &lt; 5"。这个条件在变量 i 小于五时总是真的。
+        <code class="note">备注</code>:
+        如果你碰巧写了一个死循环语句，你可以用 <code class="keystroke">CTRL-C</code> 来终止 (在 MS-Windows
+        上使用 <code class="keystroke">CTRL-Break</code>)。
+
+ <code class="badlink">echo</code>  命令显示它的参数。在这个例子中的参数是字符串 "count is" 和变量 i 的值。
+因为开始时 i 的值是 1，所以将会显示:
+
+<code class="section">        count is 1 </code>
+
+接着是 `i += 1` 命令。该命令相当于 "i = i + 1"。在变量 i 上加一并将新的值赋给
+同一个变量。
+
+给出本例是为了解释命令，不过如果你真的要写这样一个循环，下面的表达更加简洁: 
+<code class="example"></code>
+<code class="example">        for i in range(1, 4)</code>
+<code class="example">          echo $"count is {i}"</code>
+<code class="example">        endfor</code>
+<code class="example"></code>
+我们现在不解释  <code class="badlink">for</code> 、 <a href="https://vimcdoc.sourceforge.net/doc/builtin.html#range()">range()</a>  和  <code class="badlink">$"string"</code>  如何工作，一会儿再说。如果你没
+有耐心，点击这些链接。
+
+
+试 试 例 子
+
+可以直接试试这些帮助文件里的绝大数例子，不需要先把命令保存到文件里。比如，要试
+试上面的 "for" 循环例子，可以这么做:
+1. 把光标放在 "for" 上
+2. 用 "v" 启动可视模式
+3. 往下移到 "endfor"
+4. 按冒号和 "so"，然后回车
+
+按了冒号后会见到 ":'&lt;,'&gt;"，这代表了可视选择文本的范围。
+
+有些命令要确保在  <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本里执行。键入命令通常使用老式脚本语法，比如下面导致
+E1004 错误的例子。要用  <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  语法，需要改改第四步:
+4. 按冒号和 "vim9 so"，然后回车
+
+"vim9" 是  <code class="badlink">vim9cmd</code>  的缩写，使后续的那个命令使用  <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  语法的命令修饰符。
+
+<code class="note">注意</code> 这套方法不适用于需要脚本上下文的示例。
+
+
+四 种 数 值
+
+数值可以是十进制，十六进制，八进制或者二进制的。
+
+以 "0x" 或 "0X" 开始的数值是十六进制的。例如 "0x1f" 代表十进制 31，而 0x1234
+是十进制 4660。
+
+以 "0o"、"0O" 开始的数值是八进制的。"017" 代表十进制 15。
+
+以 "0b" 或 "0B" 开始的数值是二进制的。例如 "0b101" 代表十进制 5。
+
+十进制就是由简单数位组成的数值。当心: 在老式脚本里不要在十进制数前添上零，那样
+该数值将会被作为八进制数对待！这是建议使用  <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本的一个原因。
+
+ <code class="badlink">echo</code>  命令计算参数，如果是数值则总以十进制格式显示数值。例: 
+<code class="example"></code>
+<code class="example">        :echo 0x7f 0o36</code>
+<code class="section">        127 30 </code>
+
+在一个数值前加上负号会将其变为负值。十六进制数、八进制数和二进制数亦然: 
+<code class="example"></code>
+<code class="example">        echo -0x7f</code>
+<code class="section">        -127 </code>
+
+减号也用于减法操作。有时这会引起混淆。如果在两个数值前都放上负号，会报错: 
+<code class="example"></code>
+<code class="example">        echo -0x7f -0o36</code>
+<code class="section">        E1004: White space required before and after '-' at "-0o36" </code>
+
+<code class="note">注意</code>: 如果不是在  <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本里试这些命令而直接键入，假定使用老式脚本语法。因而
+echo 命令会把第二个负号看成是减法运算。要重现此错，在命令前加上  <code class="badlink">vim9cmd</code> : 
+<code class="example"></code>
+<code class="example">        vim9cmd echo -0x7f -0o36</code>
+<code class="section">        E1004: White space required before and after '-' at "-0o36" </code>
+
+表达式中常常需要空白字符以增加表达式的易读性和避免错误。比如你会觉得上面的
+"-0o36" 会使数值变负，而实际上它被视为减法。
+
+如果真要使减号用作数值取负，用括号包围第二个表达式: 
+<code class="example"></code>
+<code class="example">        echo -0x7f (-0o36)</code>
+<code class="section">        -127 -30 </code>
+
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.2">41.2</a> </b>  变量</h4>
+一个变量名可以由 ASCII 字符、数字和下划线组成。但是变量名不能以数字开始。以下
+是几个有效的变量名:
+
+        counter
+        _aap3
+        very_long_variable_name_with_dashes
+        CamelCaseName
+        LENGTH
+
+"foo.bar" 和 "6var" 都是无效的变量名。
+
+有些变量是全局的。要列出当前定义的所有全局变量可以用这个命令: 
+<code class="example"></code>
+<code class="example">        :let</code>
+<code class="example"></code>
+你可以在任何地方使用全局变量。不过，太容易在两个不相关的脚本里使用相同的名字了。
+因此脚本里声明的变量都是局部于脚本的。例如，如果在 "script1.vim" 里有: 
+<code class="example"></code>
+<code class="example">        vim9script</code>
+<code class="example">        var counter = 5</code>
+<code class="example">        echo counter</code>
+<code class="section">        5 </code>
+
+然后试图在 "script2.vim" 里用该变量: 
+<code class="example"></code>
+<code class="example">        vim9script</code>
+<code class="example">        echo counter</code>
+<code class="section">        E121: Undefined variable: counter </code>
+
+使用脚本局部变量意味着它只能在同一脚本里改变，而不会被其它脚本影响。
+
+如果确实要在脚本间共享变量，使用 "g:" 前缀并直接赋值，不要用  <code class="badlink">var</code> 。使用特别名
+字以免出错。如在 "script1.vim" 里: 
+<code class="example"></code>
+<code class="example">        vim9script</code>
+<code class="example">        g:mash_counter = 5</code>
+<code class="example">        echo g:mash_counter</code>
+<code class="section">        5 </code>
+
+现在在 "script2.vim" 里: 
+<code class="example"></code>
+<code class="example">        vim9script</code>
+<code class="example">        echo g:mash_counter</code>
+<code class="section">        5 </code>
+
+全局变量也可以从命令行访问，例如键入: 
+<code class="example">        echo g:mash_counter</code>
+这不适用于脚本局部变量。
+
+更多关于脚本局部变量可以在这里读到:  <a href="https://vimcdoc.sourceforge.net/doc/eval.html#script-variable">script-variable</a> 。
+
+还有很多其它类型的变量，参阅  <a href="https://vimcdoc.sourceforge.net/doc/eval.html#internal-variables">internal-variables</a> 。最常用的几类有:
+
+        b:name          缓冲区的局部变量
+        w:name          窗口的局部变量
+        g:name          全局变量 (也用于函数中)
+        v:name          Vim 预定义的变量
+
+
+删 除 变 量
+
+变量不仅仅可以在  <code class="badlink">let</code>  命令显示，同时也占用内存空间。为了删除全局变量，可以使
+用  <code class="badlink">unlet</code>  命令。例: 
+<code class="example"></code>
+<code class="example">        :unlet g:counter</code>
+<code class="example"></code>
+这将删除 "g:counter" 这个全局变量并释放其占用的内存。如果你并不确定这个变量是
+否存在，但并不希望系统在它不存在时报错，可以在命令后添加 !: 
+<code class="example"></code>
+<code class="example">        :unlet! g:counter</code>
+<code class="example"></code>
+ <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本里不能  <code class="badlink">unlet</code>  脚本局部变量，只有老式脚本里可以。
+
+当一个脚本结束时，它声明的局部变量不会自动被删除。脚本里定义的函数可以使用它
+们。例如:
+
+<code class="example">        vim9script</code>
+<code class="example">        var counter = 0</code>
+<code class="example">        def g:GetCount(): number</code>
+<code class="example">          s:counter += 1</code>
+<code class="example">          return s:counter</code>
+<code class="example">        enddef</code>
+<code class="example"></code>
+每次调用函数时，返回下一个计数: 
+<code class="example">        :echo g:GetCount()</code>
+<code class="section">        1 </code>
+
+<code class="example">        :echo g:GetCount()</code>
+<code class="section">        2 </code>
+
+如果担心脚本局部变量占用了太多内存而且现在不需要了，把它设为空值或 null 值。例
+如: 
+<code class="example">        var lines = readfile(...)</code>
+<code class="example">        ...</code>
+<code class="example">        lines = []</code>
+<code class="example"></code>
+<code class="note">注意</code>: 以下例子里， <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#vim9script">vim9script</a>  行从略，这样我们可以更加关注实际相关的命令。但
+你自己仍要把它放在脚本文件里。
+
+
+字 符 串 变 量 和 常 量
+
+到目前为止我们只用到了数值作为变量的值。同样的我们可以使用字符串。这两种变量类
+型是 Vim 支持的基本类型。示例: 
+<code class="example"></code>
+<code class="example">        var name = "Peter"</code>
+<code class="example">        echo name</code>
+<code class="section">        Peter </code>
+
+每个变量都有类型。如此例所示，类型常常是由赋值定义的。这叫类型推导。如果你这时
+还不想给变量值，就需要指定类型: 
+<code class="example"></code>
+<code class="example">        var name: string</code>
+<code class="example">        var age: number</code>
+<code class="example">        if male</code>
+<code class="example">           name = "Peter"</code>
+<code class="example">           age = 42</code>
+<code class="example">        else</code>
+<code class="example">           name = "Elisa"</code>
+<code class="example">           age = 45</code>
+<code class="example">        endif</code>
+<code class="example"></code>
+如果你搞错了，试图用错误的类型赋值，会报错: 
+<code class="example"></code>
+<code class="example">        age = "Peter"</code>
+<code class="section">        E1012: Type mismatch; expected number but got string </code>
+
+类型更多的内容见  <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.8">41.8</a> 。
+
+你需要使用字符串常量来为字符串变量赋值。字符串常量有两种。第一种是由双引号括起
+来的，我们已经看到过了。如果你想在这样的字符串内使用双引号，在之前加上反斜杠即
+可: 
+<code class="example"></code>
+<code class="example">        var name = "he is \"Peter\""</code>
+<code class="example">        echo name</code>
+<code class="section">        he is "Peter" </code>
+
+如果你不想使用反斜杠，也可以用单引号括起字符串: 
+<code class="example"></code>
+<code class="example">        var name = 'he is "Peter"'</code>
+<code class="example">        echo name</code>
+<code class="section">        he is "Peter" </code>
+
+所有的字符在单引号内都保持其本来面目。只有单引号本身例外: 输入两个你会得到一个
+单引号。因为反斜杠在其中也被作为其本身来对待，你无法使用它来改变其后的字符的意
+义: 
+<code class="example"></code>
+<code class="example">        var name = 'P\e''ter'''</code>
+<code class="example">        echo name</code>
+<code class="section">        P\e<code class="badlink">'ter'</code> </code>
+
+在双引号括起来的字符串中可以使用特殊字符。这里有一些有用的例子:
+
+        \t              <code class="special">&lt;Tab&gt;</code>
+        \n              <code class="special">&lt;NL&gt;</code>，换行
+        \r              <code class="special">&lt;CR&gt;</code>，<code class="special">&lt;Enter&gt;</code>
+        \e              <code class="special">&lt;Esc&gt;</code>
+        \b              <code class="special">&lt;BS&gt;</code>，退格
+        \"              "
+        \\              \，反斜杠
+        \<code class="special">&lt;Esc&gt;</code>          <code class="special">&lt;Esc&gt;</code>
+        \<code class="special">&lt;C-W&gt;</code>          <code class="keystroke">CTRL-W</code>
+
+最后两个只是用来举例子的。"\<code class="special">&lt;name&gt;</code>" 的形式可以被用来表示特殊的键 "name"。
+
+在  <a href="https://vimcdoc.sourceforge.net/doc/eval.html#expr-quote">expr-quote</a>  中列出了全部的特殊字符。
+
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.3">41.3</a> </b>  表达式</h4>
+Vim 脚本支持相当标准的表达式处理。你可以在这里读到表达式的定义:
+ <a href="https://vimcdoc.sourceforge.net/doc/eval.html#expression-syntax">expression-syntax</a> 。这里我们只看看常用的几个。
+
+已经提到的那些数值，字符串和变量都属于表达式。因此任何可以使用表达式的地方，数
+值，字符串或变量都可以使用。其它基本的表达式有:
+
+        $NAME           环境变量
+        &amp;name           选项值
+        @r              寄存器内容
+
+例子: 
+<code class="example"></code>
+<code class="example">        echo "The value of 'tabstop' is" &amp;ts</code>
+<code class="example">        echo "Your home directory is" $HOME</code>
+<code class="example">        if @a == 'text'</code>
+<code class="example"></code>
+&amp;name 这种形式也可以被用来暂时改变一个选项的值。例: 
+<code class="example"></code>
+<code class="example">        var save_ic = &amp;ic</code>
+<code class="example">        set noic</code>
+<code class="example">        s/The Start/The Beginning/</code>
+<code class="example">        &amp;ic = save_ic</code>
+<code class="example"></code>
+这样既确保了在匹配 "The Start" 模式时 <a href="https://vimcdoc.sourceforge.net/doc/options.html#&#39;ignorecase&#39;">'ignorecase'</a> 选项是关闭的，同时也保留了
+用户原来的选项值。(另一个方法是在模式里加上 "\C"，见  <a href="https://vimcdoc.sourceforge.net/doc/pattern.html#%2F\C">/\C</a> 。)
+
+
+算 术
+
+我们把这些基本的东西都混合起来用就更有趣了。先来看看算术运算:
+
+        a + b           加
+        a - b           减
+        a * b           乘
+        a / b           除
+        a % b           余
+
+先乘除，后加减。例如: 
+<code class="example"></code>
+<code class="example">        echo 10 + 5 * 2</code>
+<code class="section">        20 </code>
+
+括号内的先计算。这也没什么奇怪的。例如: 
+<code class="example"></code>
+<code class="example">        echo (10 + 5) * 2</code>
+<code class="section">        30 </code>
+
+其 它
+
+用 ".." 可以把两个字符串连接起来 (见  <a href="https://vimcdoc.sourceforge.net/doc/eval.html#expr6">expr6</a> )。例如: 
+<code class="example"></code>
+<code class="example">        echo "Name: " .. name</code>
+<code class="example">        Name: Peter</code>
+<code class="example"></code>
+一般的，当 "echo" 命令遇到多个参数时，会在它们之间加入空格。但上例中参数是一
+个表达式，所以不会有空格。
+
+如果不喜欢过多的连接，可用 $"string" 形式，花括号里接受表达式: 
+<code class="example">        echo $"Name: {name}"</code>
+<code class="example"></code>
+详细描述见  <a href="https://vimcdoc.sourceforge.net/doc/eval.html#interp-string">interp-string</a> 。
+
+下面的条件表达式很显然是从 C 语言里借来的:
+
+        a ? b : c
+
+如果 "a" 为真用 "b"，否则用 "c"。例如: 
+<code class="example"></code>
+<code class="example">        var nr = 4</code>
+<code class="example">        echo nr &gt; 5 ? "nr is big" : "nr is small"</code>
+<code class="section">        nr is small </code>
+
+在整个表达式被求值前，结构中的三部分总是先被求值的。因此你可以将其视为: 
+<code class="example"></code>
+<code class="example">        (a) ? (b) : (c)</code>
+<code class="example"></code>
+还有准假值操作符: 
+<code class="example">        echo name ?? "No name given"</code>
+见  <a href="https://vimcdoc.sourceforge.net/doc/eval.html#??">??</a> 。
+
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.4">41.4</a> </b>  条件语句</h4>
+ <code class="badlink">if</code>  命令在条件满足的前提下，执行其后直到  <code class="badlink">endif</code>  的所有语句。常用的形式为:
+
+        if <code class="special">{condition}</code>
+           <code class="special">{statements}</code>
+        endif
+
+语句 <code class="special">{statements}</code> 仅当表达式 <code class="special">{condition}</code> 为真或一时才被执行。不管是否执行，这
+些语句必须是有效的。否则 Vim 无法找到相应的  <code class="badlink">endif</code> 。
+
+你也可以使用  <code class="badlink">else</code> 。常用形式为:
+
+        if <code class="special">{condition}</code>
+           <code class="special">{statements}</code>
+        else
+           <code class="special">{statements}</code>
+        endif
+
+第二组 <code class="special">{statements}</code> 仅当条件不满足时被执行。
+
+最后还有  <code class="badlink">elseif</code> :
+
+        if <code class="special">{condition}</code>
+           <code class="special">{statements}</code>
+        elseif <code class="special">{condition}</code>
+           <code class="special">{statements}</code>
+        endif
+
+这种形式就像  <code class="badlink">else</code>  接着  <code class="badlink">if</code>  一样，但是少出现一个  <code class="badlink">endif</code> 。
+
+下面是一个有用的例子 (可以用在你的 vimrc 文件里): 它检查 <a href="https://vimcdoc.sourceforge.net/doc/options.html#&#39;term&#39;">'term'</a> 选项并根据
+不同的值做不同的操作: 
+<code class="example"></code>
+<code class="example">        if &amp;term == "xterm"</code>
+<code class="example">          # "xterm" 对应的操作</code>
+<code class="example">        elseif &amp;term == "vt100"</code>
+<code class="example">          # vt100 终端对应的操作</code>
+<code class="example">        else</code>
+<code class="example">          # 其它终端对应在操作</code>
+<code class="example">        endif</code>
+<code class="example"></code>
+这里 "#" 开始的行是注释，下面会解释。
+
+
+逻 辑 操 作
+
+实际上我们在前面的几个例子中已经是用到了。下面是几个最常用的形式:
+
+        a == b          等于
+        a != b          不等于
+        a &gt;  b          大于
+        a &gt;= b          大于等于
+        a &lt;  b          小于
+        a &lt;= b          小于等于
+
+如果条件满足，结果为真，否则为假。例如: 
+<code class="example"></code>
+<code class="example">        if v:version &gt;= 800</code>
+<code class="example">          echo "祝贺"</code>
+<code class="example">        else</code>
+<code class="example">          echo "你在使用旧的版本，升级！"</code>
+<code class="example">        endif</code>
+<code class="example"></code>
+这里 "v:version" 是 Vim 定义的变量，用来存放 Vim 的版本号。800 意为 8.0 版。
+8.1 版的值为 801。这对编写可以在不同版本的 Vim 上运行的脚本很有用。参阅
+ <a href="https://vimcdoc.sourceforge.net/doc/eval.html#v:version">v:version</a> 。也可以用  <a href="https://vimcdoc.sourceforge.net/doc/builtin.html#has()">has()</a>  检查特定的特性，还可以检查特定的补丁，见
+ <a href="https://vimcdoc.sourceforge.net/doc/builtin.html#has-patch">has-patch</a> 。
+
+对数值和字符串都可以做逻辑操作。两个字符串的算术差被用来比较它们的值。这个结果
+是通过字节值来计算的，对于某些语言，这样做的结果未必正确。
+
+比较一个字符串和一个数值会报错。
+
+对于字符串来说还有两种还有更有用的操作:
+
+        str =~ pat              匹配
+        str !~ pat              不匹配
+
+左边的 "str" 被当作一个字符串。右边的 "pat" 被当作一个匹配模式，正如做查找操作
+一样。例如: 
+<code class="example"></code>
+<code class="example">        if str =~ " "</code>
+<code class="example">          echo "字符串包括空格"</code>
+<code class="example">        endif</code>
+<code class="example">        if str !~ '\.$'</code>
+<code class="example">          echo "字符串不以句号结尾"</code>
+<code class="example">        endif</code>
+<code class="example"></code>
+<code class="note">注意</code> 在匹配模式中用单引号是很有用的。因为匹配模式中通常有很多反斜杠，而反斜杠
+在双引号字符串中必须双写才有效。
+
+匹配是不定锚的，如果要匹配整个字符串，让模式以 "^" 开头，以 "$" 结尾。
+
+在做字符串比较时不使用 <a href="https://vimcdoc.sourceforge.net/doc/options.html#&#39;ignorecase&#39;">'ignorecase'</a> 选项。加上 "?" 表示忽略大小写。因此 "==?"
+比较两字符串是否相等，不计大小写。写。 <a href="https://vimcdoc.sourceforge.net/doc/eval.html#expr-%20%20">expr-==</a>  有一个完整的列表。
+
+
+循 环 详 述
+
+ <code class="badlink">while</code>  命令已经在前面提到了。还有另外两条语句可以在  <code class="badlink">while</code>  和  <code class="badlink">endwhile</code>  之
+间使用。
+
+        continue                跳回 while 循环的开始；继续循环
+        break                   跳至  <code class="badlink">endwhile</code> ；循环结束
+
+例: 
+<code class="example"></code>
+<code class="example">        var counter = 1</code>
+<code class="example">        while counter &lt; 40</code>
+<code class="example">          if skip_number(counter)</code>
+<code class="example">            continue</code>
+<code class="example">          endif</code>
+<code class="example">          if last_number(counter)</code>
+<code class="example">            break</code>
+<code class="example">          endif</code>
+<code class="example">          sleep 50m</code>
+<code class="example">          ++counter</code>
+<code class="example">        endwhile</code>
+<code class="example"></code>
+ <code class="badlink">sleep</code>  命令使 Vim 小憩一下。"50m" 表示休息 50 毫秒。再举一个例子，`sleep 4`
+休息 4 秒。
+
+ <code class="badlink">continue</code>  和  <code class="badlink">break</code>  也可用在  <code class="badlink">for</code>  和  <code class="badlink">endfor</code>  之间。
+更多循环可以用  <code class="badlink">for</code>  命令实现，见下面的  <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#41.8">41.8</a> 。
+
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.5">41.5</a> </b>  执行一个表达式</h4>
+到目前为止，脚本内的语句都是由 Vim 直接运行的。用  <code class="badlink">execute</code>  命令可以执行一个表
+达式的结果。这是一个创建并执行命令的非常有效的方法。
+
+例如要跳转到一个由变量表示的标签: 
+<code class="example"></code>
+<code class="example">        execute "tag " .. tag_name</code>
+<code class="example"></code>
+".." 被用来连接字符串 "tag " 和变量 "tag_name" 的值。假设 "tag_name" 的值为
+"get_cmd"，那么被将执行的命令将是: 
+<code class="example"></code>
+<code class="example">        tag get_cmd</code>
+<code class="example"></code>
+ <code class="badlink">execute</code>  命令只能用来执行冒号命令。 <code class="badlink">normal</code>  命令可以用来执行普通模式命令。然
+而，它的参数只能是按表面意义解释的命令字符，不能是表达式。例如: 
+<code class="example"></code>
+<code class="example">        normal gg=G</code>
+<code class="example"></code>
+"gg" 命令将跳转到第一行，"=" 操作符和 "G" 动作排版所有行。
+
+为了使  <code class="badlink">normal</code>  命令也可以带表达式，可以把  <code class="badlink">execute</code>  与其连起来使用。
+例: 
+<code class="example"></code>
+<code class="example">        execute "normal " .. count .. "j"</code>
+<code class="example"></code>
+必须确保  <code class="badlink">normal</code>  的参数是一个完整的命令。否则，Vim 碰到参数的结尾就会中止
+其运行。例如，如果开始了删除操作符，必须给出动作命令。这样可以: 
+<code class="example"></code>
+<code class="example">        normal d$</code>
+<code class="example"></code>
+这样不做任何事: 
+<code class="example"></code>
+<code class="example">        normal d</code>
+<code class="example"></code>
+如果你开始了插入模式，即使不以 Esc 结束，还是会退出插入模式。这样可以插入
+"new text": 
+<code class="example"></code>
+<code class="example">        execute "normal inew text"</code>
+<code class="example"></code>
+如果在插入文本后还要做点别的，需要退出插入模式: 
+<code class="example"></code>
+<code class="example">        execute "normal inew text\&lt;Esc&gt;b"</code>
+<code class="example"></code>
+这将插入 "new text" 并把光标移到 "text" 的首字母上。<code class="note">注意</code> 这里使用了特殊键
+"\<code class="special">&lt;Esc&gt;</code>"。这样就避免了在你的脚本当中键入真正的 <code class="special">&lt;Esc&gt;</code> 字符。这时就可以看出
+ <code class="badlink">execute</code>  带双引号字符串的便利之处。
+
+如果你不想作为命令执行字符串，而想计算它作为表达式计算的结果，可以用 eval() 函
+数: 
+<code class="example"></code>
+<code class="example">        var optname = "path"</code>
+<code class="example">        var optvalue = eval('&amp;' .. optname)</code>
+<code class="example"></code>
+"&amp;" 被加到 "path" 前面，这样传给 eval() 的参数成为 "&amp;path"。这时得到的返回值就
+是 <a href="https://vimcdoc.sourceforge.net/doc/options.html#&#39;path&#39;">'path'</a> 选项的值。
+
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.6">41.6</a> </b>  使用函数</h4>
+Vim 定义了大量的函数并通过这些函数提供了丰富的功能。本节将给出一些例子。你可以
+在下面的  <a href="https://vimcdoc.sourceforge.net/doc/usr_41.html#function-list">function-list</a>  找到一个完整的列表。
+
+一个函数调用时，参数列表要用括号括起来，并用逗号分割。例如: 
+<code class="example"></code>
+<code class="example">        search("Date: ", "W")</code>
+<code class="example"></code>
+这将以 "Date: " 和 "W" 为参数调用 search() 函数。search() 函数的第一个参数是
+一个查找模式，第二个参数是一个标志。标志 "W" 表示查找操作遇到文件尾时不折返。
+
+ <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本里使用  <code class="badlink">call</code>  命令与否可选。但老式脚本和命令行上这是必需的: 
+<code class="example"></code>
+<code class="example">        call search("Date: ", "W")</code>
+<code class="example"></code>
+在一个表达式内也可以调用函数。例如: 
+<code class="example"></code>
+<code class="example">        var line = getline(".")</code>
+<code class="example">        var repl = substitute(line, '\a', "*", "g")</code>
+<code class="example">        setline(".", repl)</code>
+<code class="example"></code>
+getline() 函数从当前缓冲区获取一行文本。其参数是行号。在本例中，"." 表示光标所
+在行。
+
+substitute() 函数的功能和  <a href="https://vimcdoc.sourceforge.net/doc/change.html#:substitute">:substitute</a>  命令相似。它的第一个参数 "line" 是要执
+行替换操作的源字符串。第二个参数 '\a' 是一个匹配模式，第三个参数 "*" 是替换字
+符串。最后一个参数 "g" 是一个标志位。
+
+setline() 函数将第一个参数表示的行的文本置为第二个参数表示的字符串。本例中光标
+所在的行被 substitute() 函数的结果所替换。因此这三条语句的效果等同于: 
+<code class="example"></code>
+<code class="example">        :substitute/\a/*/g</code>
+<code class="example"></code>
+如果你在调用 substitute() 之前或之后有更多的事情要做的话，用函数的方式就会有价
+值了。
+
+
+函 数                                                   <b class="vimtag"> <a name="function-list">function-list</a> </b>
+
+Vim 提供的函数很多。这里我们以它们的用途分类列出。你可以在
+ <a href="https://vimcdoc.sourceforge.net/doc/builtin.html#builtin-function-list">builtin-function-list</a>  找到一个以字母顺序排列的列表。在函数名上使用 <code class="keystroke">CTRL-]</code> 可
+以跳转至该函数的详细说明。
+
+字符串操作:                                             <b class="vimtag"> <a name="string-functions">string-functions</a> </b>
+        nr2char()               通过数值码值取得一个字符
+        list2str()              从数值列表取得字符字符串
+        char2nr()               取得字符的数值码值
+        str2list()              从字符串取得数值列表
+        str2nr()                把字符串转换为数值
+        str2float()             把字符串转换为浮点数
+        printf()                根据 % 项目格式化字符串
+        escape()                将字符串通过 '\' 转义
+        shellescape()           转义字符串用于外壳命令
+        fnameescape()           转义 Vim 命令使用的文件名
+        tr()                    把一组字符翻译成另一组
+        strtrans()              将一个字符串变成可显示的格式
+        tolower()               将一个字符串转换为小写
+        toupper()               将一个字符串转换为大写
+        charclass()             字符的类
+        match()                 字符串中的模式匹配处
+        matchend()              字符串中的模式匹配结束处
+        matchfuzzy()            模糊匹配字符串列表中的一个字符串
+        matchfuzzypos()         模糊匹配字符串列表中的一个字符串
+        matchstr()              在一个字符串中匹配一个模式
+        matchstrpos()           字符串中满足匹配的模式和位置
+        matchlist()             类似 matchstr()，同时返回子匹配
+        stridx()                子串在母串中第一次出现的地方
+        strridx()               子串在母串中最后一次出现的地方
+        strlen()                以字节计的字符串长度
+        strcharlen()            以字符计的字符串长度
+        strchars()              字符串里的字符数目
+        strwidth()              字符串的显示长度
+        strdisplaywidth()       字符串的显示长度，处理制表
+        setcellwidths()         设置字符单元宽度覆盖
+        substitute()            用一个字符串替换一个匹配的模式
+        submatch()              取得 ":s" 和 substitute() 匹配中指定的某个匹配
+        strpart()               用字节索引取得字符串的子串
+        strcharpart()           用字符索引获取字符串的子串
+        slice()                 在 Vim9 脚本中用字符索引获取字符串的切片
+        strgetchar()            用字符索引获取字符串里的字符
+        expand()                展开特殊的关键字
+        expandcmd()             像  <a href="https://vimcdoc.sourceforge.net/doc/editing.html#:edit">:edit</a>  那样扩展命令
+        iconv()                 转换文本编码格式
+        byteidx()               字符串里字符的字节位置
+        byteidxcomp()           类似于 byteidx()，但计算组合字符
+        charidx()               字符串里字节的字符位置
+        repeat()                重复字符串多次
+        eval()                  计算字符串表达式
+        execute()               执行 Ex 命令并获取输出
+        win_execute()           类似于 execute()，但用于指定窗口
+        trim()                  从字符串中删除字符
+        gettext()               查找消息翻译
+
+列表处理:                                               <b class="vimtag"> <a name="list-functions">list-functions</a> </b>
+        get()                   得到项目，错误索引不报错
+        len()                   列表的项目总数
+        empty()                 检查列表是否为空
+        insert()                在列表某处插入项目
+        add()                   在列表后附加项目
+        extend()                在列表后附加另一个列表
+        extendnew()             创建新列表并附加项目
+        remove()                删除列表里一或多个项目
+        copy()                  建立列表的浅备份
+        deepcopy()              建立列表的完整备份
+        filter()                删除列表的选定项目
+        map()                   改变每个列表项目
+        mapnew()                为改变项目创建新列表
+        reduce()                缩减列表为单一值
+        slice()                 获取列表的切片
+        sort()                  给列表排序
+        reverse()               反转列表项目的顺序
+        uniq()                  删除重复邻接项目的备份
+        split()                 分割字符串成为列表
+        join()                  合并列表项目成为字符串
+        range()                 返回数值序列的列表
+        string()                列表的字符串表示形式
+        call()                  调用函数，参数以列表形式提供
+        index()                 列表里某值的索引
+        max()                   列表项目的最大值
+        min()                   列表项目的最小值
+        count()                 计算列表里某值的出现次数
+        repeat()                重复列表多次
+        flatten()               展平列表
+        flattennew()            展平列表的一个备份
+
+字典处理:                                               <b class="vimtag"> <a name="dict-functions">dict-functions</a> </b>
+        get()                   得到项目，错误的键不报错
+        len()                   字典项目的总数
+        has_key()               检查某键是否出现在字典里
+        empty()                 检查字典是否为空
+        remove()                删除字典的项目
+        extend()                从一个字典增加项目到另一个字典
+        extendnew()             创建新字典并附加项目
+        filter()                删除字典的选定项目
+        map()                   改变每个字典项目
+        mapnew()                为改变项目创建新字典
+        keys()                  得到字典的键列表
+        values()                得到字典的值列表
+        items()                 得到字典的键-值组对的列表
+        copy()                  建立字典的浅备份
+        deepcopy()              建立字典的完整备份
+        string()                字典的字符串表示形式
+        max()                   字典项目的最大值
+        min()                   字典项目的最小值
+        count()                 计算字典里某值的出现次数
+
+浮点数计算:                                             <b class="vimtag"> <a name="float-functions">float-functions</a> </b>
+        float2nr()              把浮点数转换为数值
+        abs()                   绝对值 (也适用于数值)
+        round()                 四舍五入
+        ceil()                  向上取整
+        floor()                 向下取整
+        trunc()                 删除小数点后的值
+        fmod()                  除法的余数
+        exp()                   指数
+        log()                   自然对数 (以 e 为底的对数)
+        log10()                 以 10 为底的对数
+        pow()                   x 的 y 次方
+        sqrt()                  平方根
+        sin()                   正弦
+        cos()                   余弦
+        tan()                   正切
+        asin()                  反正弦
+        acos()                  反余弦
+        atan()                  反正切
+        atan2()                 反正切
+        sinh()                  双曲正弦
+        cosh()                  双曲余弦
+        tanh()                  双曲正切
+        isinf()                 检查无穷
+        isnan()                 检查非数
+
+Blob 操作:                                              <b class="vimtag"> <a name="blob-functions">blob-functions</a> </b>
+        blob2list()             把 blob 转换为数值列表
+        list2blob()             把数值列表转换为 blob
+
+其它计算:                                               <b class="vimtag"> <a name="bitwise-function">bitwise-function</a> </b>
+        and()                   按位与
+        invert()                按位取反
+        or()                    按位或
+        xor()                   按位异或
+        sha256()                SHA-256 哈希
+        rand()                  获取伪随机数
+        srand()                 初始化 rand() 使用的种子
+
+变量:                                                   <b class="vimtag"> <a name="var-functions">var-functions</a> </b>
+        type()                  数值形式的变量类型
+        typename()              文本形式的变量类型
+        islocked()              检查变量是否加锁
+        funcref()               返回指向函数的函数引用
+        function()              得到函数名对应的函数引用
+        getbufvar()             取得指定缓冲区中的变量值
+        setbufvar()             设定指定缓冲区中的变量值
+        getwinvar()             取得指定窗口的变量值
+        gettabvar()             取得指定标签页的变量值
+        gettabwinvar()          取得指定窗口和标签页的变量值
+        setwinvar()             设定指定窗口的变量值
+        settabvar()             设定指定标签页的变量值
+        settabwinvar()          设定指定窗口和标签页的变量值
+        garbagecollect()        可能情况下释放内存
+
+光标和位置标记位置:                     <b class="vimtag"> <a name="cursor-functions">cursor-functions</a> </b> <b class="vimtag"> <a name="mark-functions">mark-functions</a> </b>
+        col()                   光标或位置标记所在的列
+        virtcol()               光标或位置标记所在的屏幕列
+        line()                  光标或位置标记所在行
+        wincol()                光标所在窗口列
+        winline()               光标所在窗口行
+        cursor()                置光标于 行/列 处
+        screencol()             得到光标的屏幕列
+        screenrow()             得到光标的屏幕行
+        screenpos()             文本字符的屏幕行与列
+        virtcol2col()           屏幕上文本字符的字节索引
+        getcurpos()             得到光标位置
+        getpos()                得到光标、位置标记等的位置
+        setpos()                设置光标、位置标记等的位置
+        getmarklist()           全局/局部位置标记列表
+        byte2line()             取得某字节位置所在行号
+        line2byte()             取得某行之前的字节数
+        diff_filler()           得到一行之上的填充行数目
+        screenattr()            得到屏幕行的属性
+        screenchar()            得到屏幕行的字符代码
+        screenchars()           得到屏幕行的多个字符代码
+        screenstring()          得到屏幕行的字符字符串
+        charcol()               光标或位置标记的字符数
+        getcharpos()            得到光标位置标记等的字符位置
+        setcharpos()            设置光标位置标记等的字符位置
+        getcursorcharpos()      得到光标的字符位置
+        setcursorcharpos()      设置光标的字符位置
+
+操作当前缓冲区的文本:                                   <b class="vimtag"> <a name="text-functions">text-functions</a> </b>
+        getline()               从缓冲区中取一行
+        setline()               替换缓冲区中的一行
+        append()                附加行或行的列表到缓冲区
+        indent()                某行的缩进
+        cindent()               根据 C 缩进法则的某行的缩进
+        lispindent()            根据 Lisp 缩进法则的某行的缩进
+        nextnonblank()          查找下一个非空白行
+        prevnonblank()          查找前一个非空白行
+        search()                查找模式的匹配
+        searchpos()             寻找模式的匹配
+        searchcount()           得到在光标前/后的匹配数目
+        searchpair()            查找 start/skip/end 配对的另一端
+        searchpairpos()         查找 start/skip/end 配对的另一端
+        searchdecl()            查找名字的声明
+        getcharsearch()         返回字符搜索信息
+        setcharsearch()         设置字符搜索信息
+
+操作另一个缓冲区文本:
+        getbufline()            取得指定缓冲区的行列表
+        setbufline()            替换指定缓冲区的一行
+        appendbufline()         给指定缓冲区附加行列表
+        deletebufline()         从指定缓冲区中删除多行
+
+                                        <b class="vimtag"> <a name="system-functions">system-functions</a> </b> <b class="vimtag"> <a name="file-functions">file-functions</a> </b>
+系统调用及文件操作:
+        glob()                  展开通配符
+        globpath()              在几个路径中展开通配符
+        glob2regpat()           转换 glob 模式到搜索模式
+        findfile()              在目录列表里查找文件
+        finddir()               在目录列表里查找目录
+        resolve()               找到一个快捷方式所指
+        fnamemodify()           改变文件名
+        pathshorten()           缩短路径里的目录名
+        simplify()              简化路径，不改变其含义
+        executable()            检查一个可执行程序是否存在
+        exepath()               可执行程序的完整路径
+        filereadable()          检查一个文件可读与否
+        filewritable()          检查一个文件可写与否
+        getfperm()              得到文件权限
+        setfperm()              设置文件权限
+        getftype()              得到文件类型
+        isabsolutepath()        检查目录是否是绝对目录
+        isdirectory()           检查一个目录是否存在
+        getfsize()              取得文件大小
+        getcwd()                取得当前工作路径
+        haslocaldir()           检查当前窗口是否使用过  <a href="https://vimcdoc.sourceforge.net/doc/editing.html#:lcd">:lcd</a>  或  <a href="https://vimcdoc.sourceforge.net/doc/editing.html#:tcd">:tcd</a> 
+        tempname()              取得一个临时文件的名称
+        mkdir()                 建立新目录
+        chdir()                 改变当前目录
+        delete()                删除文件
+        rename()                重命名文件
+        system()                得到字符串形式的外壳命令结果
+        systemlist()            得到列表形式的外壳命令结果
+        environ()               得到所有环境变量
+        getenv()                得到一个环境变量
+        setenv()                设置一个环境变量
+        hostname()              系统的名称
+        readfile()              读入文件到一个行列表
+        readblob()              读入文件到 Blob
+        readdir()               从目录得到文件名的列表
+        readdirex()             从目录得到文件信息的列表
+        writefile()             把一个行列表或 blob 写到文件里
+
+日期和时间:                             <b class="vimtag"> <a name="date-functions">date-functions</a> </b> <b class="vimtag"> <a name="time-functions">time-functions</a> </b>
+        getftime()              得到文件的最近修改时间
+        localtime()             得到以秒计的当前时间
+        strftime()              把时间转换为字符串
+        strptime()              把日期/时间字符串转换为时间
+        reltime()               得到准确的当前或者已经经过的时间
+        reltimestr()            把 reltime() 的结果转换为字符串
+        reltimefloat()          把 reltime() 的结果转换为浮点数
+
+自动命令:                                       <b class="vimtag"> <a name="autocmd-functions">autocmd-functions</a> </b>
+        autocmd_add()           新增一组自动命令和组
+        autocmd_delete()        删除一组自动命令和组
+        autocmd_get()           返回自动命令的列表
+
+                        <b class="vimtag"> <a name="buffer-functions">buffer-functions</a> </b> <b class="vimtag"> <a name="window-functions">window-functions</a> </b> <b class="vimtag"> <a name="arg-functions">arg-functions</a> </b>
+缓冲区，窗口及参数列表:
+        argc()                  参数列表项数
+        argidx()                参数列表中的当前位置
+        arglistid()             得到参数列表的编号
+        argv()                  从参数列表中取得一项
+        bufadd()                给缓冲区列表增加文件
+        bufexists()             检查缓冲区是否存在
+        buflisted()             检查缓冲区是否存在并在列表内
+        bufload()               确保缓冲区已加载
+        bufloaded()             检查缓冲区是否存在并已加载
+        bufname()               取得某缓冲区名
+        bufnr()                 取得某缓冲区号
+        tabpagebuflist()        得到标签页里的缓冲区列表
+        tabpagenr()             得到标签页号
+        tabpagewinnr()          类似于特定标签页里的 winnr()
+        winnr()                 取得当前窗口的窗口号
+        bufwinid()              取得某缓冲区的窗口 ID
+        bufwinnr()              取得某缓冲区的窗口号
+        winbufnr()              取得某窗口的缓冲区号
+        listener_add()          新增回调来监听改动
+        listener_flush()        调用监听器回调
+        listener_remove()       删除监听器回调
+        win_findbuf()           寻找包括某缓冲区的窗口
+        win_getid()             取得窗口的窗口 ID
+        win_gettype()           取得窗口的类型
+        win_gotoid()            转到指定 ID 的窗口
+        win_id2tabwin()         给出窗口 ID 获取标签页号和窗口号
+        win_id2win()            把窗口 ID 转换为窗口号
+        win_move_separator()    移动窗口的垂直分割符
+        win_move_statusline()   移动窗口的状态行
+        win_splitmove()         移动窗口成为另一个窗口的分割
+        getbufinfo()            获取缓冲区信息的列表
+        gettabinfo()            获取标签页信息的列表
+        getwininfo()            获取窗口信息的列表
+        getchangelist()         获取改变列表项目的列表
+        getjumplist()           获取跳转列表项目的列表
+        swapinfo()              关于交换文件的信息
+        swapname()              取得缓冲区的交换文件路径
+
+命令行:                                         <b class="vimtag"> <a name="command-line-functions">command-line-functions</a> </b>
+        getcmdcompltype()       得到当前命令行补全类型
+        getcmdline()            得到当前命令行
+        getcmdpos()             得到命令行里的光标位置
+        getcmdscreenpos()       得到命令行光标的屏幕位置
+        setcmdpos()             设置命令行里的光标位置
+        getcmdtype()            得到当前命令行的类型
+        getcmdwintype()         返回当前命令行窗口类型
+        getcompletion()         命令行补全匹配的列表
+        fullcommand()           得到完整的命令名
+
+快速修复和位置列表:                             <b class="vimtag"> <a name="quickfix-functions">quickfix-functions</a> </b>
+        getqflist()             快速修复错误的列表
+        setqflist()             修改快速修复列表
+        getloclist()            位置列表项目的列表
+        setloclist()            修改位置列表
+
+插入模式补全:                                   <b class="vimtag"> <a name="completion-functions">completion-functions</a> </b>
+        complete()              设定要寻找的匹配
+        complete_add()          加入要寻找的匹配
+        complete_check()        检查补全是否被中止
+        complete_info()         取得当前补全的信息
+        pumvisible()            检查弹出菜单是否显示
+        pum_getpos()            如果可见，弹出菜单的位置及大小
+
+折叠:                                           <b class="vimtag"> <a name="folding-functions">folding-functions</a> </b>
+        foldclosed()            检查某一行是否被折叠起来
+        foldclosedend()         类似 foldclosed() 但同时返回最后一行
+        foldlevel()             检查某行的折叠级别
+        foldtext()              产生折叠关闭时所显示的行
+        foldtextresult()        得到关闭折叠显示的文本
+
+语法和高亮:                      <b class="vimtag"> <a name="syntax-functions">syntax-functions</a> </b> <b class="vimtag"> <a name="highlighting-functions">highlighting-functions</a> </b>
+        clearmatches()          清除  <a href="https://vimcdoc.sourceforge.net/doc/builtin.html#matchadd()">matchadd()</a>  和  <a href="https://vimcdoc.sourceforge.net/doc/pattern.html#:match">:match</a>  诸命令定义的所有
+                                匹配
+        getmatches()            得到  <a href="https://vimcdoc.sourceforge.net/doc/builtin.html#matchadd()">matchadd()</a>  和  <a href="https://vimcdoc.sourceforge.net/doc/pattern.html#:match">:match</a>  诸命令定义的所有
+                                匹配
+        hlexists()              检查高亮组是否存在
+        hlget()                 取得高亮组属性
+        hlset()                 设置高亮组属性
+        hlID()                  取得高亮组标示
+        synID()                 取得某位置的语法标示
+        synIDattr()             取得某语法标示的特定属性
+        synIDtrans()            取得翻译后的语法标示
+        synstack()              取得指定位置的语法标示的列表
+        synconcealed()          取得和隐藏 (conceal) 相关的信息
+        diff_hlID()             得到比较模式某个位置的高亮标示
+        matchadd()              定义要高亮的模式 (一个 "匹配")
+        matchaddpos()           定义要高亮的位置列表
+        matcharg()              得到  <a href="https://vimcdoc.sourceforge.net/doc/pattern.html#:match">:match</a>  参数的相关信息
+        matchdelete()           删除  <a href="https://vimcdoc.sourceforge.net/doc/builtin.html#matchadd()">matchadd()</a>  或  <a href="https://vimcdoc.sourceforge.net/doc/pattern.html#:match">:match</a>  诸命令定义的匹配
+        setmatches()            恢复  <a href="https://vimcdoc.sourceforge.net/doc/builtin.html#getmatches()">getmatches()</a>  保存的匹配列表
+
+拼写:                                           <b class="vimtag"> <a name="spell-functions">spell-functions</a> </b>
+        spellbadword()          定位光标所在或之后的错误拼写的单词
+        spellsuggest()          返回建议的拼写校正列表
+        soundfold()             返回 "发音相似" 的单词等价形式
+
+历史记录:                                       <b class="vimtag"> <a name="history-functions">history-functions</a> </b>
+        histadd()               在历史记录中加入一项
+        histdel()               从历史记录中删除一项
+        histget()               从历史记录中提取一项
+        histnr()                取得某历史记录的最大索引号
+
+交互:                                           <b class="vimtag"> <a name="interactive-functions">interactive-functions</a> </b>
+        browse()                显示文件查找器
+        browsedir()             显示目录查找器
+        confirm()               让用户作出选择
+        getchar()               从用户那里取得一个字符输入
+        getcharstr()            从用户那里取得一个字符输入，以字符串形式返回
+        getcharmod()            取得最近键入字符的修饰符
+        getmousepos()           取得最近已知的鼠标位置
+        echoraw()               按原样输出字符
+        feedkeys()              把字符放到预输入队列中
+        input()                 从用户那里取得一行输入
+        inputlist()             让用户从列表里选择一个项目
+        inputsecret()           从用户那里取得一行输入，不回显
+        inputdialog()           从用户那里取得一行输入，使用对话框
+        inputsave()             保存和清除预输入 (typeahead)
+        inputrestore()          恢复预输入 (译注: 参阅 input())
+
+GUI:                                            <b class="vimtag"> <a name="gui-functions">gui-functions</a> </b>
+        getfontname()           得到当前使用的字体名
+        getwinpos()             Vim 窗口的位置
+        getwinposx()            Vim 窗口的 X 位置
+        getwinposy()            Vim 窗口的 Y 位置
+        balloon_show()          设置气泡的内容
+        balloon_split()         分割消息用于气泡的显示
+        balloon_gettext()       取得气泡中的文本
+
+Vim 服务器:                                     <b class="vimtag"> <a name="server-functions">server-functions</a> </b>
+        serverlist()            返回服务器列表
+        remote_startserver()    启动服务器
+        remote_send()           向 Vim 服务器发送字符命令
+        remote_expr()           在 Vim 服务器内对一个表达式求值
+        server2client()         向一个服务器客户发送应答
+        remote_peek()           检查一个服务器是否已经应答
+        remote_read()           从一个服务器读取应答
+        foreground()            将一个 Vim 窗口移至前台
+        remote_foreground()     将一个 Vim 服务器窗口移至前台
+
+窗口大小和位置:                                 <b class="vimtag"> <a name="window-size-functions">window-size-functions</a> </b>
+        winheight()             取得某窗口的高度
+        winwidth()              取得某窗口的宽度
+        win_screenpos()         取得某窗口的屏幕位置
+        winlayout()             取得标签页中窗口的布局
+        winrestcmd()            恢复窗口大小的返回命令
+        winsaveview()           得到当前窗口的视图
+        winrestview()           恢复保存的当前窗口的视图
+
+映射和菜单:                                     <b class="vimtag"> <a name="mapping-functions">mapping-functions</a> </b>
+        digraph_get()           取得  <a href="https://vimcdoc.sourceforge.net/doc/digraph.html#digraph">digraph</a> 
+        digraph_getlist()       取得所有的  <a href="https://vimcdoc.sourceforge.net/doc/digraph.html#digraph">digraph</a> 
+        digraph_set()           注册  <a href="https://vimcdoc.sourceforge.net/doc/digraph.html#digraph">digraph</a> 
+        digraph_setlist()       注册多个  <a href="https://vimcdoc.sourceforge.net/doc/digraph.html#digraph">digraph</a> 
+        hasmapto()              检查映射是否存在
+        mapcheck()              检查匹配的映射是否存在
+        maparg()                取得映射的右部 (rhs)
+        maplist()               取得所有映射的列表
+        mapset()                恢复映射
+        menu_info()             取得菜单项目的信息
+        wildmenumode()          检查 wildmode 是否激活
+
+测试:                                       <b class="vimtag"> <a name="test-functions">test-functions</a> </b>
+        assert_equal()          断言两个表达式的值相等
+        assert_equalfile()      断言两个文件的内容相同
+        assert_notequal()       断言两个表达式的值不等
+        assert_inrange()        断言表达式在范围内
+        assert_match()          断言模式与值匹配
+        assert_notmatch()       断言模式不与值匹配
+        assert_false()          断言表达式为假
+        assert_true()           断言表达式为真
+        assert_exception()      断言命令抛出例外
+        assert_beeps()          断言命令会响铃
+        assert_nobeep()         断言命令不会响铃
+        assert_fails()          断言命令会失败
+        assert_report()         报告测试失败
+        test_alloc_fail()       使内存分配失败
+        test_autochdir()        启动时打开 <a href="https://vimcdoc.sourceforge.net/doc/options.html#&#39;autochdir&#39;">'autochdir'</a>
+        test_override()         测试 Vim 内部的覆盖
+        test_garbagecollect_now()   立即清理内存
+        test_garbagecollect_soon()  设置标志位以尽快清理内存
+        test_getvalue()         取得内部变量的值
+        test_gui_event()        生成 GUI 事件，用于测试
+        test_ignore_error()     忽略指定的错误信息
+        test_null_blob()        返回 null blob
+        test_null_channel()     返回 null 通道
+        test_null_dict()        返回 null 字典
+        test_null_function()    返回 null 函数引用
+        test_null_job()         返回 null 作业
+        test_null_list()        返回 null 列表
+        test_null_partial()     返回 null 偏函数
+        test_null_string()      返回 null 字符串
+        test_settime()          设置 Vim 内部使用的时间
+        test_setmouse()         设置鼠标位置
+        test_feedinput()        给输入缓冲区加入键序列
+        test_option_not_set()   复位指定选项已设的标志位
+        test_refcount()         返回表达式的引用计数
+        test_srand_seed()       设置 srand() 的种子值
+        test_unknown()          返回未知类型的值
+        test_void()             返回 void 类型的值
+
+进程间通信:                                 <b class="vimtag"> <a name="channel-functions">channel-functions</a> </b>
+        ch_canread()            检查是否有可读的内容
+        ch_open()               打开通道
+        ch_close()              关闭通道
+        ch_close_in()           关闭通道的 in 部分
+        ch_read()               从通道读取信息
+        ch_readblob()           从通道读取 blob
+        ch_readraw()            从通道读取未处理的信息
+        ch_sendexpr()           从通道读取 JSON 信息
+        ch_sendraw()            向通道发送未处理的信息
+        ch_evalexpr()           通过通道计算表达式
+        ch_evalraw()            通过通道计算未经处理的表达式
+        ch_status()             获取通道的状态
+        ch_getbufnr()           获取通道的缓冲区号
+        ch_getjob()             获取通道相关的作业
+        ch_info()               获取通道信息
+        ch_log()                在通道日志文件写下信息
+        ch_logfile()            设置通道日志文件
+        ch_setoptions()         设置通道的选项
+        json_encode()           把表达式编码为 JSON 字符串
+        json_decode()           把 JSON 字符串解码为 Vim 类型
+        js_encode()             把表达式编码为 JSON 字符串
+        js_decode()             把 JSON 字符串解码为 Vim 类型
+
+作业:                                           <b class="vimtag"> <a name="job-functions">job-functions</a> </b>
+        job_start()             启动作业
+        job_stop()              停止作业
+        job_status()            获取作业状态
+        job_getchannel()        获取作业使用的通道
+        job_info()              获取作业信息
+        job_setoptions()        设置作业选项
+
+标号:                                           <b class="vimtag"> <a name="sign-functions">sign-functions</a> </b>
+        sign_define()           定义或更新标号
+        sign_getdefined()       取得已定义的标号列表
+        sign_getplaced()        取得已放置的标号列表
+        sign_jump()             跳转到标号
+        sign_place()            放置标号
+        sign_placelist()        放置一列标号
+        sign_undefine()         删除标号的定义
+        sign_unplace()          撤销标号的放置
+        sign_unplacelist()      撤销一列标号的放置
+
+终端窗口:                                       <b class="vimtag"> <a name="terminal-functions">terminal-functions</a> </b>
+        term_start()            打开终端窗口并运行作业
+        term_list()             获取终端缓冲区的列表
+        term_sendkeys()         给终端发送键击
+        term_wait()             等待屏幕刷新
+        term_getjob()           获取终端相关联的作业
+        term_scrape()           获取终端屏幕的行
+        term_getline()          获取终端的一行文本行
+        term_getattr()          获取属性 <code class="special">{what}</code> 的值
+        term_getcursor()        获取终端的光标位置
+        term_getscrolled()      获取终端的滚动行数
+        term_getaltscreen()     获取轮换屏幕标志位
+        term_getsize()          获取终端大小
+        term_getstatus()        获取终端状态
+        term_gettitle()         获取终端标题
+        term_gettty()           获取终端 tty 名
+        term_setansicolors()    设置 GUI 使用的 16 种 ANSI 颜色
+        term_getansicolors()    获取 GUI 使用的 16 种 ANSI 颜色
+        term_dumpdiff()         显示两份屏幕截图的差异
+        term_dumpload()         在窗口中载入终端屏幕截图
+        term_dumpwrite()        把终端屏幕的内容写入文件
+        term_setkill()          设置停止终端中的作业的信号
+        term_setrestore()       设置恢复终端的命令
+        term_setsize()          设置终端的大小
+        term_setapi()           设置终端 JSON API 函数名前缀
+
+弹出窗口:                                       <b class="vimtag"> <a name="popup-window-functions">popup-window-functions</a> </b>
+        popup_create()          在屏幕中央创建弹出
+        popup_atcursor()        在光标位置正上方创建弹出，光标移开时关闭
+        popup_beval()           在 v:beval_ 变量指定的位置，光标移开时关闭
+        popup_notification()    用三秒钟显示通知
+        popup_dialog()          创建带填充和边框中间对齐的弹出
+        popup_menu()            提示从列表中选择一个项目
+        popup_hide()            临时隐藏弹出
+        popup_show()            显示之前隐藏的弹出
+        popup_move()            改变弹出的位置和大小
+        popup_setoptions()      覆盖弹出的选项
+        popup_settext()         替换弹出缓冲区的内容
+        popup_close()           关闭一个弹出
+        popup_clear()           关闭所有弹出
+        popup_filter_menu()     从一列项目中选择
+        popup_filter_yesno()    等待直到按了 'y' 或 'n' 为止
+        popup_getoptions()      取得弹出的当前选项
+        popup_getpos()          取得弹出的实际位置和大小
+        popup_findinfo()        取得弹出信息窗口的窗口 ID
+        popup_findpreview()     取得弹出预览窗口的窗口 ID
+        popup_list()            取得所有的弹出窗口 ID 的列表
+        popup_locate()          从弹出窗口的屏幕位置取得其窗口 ID
+
+定时器:                                         <b class="vimtag"> <a name="timer-functions">timer-functions</a> </b>
+        timer_start()           建立定时器
+        timer_pause()           暂停或继续定时器
+        timer_stop()            停止定时器
+        timer_stopall()         停止所有定时器
+        timer_info()            获取定时器信息
+
+Tags:                                           <b class="vimtag"> <a name="tag-functions">tag-functions</a> </b>
+        taglist()               得到匹配标签的列表
+        tagfiles()              得到标签文件的列表
+        gettagstack()           得到窗口的标签栈
+        settagstack()           修改窗口的标签栈
+
+提示缓冲区:                                     <b class="vimtag"> <a name="promptbuffer-functions">promptbuffer-functions</a> </b>
+        prompt_getprompt()      得到缓冲区的实际提示文本
+        prompt_setcallback()    设置缓冲区的提示回调
+        prompt_setinterrupt()   设置缓冲区的中断回调
+        prompt_setprompt()      设置缓冲区的提示文本
+
+文本属性:                                       <b class="vimtag"> <a name="text-property-functions">text-property-functions</a> </b>
+        prop_add()              在给出位置上附属属性
+        prop_add_list()         在多个位置上附属属性
+        prop_clear()            从一行或多行中删除所有属性
+        prop_find()             搜索一个属性
+        prop_list()             返回一行中所有属性的列表
+        prop_remove()           从一行中删除属性
+        prop_type_add()         新增/定义属性类型
+        prop_type_change()      改变类型的属性
+        prop_type_delete()      删除文本属性类型
+        prop_type_get()         返回类型的属性
+        prop_type_list()        返回所有属性类型的列表
+
+声音:                                                   <b class="vimtag"> <a name="sound-functions">sound-functions</a> </b>
+        sound_clear()           停止所有声音的播放
+        sound_playevent()       播放一个事件的声音
+        sound_playfile()        播放声音文件
+        sound_stop()            停止一个声音的播放
+
+杂项:                                           <b class="vimtag"> <a name="various-functions">various-functions</a> </b>
+        mode()                  取得当前编辑状态
+        state()                 取得当前繁忙状态
+        visualmode()            最近一次使用过的可视模式
+        exists()                检查变量，函数等是否存在
+        exists_compiled()       类似 exists() 但在编译时检查
+        has()                   检查 Vim 是否支持某特性
+        changenr()              返回最近的改变号
+        cscope_connection()     检查有无与 cscope 的连接
+        did_filetype()          检查某文件类型自动命令是否已经使用
+        eventhandler()          检查是否在一个事件处理程序内
+        getpid()                得到 Vim 的进程号
+        getimstatus()           检查 IME 状态是否激活
+        interrupt()             中断脚本执行
+        windowsversion()        得到 MS-Windows 版本
+        terminalprops()         终端属性
+
+        libcall()               调用一个外部库函数
+        libcallnr()             同上，但返回一个数值
+
+        undofile()              得到撤销文件名
+        undotree()              返回撤销树的状态
+
+        getreg()                取得寄存器内容
+        getreginfo()            取得寄存器信息
+        getregtype()            取得寄存器类型
+        setreg()                设定寄存器内容及类型
+        reg_executing()         取得正在执行中的寄存器名
+        reg_recording()         取得正在记录中的突破口名
+
+        shiftwidth()            <a href="https://vimcdoc.sourceforge.net/doc/options.html#&#39;shiftwidth&#39;">'shiftwidth'</a> 的有效值
+
+        wordcount()             获取缓冲区的字节/单词/字符计数
+
+        luaeval()               计算  <a href="https://vimcdoc.sourceforge.net/doc/if_lua.html#Lua">Lua</a>  表达式
+        mzeval()                计算  <a href="https://vimcdoc.sourceforge.net/doc/if_mzsch.html#MzScheme">MzScheme</a>  表达式
+        perleval()              计算 Perl 表达式 ( <a href="https://vimcdoc.sourceforge.net/doc/various.html#+perl">+perl</a> )
+        py3eval()               计算 Python 表达式 ( <a href="https://vimcdoc.sourceforge.net/doc/various.html#+python3">+python3</a> )
+        pyeval()                计算 Python 表达式 ( <a href="https://vimcdoc.sourceforge.net/doc/various.html#+python">+python</a> )
+        pyxeval()               计算  <a href="https://vimcdoc.sourceforge.net/doc/if_pyth.html#python_x">python_x</a>  表达式
+        rubyeval()              计算  <a href="https://vimcdoc.sourceforge.net/doc/if_ruby.html#Ruby">Ruby</a>  表达式
+
+        debugbreak()            中断正在调试的程序
+
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.7">41.7</a> </b>  定义一个函数</h4>
+Vim 允许你定义自己的函数。基本的函数声明如下: 
+<code class="example"></code>
+<code class="example">        def {name}({var1}, {var2}, ...): return-type</code>
+<code class="example">          {body}</code>
+<code class="example">        enddef</code>
+
+        <code class="note">注意</code>:
+        函数名必须以大写字母开始。
+
+让我们来定义一个返回两数中较小者的函数。从下面这一行开始: 
+<code class="example"></code>
+<code class="example">        def Min(num1: number, num2: number): number</code>
+<code class="example"></code>
+这将告诉 Vim 这个函数名叫 "Min" 并且带两个数值参数: "num1" 和 "num2"，并返回一
+个数值。
+
+你要做的第一件事就是看看哪个数值小一些:
+   
+<code class="example">        if num1 &lt; num2</code>
+<code class="example"></code>
+我们把最小的数值赋给 smaller 变量: 
+<code class="example"></code>
+<code class="example">        var smaller: number</code>
+<code class="example">        if num1 &lt; num2</code>
+<code class="example">          smaller = num1</code>
+<code class="example">        else</code>
+<code class="example">          smaller = num2</code>
+<code class="example">        endif</code>
+<code class="example"></code>
+"smaller" 是一个局部变量。声明为数值型，这样如果搞错 Vim 就会<code class="note">警告</code>。一个在函数
+内部使用的变量，除非被加上类似 "g:"、"w:" 或 "b:" 的前缀，都是局部变量。
+
+        <code class="note">备注</code>:
+        为了从一个函数内部访问一个全局变量你必须在前面加上 "g:"。因此在一个函
+        数内 "g:today" 表示全局变量 "today"，而 "today" 是另外一个仅用于该函数
+        或脚本内的局部变量。
+
+现在你可以使用  <code class="badlink">return</code>  语句来把最小的数值返回给调用者了。最后，你需要结束这个
+函数: 
+<code class="example"></code>
+<code class="example">          return smaller</code>
+<code class="example">        enddef</code>
+<code class="example"></code>
+下面是这个函数完整的定义: 
+<code class="example"></code>
+<code class="example">        def Min(num1: number, num2: number): number</code>
+<code class="example">          var smaller: number</code>
+<code class="example">          if num1 &lt; num2</code>
+<code class="example">            smaller = num1</code>
+<code class="example">          else</code>
+<code class="example">            smaller = num2</code>
+<code class="example">          endif</code>
+<code class="example">          return smaller</code>
+<code class="example">        enddef</code>
+<code class="example"></code>
+显然这个例子太繁琐了。用两个 return 命令可以简短一些: 
+<code class="example"></code>
+<code class="example">        def Min(num1: number, num2: number): number</code>
+<code class="example">          if num1 &lt; num2</code>
+<code class="example">            return num1</code>
+<code class="example">          endif</code>
+<code class="example">          return num2</code>
+<code class="example">        enddef</code>
+<code class="example"></code>
+如果你还记得条件表达式，只需要一行就够了: 
+<code class="example"></code>
+<code class="example">        def Min(num1: number, num2: number): number</code>
+<code class="example">          return num1 &lt; num2 ? num1 : num2</code>
+<code class="example">        enddef</code>
+<code class="example"></code>
+调用用户自定义函数的方式和调用内置函数完全一致。仅仅是函数名不同而已。上面的
+Min 函数可以这样来使用: 
+<code class="example"></code>
+<code class="example">        echo Min(5, 8)</code>
+<code class="example"></code>
+只有这时函数才被 Vim 解析并执行。如果函数中有类似未定义的变量或函数之类的错
+误，你将得到一个错误信息。这些错误在定义函数时是不会被检测到的。要早点看到这些
+错误，可让 Vim 编译此脚本里的所有函数: 
+<code class="example"></code>
+<code class="example">        defcompile</code>
+<code class="example"></code>
+编译要一点时间，但会早点报告错误。脚本编写期间，可在脚本结尾处放上
+ <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#:defcompile">:defcompile</a> ，一切就绪的时候再把这行注释掉。
+
+不返回任何结果的函数只要简单省略返回类型就可以了: 
+<code class="example"></code>
+<code class="example">        def SayIt(text: string)</code>
+<code class="example">          echo text</code>
+<code class="example">        enddef</code>
+<code class="example"></code>
+如果要返回任何类型的值，可用 "any" 返回类型: 
+<code class="example">        def GetValue(): any</code>
+这会关闭返回值的类型检查，除非必要不要使用。
+
+也可以用  <code class="badlink">function</code>  和  <code class="badlink">endfunction</code>  定义老式函数。它们不带类型，不能编译。所
+以执行也会慢许多。
+
+
+范 围 的 使 用
+
+函数调用时可以带一个行表示的范围。Vim 将把光标移动到范围内的每一行，并分别对该
+行调用此函数。例如: 
+<code class="example"></code>
+<code class="example">        def Number()</code>
+<code class="example">          echo "line " .. line(".") .. " contains: " .. getline(".")</code>
+<code class="example">        enddef</code>
+<code class="example"></code>
+如果你用下面的方式调用该函数: 
+<code class="example"></code>
+<code class="example">        :10,15Number()</code>
+<code class="example"></code>
+它将被执行六次，从第 10 行开始，第 15 行结束。
+
+
+函 数 清 单
+
+":function" 命令列出所有用户自定义的函数及其参数: 
+<code class="example"></code>
+<code class="example">        :function</code>
+<code class="section">        def <code class="special">&lt;SNR&gt;</code>86_Show(start: string, ...items: list<code class="special">&lt;string&gt;</code>) </code>
+<code class="section">        function GetVimIndent()</code>
+<code class="section">        function SetSyn(name) </code>
+
+"<code class="special">&lt;SNR&gt;</code>" 前缀代表函数是局部于脚本的。 <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  函数以 "def" 开始，包括参数和返回值
+类型。老式函数以 "function" 开始。
+
+如果要查看该函数具体做什么，用该函数名作为  <code class="badlink">function</code>  命令的参数即可: 
+<code class="example"></code>
+<code class="example">        :function SetSyn</code>
+<code class="section">        1     if &amp;syntax == '' </code>
+<code class="section">        2       let &amp;syntax = a:name </code>
+<code class="section">        3     endif </code>
+<code class="section">           endfunction </code>
+
+要看到 "Show" 函数内容，需要提供脚本前缀，因为不同脚本可以定义多个 "Show" 函
+数。用  <code class="badlink">function</code>  找到完整名字，但结果可能是个很长的列表。要只返回匹配某个模式
+的函数，可用  <a href="https://vimcdoc.sourceforge.net/doc/change.html#filter">filter</a>  前缀:
+
+<code class="example">        :filter Show function</code>
+<code class="section">        def <code class="special">&lt;SNR&gt;</code>86_Show(start: string, ...items: list<code class="special">&lt;string&gt;</code>) </code>
+
+<code class="example">        :function &lt;SNR&gt;86_Show</code>
+<code class="section">        1    echohl Title </code>
+<code class="section">        2    echo "start is " .. start </code>
+        等等
+
+
+调 试
+
+调试或者遇到错误信息时，行号是很有用的。有关调试模式请参阅  <a href="https://vimcdoc.sourceforge.net/doc/repeat.html#debug-scripts">debug-scripts</a> 。
+
+你也可以通过将 <a href="https://vimcdoc.sourceforge.net/doc/options.html#&#39;verbose&#39;">'verbose'</a> 选项设为 12 以上来察看所有函数调用。将该参数设为 15
+或以上可以查看所有被执行的行。
+
+
+删 除 函 数
+
+为了删除 SetSyn() 函数: 
+<code class="example"></code>
+<code class="example">        :delfunction SetSyn</code>
+<code class="example"></code>
+删除只对全局函数和老式脚本里定义的函数有效， <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本里定义的函数不行。
+
+如果该函数不存在或不能删除，会报错。
+
+
+函 数 引 用
+
+有时使变量指向一个或另一个函数可能有用。要这么做，可用函数引用变量。常简称为
+"funcref"。例如: 
+<code class="example"></code>
+<code class="example">        def Right(): string</code>
+<code class="example">          return 'Right!'</code>
+<code class="example">        enddef</code>
+<code class="example">        def Wrong(): string</code>
+<code class="example">          return 'Wrong!'</code>
+<code class="example">        enddef</code>
+<code class="example"></code>
+<code class="example">        var Afunc = g:result == 1 ? Right : Wrong</code>
+<code class="example">        echo Afunc()</code>
+<code class="section">        Wrong! </code>
+
+这里假定 "g:result" 不是一。详细描述见  <a href="https://vimcdoc.sourceforge.net/doc/eval.html#Funcref">Funcref</a> 。
+
+<code class="note">注意</code> 保存函数引用的变量名必须用大写字母开头，不然和内建函数的名字会引起混淆。
+
+进 一 步 阅 读
+
+ <a href="https://vimcdoc.sourceforge.net/doc/usr_50.html#50.2">50.2</a>  小节解释可变参数数目的用法。
+
+要自定义函数，更多信息可见:  <a href="https://vimcdoc.sourceforge.net/doc/eval.html#user-functions">user-functions</a> 。
+
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.8">41.8</a> </b>  列表和字典</h4>
+到目前为止，我们用了基本类型字符串和数值。Vim 也支持两种复合类型: 列表和字典。
+
+列表是项目的有序序列。这里的项目包括各种类型的值。所以你可以建立数值列表、列表
+列表甚至混合项目的列表。要建立包含三个字符串的列表: 
+<code class="example"></code>
+<code class="example">        var alist = ['aap', 'noot', 'mies']</code>
+<code class="example"></code>
+列表项目用方括号包围，逗号分割。要建立空列表: 
+<code class="example"></code>
+<code class="example">        var alist = []</code>
+<code class="example"></code>
+用 add() 函数可以为列表加入项目: 
+<code class="example"></code>
+<code class="example">        var alist = []</code>
+<code class="example">        add(alist, 'foo')</code>
+<code class="example">        add(alist, 'bar')</code>
+<code class="example">        echo alist</code>
+<code class="section">        [<code class="badlink">'foo'</code>, <code class="badlink">'bar'</code>] </code>
+
+列表的连接用 + 完成: 
+<code class="example"></code>
+<code class="example">        var alist = ['foo', 'bar']</code>
+<code class="example">        alist = alist + ['and', 'more']</code>
+<code class="example">        echo alist</code>
+<code class="section">        [<code class="badlink">'foo'</code>, <code class="badlink">'bar'</code>, <code class="badlink">'and'</code>, <a href="https://vimcdoc.sourceforge.net/doc/options.html#&#39;more&#39;">'more'</a>] </code>
+
+或者，要用函数扩展列表，可用  <a href="https://vimcdoc.sourceforge.net/doc/builtin.html#extend()">extend()</a> : 
+<code class="example"></code>
+<code class="example">        var alist = ['one']</code>
+<code class="example">        extend(alist, ['two', 'three'])</code>
+<code class="example">        echo alist</code>
+<code class="section">        [<code class="badlink">'one'</code>, <code class="badlink">'two'</code>, <code class="badlink">'three'</code>] </code>
+
+<code class="note">注意</code> 这里如果用  <a href="https://vimcdoc.sourceforge.net/doc/builtin.html#add()">add()</a> ，效果和  <a href="https://vimcdoc.sourceforge.net/doc/builtin.html#extend()">extend()</a>  不一样: 
+<code class="example"></code>
+<code class="example">        var alist = ['one']</code>
+<code class="example">        add(alist, ['two', 'three'])</code>
+<code class="example">        echo alist</code>
+<code class="section">        [<code class="badlink">'one'</code>, [<code class="badlink">'two'</code>, <code class="badlink">'three'</code>]] </code>
+
+add() 的第二个参数作为项目被加入，这样就有了嵌套的列表。
+
+
+FOR 循 环
+
+使用列表的一个好处是可以在上面进行叠代: 
+<code class="example"></code>
+<code class="example">        var alist = ['one', 'two', 'three']</code>
+<code class="example">        for n in alist</code>
+<code class="example">          echo n</code>
+<code class="example">        endfor</code>
+<code class="section">        one </code>
+<code class="section">        two </code>
+<code class="section">        three </code>
+
+这段代码循环遍历列表 "alist" 的每个项目，分别把它们的值赋给变量 "n"。for 循环
+通用的形式是: 
+<code class="example"></code>
+<code class="example">        for {varname} in {list-expression}</code>
+<code class="example">          {commands}</code>
+<code class="example">        endfor</code>
+<code class="example"></code>
+要循环若干次，你需要长度为给定次数的列表。range() 函数建立这样的列表: 
+<code class="example"></code>
+<code class="example">        for a in range(3)</code>
+<code class="example">          echo a</code>
+<code class="example">        endfor</code>
+<code class="section">        0 </code>
+<code class="section">        1 </code>
+<code class="section">        2 </code>
+
+<code class="note">注意</code> range() 产生的列表的第一个项目为零，而最后一个项目比列表的长度小一。细节:
+内部 range() 此处并不实际产生列表，这样对循环所需的大范围的处理就更有效。对照
+一下在别处，range 返回实际的列表，长列表因而会需要更多时间。
+
+你也可以指定最大值、步进，反向也可以: 
+<code class="example"></code>
+<code class="example">        for a in range(8, 4, -2)</code>
+<code class="example">          echo a</code>
+<code class="example">        endfor</code>
+<code class="section">        8 </code>
+<code class="section">        6 </code>
+<code class="section">        4 </code>
+
+更有用的例子，遍历缓冲区中的所有行: 
+<code class="example"></code>
+<code class="example">        :for line in getline(1, 20)</code>
+<code class="example">        :  if line =~ "Date: "</code>
+<code class="example">        :    echo matchstr(line, 'Date: \zs.*')</code>
+<code class="example">        :  endif</code>
+<code class="example">        :endfor</code>
+<code class="example"></code>
+察看行 1 到 20 (包含)，并回显那里找到的任何日期。
+
+进一步的阅读可见  <a href="https://vimcdoc.sourceforge.net/doc/eval.html#Lists">Lists</a> 。
+
+
+字 典
+
+字典保存键-值组对。如果知道键，你可以快速查找值。字典用花括号形式建立: 
+<code class="example"></code>
+<code class="example">        var uk2nl = {one: 'een', two: 'twee', three: 'drie'}</code>
+<code class="example"></code>
+现在你可以把键放在方括号里以查找单词: 
+<code class="example"></code>
+<code class="example">        echo uk2nl['two']</code>
+<code class="section">        twee </code>
+
+如果键里没有特殊字母，可用句号记法: 
+<code class="example"></code>
+<code class="example">        echo uk2nl.two</code>
+<code class="section">        twee </code>
+
+字典定义的通用形式是: 
+<code class="example"></code>
+<code class="example">        {&lt;key&gt; : &lt;value&gt;, ...}</code>
+<code class="example"></code>
+空字典是不包含任何键的字典: 
+<code class="example"></code>
+<code class="example">        {}</code>
+<code class="example"></code>
+字典的用途很多。它可用的函数也不少。例如，你可以得到它的键列表并在其上循环: 
+<code class="example"></code>
+<code class="example">        for key in keys(uk2nl)</code>
+<code class="example">          echo key</code>
+<code class="example">        endfor</code>
+<code class="section">        three </code>
+<code class="section">        one </code>
+<code class="section">        two </code>
+
+<code class="note">注意</code> 这些键没有排序。你自己可以对返回列表按照特定顺序进行排序: 
+<code class="example"></code>
+<code class="example">        for key in sort(keys(uk2nl))</code>
+<code class="example">          echo key</code>
+<code class="example">        endfor</code>
+<code class="section">        one </code>
+<code class="section">        three </code>
+<code class="section">        two </code>
+
+但你永远不能得到项目定义时的顺序。为此目的，只能用列表。列表里的项目被作为有序
+序列保存。
+
+进一步的阅读可见  <a href="https://vimcdoc.sourceforge.net/doc/eval.html#Dictionaries">Dictionaries</a> 。
+
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.9">41.9</a> </b>  空白</h4>
+脚本里可以使用空白行，但没有作用。
+
+行首的空白字符 (空格和制表符) 总被忽略，不带 "trim" 的  <a href="https://vimcdoc.sourceforge.net/doc/eval.html#:let-heredoc">:let-heredoc</a>  是例外。
+
+拖尾的空白常被忽略，但不绝对。 <code class="badlink">map</code>  是这样的一个不忽略拖尾空白的命令。要小心，
+一旦出错很难发觉。一般建议是除非绝对必要，千万不要用拖尾空白。
+
+为了在一个选项值内使用空格，必须像下面例子那样使用 "\" (反斜杠): 
+<code class="example"></code>
+<code class="example">        :set tags=my\ nice\ file</code>
+<code class="example"></code>
+如果写成这样: 
+<code class="example"></code>
+<code class="example">        :set tags=my nice file</code>
+<code class="example"></code>
+Vim 会给出错误信息，因为它被解释成: 
+<code class="example"></code>
+<code class="example">        :set tags=my</code>
+<code class="example">        :set nice</code>
+<code class="example">        :set file</code>
+<code class="example"></code>
+ <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本对空白很挑剔。这是有意而为的，要确保脚本易读不易犯错。合理使用空白
+应该就可以了。如果有问题，会给出错误信息，告知你哪里缺空白，或者哪里有多余要删
+除的空白。
+
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.10">41.10</a> </b> 续行</h4>
+老式 Vim 脚本里，一行的继续是在续行的行首加上反斜杠完成的: 
+<code class="example">        let mylist = [</code>
+<code class="example">                        \ 'one',</code>
+<code class="example">                        \ 'two',</code>
+<code class="example">                        \ ]</code>
+<code class="example"></code>
+这需要 <a href="https://vimcdoc.sourceforge.net/doc/options.html#&#39;cpo&#39;">'cpo'</a> 选项里排除了 "C" 标志位。通常做法是在脚本开始处放上: 
+<code class="example">        let s:save_cpo = &amp;cpo</code>
+<code class="example">        set cpo&amp;vim</code>
+<code class="example"></code>
+然后在脚本结尾处恢复选项: 
+<code class="example">        let &amp;cpo = s:save_cpo</code>
+<code class="example">        unlet s:save_cpo</code>
+<code class="example"></code>
+更多细节可见:  <a href="https://vimcdoc.sourceforge.net/doc/repeat.html#line-continuation">line-continuation</a> 。
+
+ <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本里还可以用反斜杠，但绝大多数情况不需要了: 
+<code class="example">        var mylist = [</code>
+<code class="example">                        'one',</code>
+<code class="example">                        'two',</code>
+<code class="example">                        ]</code>
+<code class="example"></code>
+另外，也不需要修改 <a href="https://vimcdoc.sourceforge.net/doc/options.html#&#39;cpo&#39;">'cpo'</a> 选项了。详见  <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#vim9-line-continuation">vim9-line-continuation</a> 。
+
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.11">41.11</a> </b> 注释</h4>
+ <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本里 # 标记注释的开始。除了那些不接受注释的命令外 (见下例)，从 # 起直
+到行末的所有字符都将看作注释而被忽略。注释可以从一行的任意位置开始，但作为命令
+的一部分时除外，如字符串内的 #。
+
+在老式脚本里 " (双引号标记) 字符开始注释。需要一些小聪明来确保双引号字符串不被
+识别为注释 (又一个推荐  <a href="https://vimcdoc.sourceforge.net/doc/vim9.html#Vim9">Vim9</a>  脚本的理由)。
+
+对于某些命令来说，这里有一个小小的 "陷阱"。例如: 
+<code class="example"></code>
+<code class="example">        abbrev dev development  # shorthand</code>
+<code class="example">        map &lt;F3&gt; o#include      # insert include</code>
+<code class="example">        execute cmd             # do it</code>
+<code class="example">        !ls *.c                 # list C files</code>
+<code class="example"></code>
+- 缩写 <code class="badlink">'dev'</code> 会被展开成 'development  # shorthand'。
+- <code class="special">&lt;F3&gt;</code> 的键盘映射会是 'o# ....' 之后包括 '# insert include' 在内的那一整行。
+-  <code class="badlink">execute</code>  命令会给出错误。
+-  <a href="https://vimcdoc.sourceforge.net/doc/change.html#!">!</a>  命令会将其后的所有字符传给外壳，很大可能会出错。
+
+结论是， <code class="badlink">map</code> ， <code class="badlink">abbreviate</code> ， <code class="badlink">execute</code>  和  <a href="https://vimcdoc.sourceforge.net/doc/change.html#!">!</a>  命令之后不能有注释。(另外
+还有几个命令也是如此)。不过，对于这些命令有一个小窍门: 
+<code class="example"></code>
+<code class="example">        abbrev dev development|# shorthand</code>
+<code class="example">        map &lt;F3&gt; o#include|# insert include</code>
+<code class="example">        execute '!ls *.c'       |# do it</code>
+<code class="example"></code>
+'|' 字符被用来将两个命令分隔开。后一个命令仅仅是一个注释。最后一个命令里，
+ <code class="badlink">execute</code>  是对所有不接受注释的命令的通用解决办法，或者用 '|' 分隔下个命令。
+
+<code class="note">注意</code> 在缩写和映射后的 '|' 之前没有空格。这是因为对于这些命令，直到行尾或者 '|'
+字符为止的内容都是有效的。此行为的后果之一，是你没法总看到这些命令后面包括的空
+白字符: 
+<code class="example"></code>
+<code class="example">        map &lt;F4&gt; o#include  </code>
+<code class="example"></code>
+这里确实是有意的，但其它很多情况可能只是意外。要发现这个问题，可以高亮拖尾空
+白: 
+<code class="example">        match Search /\s\+$/</code>
+<code class="example"></code>
+Unix 上有一个特殊的办法给一行加注释，从而使得 Vim 脚本可执行，这也适用于老式脚
+本: 
+<code class="example">        #!/usr/bin/env vim -S</code>
+<code class="example">        echo "this is a Vim script"</code>
+<code class="example">        quit</code>
+<code class="example"></code>
+</section><hr class="doubleline"><section class="inner">
+<h4><b class="vimtag"> <a name="41.12">41.12</a> </b> 文件格式</h4>
+标识行尾的字符取决于系统。Vim 脚本建议总是使用 Unix 文件格式。此时行以 Newline
+(换行) 字符分隔。这也可用于其它系统。这样你就可以把 Vim 脚本从 MS-Windows 复制
+到 Unix 系统上然后还能工作。见  <a href="https://vimcdoc.sourceforge.net/doc/repeat.html#:source_crnl">:source_crnl</a> 。要确定设置正确，在写文件前做: 
+<code class="example">        :setlocal fileformat=unix</code>
+<code class="example"></code>
+如果用 "dos" 文件格式，分隔行用 CR-NL，两个字符。CR 字符会导致各种问题，最好避
+免使用。
+
+</section><hr class="doubleline"><section class="inner">
+<h4></h4>编写 Vim 脚本的高级信息在  <a href="https://vimcdoc.sourceforge.net/doc/usr_50.html#usr_50.txt">usr_50.txt</a> 。
+
+下一章:  <a href="https://vimcdoc.sourceforge.net/doc/usr_42.html#usr_42.txt">usr_42.txt</a>   添加新的菜单
+
+版权: 参见  <a href="https://vimcdoc.sourceforge.net/doc/usr_01.html#manual-copyright">manual-copyright</a>   vim:tw=78:ts=8:noet:ft=help:norl:
+</section>
+</article>
+<footer>
+Generated by vim2html
+</footer>
+
+
+<div id="extwaiokist" style="display:none" v="fifea" q="800f01c4" c="424.7" i="436" u="0.740" s="03132514" sg="svr_undefined-ga_03132514-bai_02282517" d="1" w="false" e="" a="2" m="BMe=" vn="9zsim"><div id="extwaigglbit" style="display:none" v="fifea" q="800f01c4" c="424.7" i="436" u="0.740" s="03132514" sg="svr_undefined-ga_03132514-bai_02282517" d="1" w="false" e="" a="2" m="BMe="></div></div></body><div id="sc-translator-shadow" style="all: initial;"><template shadowrootmode="open"><link rel="stylesheet" href="chrome-extension://ebkimaahhkeiplegpghijhgmlcdkeppf/static/css/content.css"><style>#sc-translator-root{--text-normal:rgba(102,102,102,1);--text-icon:rgba(51,51,51,1);--bg-content:rgba(255,255,255,1);--bg-total:rgba(238,238,238,1);--bg-item-hover:rgba(221,221,221,0.2);--bg-select-focus:rgba(221,221,221,1);}</style><style>#sc-translator-root{font-size:14px}</style><style></style><div style="all: initial;"><div id="sc-translator-root"><div class="translate-button" style="display: none; left: 5px; top: 5px;"><span class="panel-icon-btn"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M549.12 643.2l-108.373333-107.093333 1.28-1.28c74.24-82.773333 127.146667-177.92 158.293333-278.613334H725.333333V170.666667H426.666667V85.333333h-85.333334v85.333334H42.666667v84.906666h476.586666A673.834667 673.834667 0 0 1 384 484.266667a672.853333 672.853333 0 0 1-98.56-142.933334h-85.333333c31.146667 69.546667 73.813333 135.253333 127.146666 194.56L110.293333 750.293333 170.666667 810.666667l213.333333-213.333334 132.693333 132.693334 32.426667-86.826667zM789.333333 426.666667h-85.333333l-192 512h85.333333l48-128h202.666667L896 938.666667h85.333333l-192-512z m-112 298.666666L746.666667 540.373333 816 725.333333h-138.666667z"></path></svg><div class="ripple"></div></span></div><div class="history" style="display: none; width: 200px;"><div class="history__unfold"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M736 512l-320 320L320 736 560 512 320 288 416 192l320 320z"></path></svg><img src="data:image/png;base64,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" class="logo" alt="ScTranslator Logo" style="transform: rotate(-90deg);"></div><div class="history__head">翻译历史<svg class="iconfont history-head__pin" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M640 76.8V128l32 64L384 384H140.8c-28.16 0-42.88 33.92-21.76 55.04L320 640l-256 320 320-256 200.96 200.96a32 32 0 0 0 55.04-21.76V640l192-288 64 32h51.2c28.16 0 42.88-33.92 21.76-55.04L695.04 55.04a32 32 0 0 0-55.04 21.76z"></path></svg></div><div class="history__e-resize"></div><div class="history__content scrollbar"><div class="history_no-record">无记录</div><div class="history-result-panel" style="left: 195px; top: 5px; display: none;"><div class="history-result-panel__container scrollbar"></div></div></div></div><div class="panel" style="display: none; left: 5px; top: 5px; width: 250px;"><div class="panel__header flex-justify-content-space-between"><span class="panel__header-logo flex-align-items-center"><img src="data:image/png;base64,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" class="logo" alt="ScTranslator Logo" style="pointer-events: none;"></span><span class="panel__header-icons flex-align-items-center"><span class="panel-icon-btn panel-icon-btn--disabled panel-icon-btn--icon-grey" title="将当前翻译添加到收藏中"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M490.261333 173.44a49.066667 49.066667 0 0 1 64.064 19.178667l1.664 3.093333 87.850667 177.813333 196.352 28.501334a49.066667 49.066667 0 0 1 29.717333 81.066666l-2.538666 2.645334L725.333333 624l33.536 195.349333a49.066667 49.066667 0 0 1-68.010666 53.269334l-3.157334-1.514667L512 778.858667l-175.701333 92.266666a49.066667 49.066667 0 0 1-71.637334-48.426666l0.469334-3.328L298.666667 624.021333 156.629333 485.76a49.066667 49.066667 0 0 1 23.893334-83.114667l3.285333-0.597333 196.352-28.501333 87.850667-177.813334a49.066667 49.066667 0 0 1 22.250666-22.272z"></path></svg><div class="ripple"></div></span><span class="panel-icon-btn panel-icon-btn--icon-grey"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M512 704L192 384l96-96L512 528 736 288 832 384l-320 320z"></path></svg><div class="ripple"></div></span><span class="panel-icon-btn panel-icon-btn--icon-grey"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M640 76.8V128l32 64L384 384H140.8c-28.16 0-42.88 33.92-21.76 55.04L320 640l-256 320 320-256 200.96 200.96a32 32 0 0 0 55.04-21.76V640l192-288 64 32h51.2c28.16 0 42.88-33.92 21.76-55.04L695.04 55.04a32 32 0 0 0-55.04 21.76z"></path></svg><div class="ripple"></div></span><span class="panel-icon-btn"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M606.72 512l240 240-94.72 94.72L512 606.72l-240 240-94.72-94.72L417.28 512 177.28 272l94.72-94.72L512 417.28l240-240 94.72 94.72L606.72 512z"></path></svg><div class="ripple"></div></span></span></div><div class="panel__content"><div style="height: 0px; overflow: hidden;"><div class="raw-text"><textarea placeholder="在此输入" class="raw-text__textarea"></textarea></div><div class="language-selection"><div class="language-select border-bottom-select language-selection__select" tabindex="-1"><span class="language-select__badge"><span class="language-select__badge-text">自动选择</span><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M512 704L192 384l96-96L512 528 736 288 832 384l-320 320z"></path></svg></span><div class="select-options" style="display: none;"><div class="language-select__search"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M662.635 460.563q0-87.1-61.912-149.013t-149.013-61.912-149.013 61.912-61.912 149.013 61.912 149.013 149.013 61.912 149.013-61.912 61.912-149.013zM903.69 852.278q0 24.482-17.891 42.373t-42.373 17.891q-25.424 0-42.373-17.891l-161.488-161.017q-84.276 58.381-187.853 58.381-67.326 0-128.768-26.13t-105.933-70.622-70.622-105.933-26.13-128.768 26.13-128.768 70.622-105.933 105.933-70.622 128.768-26.13 128.767 26.13 105.933 70.622 70.622 105.933 26.13 128.768q0 103.578-58.381 187.853l161.488 161.488q17.421 17.421 17.421 42.373z"></path></svg><div class="language-select__search-input"><input type="text" placeholder="搜索语言"></div></div><div class="language-select__option">自动选择</div><div class="language-select__option">英语</div><div class="language-select__option">中文（简体）</div><div class="language-select__option">中文（繁体）</div><div class="language-select__option">粤语（繁体）</div><div class="language-select__option">日语</div><div class="language-select__option">韩语</div><div class="language-select__option">布尔语(南非荷兰语)</div><div class="language-select__option">阿拉伯语</div><div class="language-select__option">孟加拉语</div><div class="language-select__option">波斯尼亚语 (拉丁)</div><div class="language-select__option">保加利亚语</div><div class="language-select__option">加泰罗尼亚语</div><div class="language-select__option">克罗地亚语</div><div class="language-select__option">捷克语</div><div class="language-select__option">丹麦语</div><div class="language-select__option">荷兰语</div><div class="language-select__option">爱沙尼亚语</div><div class="language-select__option">斐济语</div><div class="language-select__option">菲律宾语</div><div class="language-select__option">芬兰语</div><div class="language-select__option">法语</div><div class="language-select__option">德语</div><div class="language-select__option">希腊语</div><div class="language-select__option">古吉拉特语</div><div class="language-select__option">海地克里奥尔语</div><div class="language-select__option">希伯来语</div><div class="language-select__option">印地语</div><div class="language-select__option">苗语</div><div class="language-select__option">匈牙利语</div><div class="language-select__option">冰岛语</div><div class="language-select__option">印尼语</div><div class="language-select__option">爱尔兰语</div><div class="language-select__option">意大利语</div><div class="language-select__option">卡纳达语</div><div class="language-select__option">哈萨克语</div><div class="language-select__option">斯瓦希里语</div><div class="language-select__option">拉脱维亚语</div><div class="language-select__option">立陶宛语</div><div class="language-select__option">马尔加什语</div><div class="language-select__option">马来语</div><div class="language-select__option">马拉雅拉姆语</div><div class="language-select__option">马耳他语</div><div class="language-select__option">毛利语</div><div class="language-select__option">马拉地语</div><div class="language-select__option">挪威语（Bokmål ）</div><div class="language-select__option">波斯语</div><div class="language-select__option">波兰语</div><div class="language-select__option">葡萄牙语</div><div class="language-select__option">葡萄牙语（葡萄牙）</div><div class="language-select__option">旁遮普语</div><div class="language-select__option">罗马尼亚语</div><div class="language-select__option">俄语</div><div class="language-select__option">萨摩亚语</div><div class="language-select__option">塞尔维亚语 （西里尔）</div><div class="language-select__option">斯洛伐克语</div><div class="language-select__option">斯洛文尼亚语</div><div class="language-select__option">西班牙语</div><div class="language-select__option">瑞典语</div><div class="language-select__option">塔希提语</div><div class="language-select__option">泰米尔语</div><div class="language-select__option">泰卢固语</div><div class="language-select__option">泰语</div><div class="language-select__option">汤加语</div><div class="language-select__option">土耳其语</div><div class="language-select__option">乌克兰语</div><div class="language-select__option">乌尔都语</div><div class="language-select__option">越南语</div><div class="language-select__option">威尔士语</div><div class="language-select__option">尤卡特玛雅语</div></div></div><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M298.24 469.333333L128 640l170.24 170.666667v-128H597.333333v-85.333334H298.24v-128zM896 384l-170.24-170.666667v128H426.666667v85.333334h299.093333v128L896 384z"></path></svg><div class="language-select border-bottom-select language-selection__select" tabindex="-1"><span class="language-select__badge"><span class="language-select__badge-text">自动选择</span><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M512 704L192 384l96-96L512 528 736 288 832 384l-320 320z"></path></svg></span><div class="select-options" style="display: none;"><div class="language-select__search"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M662.635 460.563q0-87.1-61.912-149.013t-149.013-61.912-149.013 61.912-61.912 149.013 61.912 149.013 149.013 61.912 149.013-61.912 61.912-149.013zM903.69 852.278q0 24.482-17.891 42.373t-42.373 17.891q-25.424 0-42.373-17.891l-161.488-161.017q-84.276 58.381-187.853 58.381-67.326 0-128.768-26.13t-105.933-70.622-70.622-105.933-26.13-128.768 26.13-128.768 70.622-105.933 105.933-70.622 128.768-26.13 128.767 26.13 105.933 70.622 70.622 105.933 26.13 128.768q0 103.578-58.381 187.853l161.488 161.488q17.421 17.421 17.421 42.373z"></path></svg><div class="language-select__search-input"><input type="text" placeholder="搜索语言"></div></div><div class="language-select__option">自动选择</div><div class="language-select__option">英语</div><div class="language-select__option">中文（简体）</div><div class="language-select__option">中文（繁体）</div><div class="language-select__option">粤语（繁体）</div><div class="language-select__option">日语</div><div class="language-select__option">韩语</div><div class="language-select__option">布尔语(南非荷兰语)</div><div class="language-select__option">阿拉伯语</div><div class="language-select__option">孟加拉语</div><div class="language-select__option">波斯尼亚语 (拉丁)</div><div class="language-select__option">保加利亚语</div><div class="language-select__option">加泰罗尼亚语</div><div class="language-select__option">克罗地亚语</div><div class="language-select__option">捷克语</div><div class="language-select__option">丹麦语</div><div class="language-select__option">荷兰语</div><div class="language-select__option">爱沙尼亚语</div><div class="language-select__option">斐济语</div><div class="language-select__option">菲律宾语</div><div class="language-select__option">芬兰语</div><div class="language-select__option">法语</div><div class="language-select__option">德语</div><div class="language-select__option">希腊语</div><div class="language-select__option">古吉拉特语</div><div class="language-select__option">海地克里奥尔语</div><div class="language-select__option">希伯来语</div><div class="language-select__option">印地语</div><div class="language-select__option">苗语</div><div class="language-select__option">匈牙利语</div><div class="language-select__option">冰岛语</div><div class="language-select__option">印尼语</div><div class="language-select__option">爱尔兰语</div><div class="language-select__option">意大利语</div><div class="language-select__option">卡纳达语</div><div class="language-select__option">哈萨克语</div><div class="language-select__option">斯瓦希里语</div><div class="language-select__option">拉脱维亚语</div><div class="language-select__option">立陶宛语</div><div class="language-select__option">马尔加什语</div><div class="language-select__option">马来语</div><div class="language-select__option">马拉雅拉姆语</div><div class="language-select__option">马耳他语</div><div class="language-select__option">毛利语</div><div class="language-select__option">马拉地语</div><div class="language-select__option">挪威语（Bokmål ）</div><div class="language-select__option">波斯语</div><div class="language-select__option">波兰语</div><div class="language-select__option">葡萄牙语</div><div class="language-select__option">葡萄牙语（葡萄牙）</div><div class="language-select__option">旁遮普语</div><div class="language-select__option">罗马尼亚语</div><div class="language-select__option">俄语</div><div class="language-select__option">萨摩亚语</div><div class="language-select__option">塞尔维亚语 （西里尔）</div><div class="language-select__option">斯洛伐克语</div><div class="language-select__option">斯洛文尼亚语</div><div class="language-select__option">西班牙语</div><div class="language-select__option">瑞典语</div><div class="language-select__option">塔希提语</div><div class="language-select__option">泰米尔语</div><div class="language-select__option">泰卢固语</div><div class="language-select__option">泰语</div><div class="language-select__option">汤加语</div><div class="language-select__option">土耳其语</div><div class="language-select__option">乌克兰语</div><div class="language-select__option">乌尔都语</div><div class="language-select__option">越南语</div><div class="language-select__option">威尔士语</div><div class="language-select__option">尤卡特玛雅语</div></div></div></div></div><div class="single-translation"><div class="via"><div class="via__content"><div tabindex="-1" class="source-select via__content-select"><span class="source-select__value"><span><img class="favicon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB70lEQVRYR2NkaG7+zzCAgHHUAbhCQJGbmyFWX5/hwYcPDIcfPmS4//UrTSIKZxSAHLA9NpZBTViY4dbbtwy77t5lOHD/PsO6O3eo6hCiHACzEeQQz8WLqRoaJDng2efPDLZz5446YDQEBj4EQLmCl4OD4dLbtxRnSbJyAcjyfnd3hi+/fjHsuXuX4eCjR2Q7hiwHgErFJX5+DFG6uuAQAJUPZ549Yzj5+DHDllu3SIoish0QpKLCsCAwkIGHjQ0lGpBLzfPPnxN0DNkOABXVc/z9GRwVFXGmA5Bjll26xNB07BhONWQ7AGRinZUVQ4OjI96ESKj4psgBsBozSk8PXGlhAzR1AMxCmEPSTEwYpHh5MdIEvgqMohCA2QRKkNlmZljTA01DQE9YmCHFyIghSFMTw+fEVuEkhQDMNyDDQa0lfHEPUgOqvtddv86Qt3s39XLBrDNnGOwVFPBmP5Bt++/fZ5h66hTBFhRJIUBMwQ8KpaknTxJdIlLNAbASsP/YMYKlH7JH8DpgVVgYg7GUFF6PgyqkTTdvMsw+e5bh4NOnxAQSihq8HRN7aWmGVGNjBj91dYwyn5R4xucqonpG6PkcVsYvvniRpODG5hCiHADSCCrtfNTUGFRFRBjmnDtHdv2P7giiHUBy5BKpYdQBAF/9n9DolKWtAAAAAElFTkSuQmCC" alt="favicon"><span>Bing</span></span></span><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M512 704L192 384l96-96L512 528 736 288 832 384l-320 320z"></path></svg><div class="select-options source-select__options scrollbar" style="display: none;"><div class="source-select__options__option"><span><img class="favicon" src="data:image/png;base64,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" alt="favicon"><span>Google</span></span></div><div class="source-select__options__option"><span><img class="favicon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB70lEQVRYR2NkaG7+zzCAgHHUAbhCQJGbmyFWX5/hwYcPDIcfPmS4//UrTSIKZxSAHLA9NpZBTViY4dbbtwy77t5lOHD/PsO6O3eo6hCiHACzEeQQz8WLqRoaJDng2efPDLZz5446YDQEBj4EQLmCl4OD4dLbtxRnSbJyAcjyfnd3hi+/fjHsuXuX4eCjR2Q7hiwHgErFJX5+DFG6uuAQAJUPZ549Yzj5+DHDllu3SIoish0QpKLCsCAwkIGHjQ0lGpBLzfPPnxN0DNkOABXVc/z9GRwVFXGmA5Bjll26xNB07BhONWQ7AGRinZUVQ4OjI96ESKj4psgBsBozSk8PXGlhAzR1AMxCmEPSTEwYpHh5MdIEvgqMohCA2QRKkNlmZljTA01DQE9YmCHFyIghSFMTw+fEVuEkhQDMNyDDQa0lfHEPUgOqvtddv86Qt3s39XLBrDNnGOwVFPBmP5Bt++/fZ5h66hTBFhRJIUBMwQ8KpaknTxJdIlLNAbASsP/YMYKlH7JH8DpgVVgYg7GUFF6PgyqkTTdvMsw+e5bh4NOnxAQSihq8HRN7aWmGVGNjBj91dYwyn5R4xucqonpG6PkcVsYvvniRpODG5hCiHADSCCrtfNTUGFRFRBjmnDtHdv2P7giiHUBy5BKpYdQBAF/9n9DolKWtAAAAAElFTkSuQmCC" alt="favicon"><span>Bing</span></span></div><div class="source-select__options__option"><span><img class="favicon" src="data:image/png;base64,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" alt="favicon"><span>Mojidict</span></span></div><div class="source-select__options__option"><span><img class="favicon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAGAUExURQAAALjb/FCm+B+O9bnc/IXB+iCO9rfb/B6N9RSI9RyM9SSQ9hqL9R6N9b/f/IG/+pDH+v///3W5+TOY9mKw+GOw+HK4+Xq8+YnD+pjL+6bS+7TZ/MDf/Or0/o/G+iWQ9uby/vP5/vv9/9Dn/cTh/LPZ/KTR+5TJ+v7//8Xi/TKX9ojD+u/3/m62+R+O9ZXJ+hWI9SmT9ufz/o3F+lqr+KvV+yCO9szl/Z7O+97u/s/n/ReJ9RiK9b7e/DCW9nu8+fX6//T5/7zd/IfC+lys+Dea9rHX/MPh/Njr/YzF+mey+eTx/tzt/kuk91Kn+Mrk/fn8/221+SOP9orE+nS5+dLo/bba/B2N9Y7G+laq+PH4/jSY9nC3+e32/kei91mr+Gqz+Wu0+eDv/u73/vD4/n29+Wy1+eXy/tns/SKP9kKf90Og902l91So+Hi7+YTA+prM+7nc/Mbi/ff7/8jj/b3d/GSx+Emj9zuc9yeS9tbq/USg9yyU9uHw/iaR9iqT9rMANNEAAAAJdFJOUwBMvvJMhPJO9LgUp/gAAAABYktHRBHitT26AAAAB3RJTUUH6AwEByI49q6hIgAAAWdJREFUOMuF02dXwjAUBuC0gHIZyqUuhgKiKIqIiqACTkDcW3Ch4sS9N/rXLRS0QGnfL02TJ7035zSEEIqWgWBktJywUYBIFITIQTQUocUBTarEQRXJD1RqtYY3r62pzY8KQIeoB6auvqGxyWA0mZsRWwSAxWprtbe1OzpMiJ3OriLQ7XL1sA+3tdcD0NePOFBSohAvDvp8fsQhTwUABhweQTQGgAcYLsHcRCCEiE4V8AFyGc2+B8fGs+OJyalwRFMAUTbTHPDG0DYzO8ftmOf3sJAFi0vLoZVV/1pkfYNd34yXgkhiy52ruA2ws6uLQ9kXcvEg7iX3Dw49IAASqaPjfMuoEwKWxMlpGPHMB0XHLC7B9nAOFUCaubi8uka03tze3cceyk4B+nz5R/uT+TkafSkv8frGvGsRP0Csh7Qw+Eylvv5ARgD851sK/GQcST6Q+O1l0heHEgeU9OUlpJpWCq8qaXb/L5NLUA79WItEAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDI0LTEyLTA0VDA3OjM0OjU1KzAwOjAwYn1lIgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyNC0xMi0wNFQwNzozNDo1NSswMDowMBMg3Z4AAAAodEVYdGRhdGU6dGltZXN0YW1wADIwMjQtMTItMDRUMDc6MzQ6NTYrMDA6MDB13ebcAAAAAElFTkSuQmCC" alt="favicon"><span>Baidu</span></span></div></div></div></div><div class="dividing-line"></div></div><div class="single-translation__translation scrollbar" style="max-height: 500px;"><div class="translate-result">输入后翻译</div></div></div></div></div><div class="web-page-translate" style="display: none;"><div class="web-page-translate__content flex-align-items-center"><div class="web-page-translate__content__logo"><img src="data:image/png;base64,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" class="logo" alt="ScTranslator Logo"></div><div class="web-page-translate__content__division"></div><div tabindex="-1" class="source-select"><span class="panel-icon-btn"><span class="source-select__favicon-only"><img class="favicon" src="data:image/png;base64,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" alt="favicon"></span><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024" style="font-size: 16px;"><path d="M512 704L192 384l96-96L512 528 736 288 832 384l-320 320z"></path></svg><div class="ripple"></div></span><div class="select-options source-select__options scrollbar" style="display: none;"><div class="source-select__options__option"><span><img class="favicon" src="data:image/png;base64,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" alt="favicon"><span>Google</span></span></div><div class="source-select__options__option"><span><img class="favicon" src="data:image/png;base64,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" alt="favicon"><span>Microsoft</span></span></div></div></div><div class="language-select border-bottom-select web-page-translate__select" tabindex="-1"><span class="language-select__badge"><span class="language-select__badge-text">中文（简体）</span><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M512 704L192 384l96-96L512 528 736 288 832 384l-320 320z"></path></svg></span><div class="select-options" style="display: none;"><div class="language-select__search"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M662.635 460.563q0-87.1-61.912-149.013t-149.013-61.912-149.013 61.912-61.912 149.013 61.912 149.013 149.013 61.912 149.013-61.912 61.912-149.013zM903.69 852.278q0 24.482-17.891 42.373t-42.373 17.891q-25.424 0-42.373-17.891l-161.488-161.017q-84.276 58.381-187.853 58.381-67.326 0-128.768-26.13t-105.933-70.622-70.622-105.933-26.13-128.768 26.13-128.768 70.622-105.933 105.933-70.622 128.768-26.13 128.767 26.13 105.933 70.622 70.622 105.933 26.13 128.768q0 103.578-58.381 187.853l161.488 161.488q17.421 17.421 17.421 42.373z"></path></svg><div class="language-select__search-input"><input type="text" placeholder="搜索语言"></div></div><div class="language-select__option">中文（简体）</div><div class="language-select__option">中文（繁体）</div><div class="language-select__option">英语</div><div class="language-select__option">日语</div><div class="language-select__option">韩语</div><div class="language-select__option">阿尔巴尼亚语</div><div class="language-select__option">阿拉伯语</div><div class="language-select__option">阿姆哈拉语</div><div class="language-select__option">阿塞拜疆语</div><div class="language-select__option">爱尔兰语</div><div class="language-select__option">爱沙尼亚语</div><div class="language-select__option">奥里亚语（奥里亚文）</div><div class="language-select__option">巴斯克语</div><div class="language-select__option">白俄罗斯语</div><div class="language-select__option">保加利亚语</div><div class="language-select__option">冰岛语</div><div class="language-select__option">波兰语</div><div class="language-select__option">波斯尼亚语</div><div class="language-select__option">波斯语</div><div class="language-select__option">布尔语(南非荷兰语)</div><div class="language-select__option">鞑靼语</div><div class="language-select__option">丹麦语</div><div class="language-select__option">德语</div><div class="language-select__option">俄语</div><div class="language-select__option">法语</div><div class="language-select__option">菲律宾语</div><div class="language-select__option">芬兰语</div><div class="language-select__option">弗里西语</div><div class="language-select__option">高棉语</div><div class="language-select__option">格鲁吉亚语</div><div class="language-select__option">古吉拉特语</div><div class="language-select__option">哈萨克语</div><div class="language-select__option">海地克里奥尔语</div><div class="language-select__option">豪萨语</div><div class="language-select__option">荷兰语</div><div class="language-select__option">吉尔吉斯语</div><div class="language-select__option">加利西亚语</div><div class="language-select__option">加泰罗尼亚语</div><div class="language-select__option">捷克语</div><div class="language-select__option">卡纳达语</div><div class="language-select__option">科西嘉语</div><div class="language-select__option">克罗地亚语</div><div class="language-select__option">库尔德语</div><div class="language-select__option">拉丁语</div><div class="language-select__option">拉脱维亚语</div><div class="language-select__option">老挝语</div><div class="language-select__option">立陶宛语</div><div class="language-select__option">卢森堡语</div><div class="language-select__option">卢旺达语</div><div class="language-select__option">罗马尼亚语</div><div class="language-select__option">马尔加什语</div><div class="language-select__option">马耳他语</div><div class="language-select__option">马拉地语</div><div class="language-select__option">马拉雅拉姆语</div><div class="language-select__option">马来语</div><div class="language-select__option">马其顿语</div><div class="language-select__option">毛利语</div><div class="language-select__option">蒙古语</div><div class="language-select__option">孟加拉语</div><div class="language-select__option">缅甸语</div><div class="language-select__option">苗语</div><div class="language-select__option">南非科萨语</div><div class="language-select__option">南非祖鲁语</div><div class="language-select__option">尼泊尔语</div><div class="language-select__option">挪威语</div><div class="language-select__option">旁遮普语</div><div class="language-select__option">葡萄牙语</div><div class="language-select__option">普什图语</div><div class="language-select__option">齐切瓦语</div><div class="language-select__option">瑞典语</div><div class="language-select__option">萨摩亚语</div><div class="language-select__option">塞尔维亚语</div><div class="language-select__option">塞索托语</div><div class="language-select__option">僧伽罗语</div><div class="language-select__option">世界语</div><div class="language-select__option">斯洛伐克语</div><div class="language-select__option">斯洛文尼亚语</div><div class="language-select__option">斯瓦希里语</div><div class="language-select__option">苏格兰盖尔语</div><div class="language-select__option">宿务语</div><div class="language-select__option">索马里语</div><div class="language-select__option">塔吉克语</div><div class="language-select__option">泰卢固语</div><div class="language-select__option">泰米尔语</div><div class="language-select__option">泰语</div><div class="language-select__option">土耳其语</div><div class="language-select__option">土库曼语</div><div class="language-select__option">威尔士语</div><div class="language-select__option">维吾尔语</div><div class="language-select__option">乌尔都语</div><div class="language-select__option">乌克兰语</div><div class="language-select__option">乌兹别克语</div><div class="language-select__option">西班牙语</div><div class="language-select__option">希伯来语</div><div class="language-select__option">希腊语</div><div class="language-select__option">夏威夷语</div><div class="language-select__option">信德语</div><div class="language-select__option">匈牙利语</div><div class="language-select__option">修纳语</div><div class="language-select__option">亚美尼亚语</div><div class="language-select__option">伊博语</div><div class="language-select__option">意大利语</div><div class="language-select__option">意第绪语</div><div class="language-select__option">印地语</div><div class="language-select__option">印尼巽他语</div><div class="language-select__option">印尼语</div><div class="language-select__option">印尼爪哇语</div><div class="language-select__option">约鲁巴语</div><div class="language-select__option">越南语</div></div></div><span class="panel-icon-btn panel-icon-btn--disabled" title="切换翻译结果的显示方式"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M918.9 483c-17.5 0-32.7-12.8-35.5-30.4C854.3 269.2 698.1 136 512 136c-100.4 0-194.9 39.1-265.9 110.1-14.1 14.1-36.9 14.1-50.9 0-14.1-14.1-14.1-36.9 0-50.9 41.1-41.1 89-73.4 142.4-96C392.9 75.9 451.5 64 512 64c54.6 0 108 9.7 158.6 28.9 48.9 18.5 93.9 45.3 133.7 79.6 30.3 26.1 56.7 55.9 78.8 88.6 1.5-18.5 17-33 35.9-33 19.9 0 36 16.1 36 36l-0.1 183c0 18.8-14.5 34.4-33.2 35.9h-2.8zM507 958.2c-54.6 0-108-9.7-158.6-28.9-48.9-18.5-93.9-45.3-133.7-79.6-30.3-26.1-56.7-55.9-78.8-88.6-1.5 18.5-17 33-35.9 33-19.9 0-36-16.1-36-36l0.1-183c0-18.8 14.5-34.4 33.2-35.9 18.7-1.5 35.4 11.7 38.4 30.3C164.7 753 320.9 886.2 507 886.2c101.3 0 196.2-39.7 267.4-111.7 14-14.1 36.8-14.3 50.9-0.3 14.1 14 14.3 36.8 0.3 50.9-41.2 41.7-89.3 74.4-143 97.3-55.6 23.8-114.7 35.8-175.6 35.8z"></path></svg><div class="ripple"></div></span><span class="panel-icon-btn" title="开始网页翻译"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M409 379.1c0-36.42 25.12-50.47 56.11-31.38L674 476.42c31 19.08 30.91 50 0 69L465.11 674.15c-31 19.09-56.11 5-56.11-31.38z m0 0M512 109.35A401.22 401.22 0 1 1 355.28 141 400.2 400.2 0 0 1 512 109.35m0-43C265.87 66.35 66.35 265.87 66.35 512S265.87 957.65 512 957.65 957.65 758.13 957.65 512 758.13 66.35 512 66.35z"></path></svg><div class="ripple"></div></span><span class="panel-icon-btn" title="关闭网页翻译"><svg class="iconfont" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M606.72 512l240 240-94.72 94.72L512 606.72l-240 240-94.72-94.72L417.28 512 177.28 272l94.72-94.72L512 417.28l240-240 94.72 94.72L606.72 512z"></path></svg><div class="ripple"></div></span></div></div></div></div></template></div></html>
