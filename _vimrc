@@ -35,6 +35,8 @@ endif
 " gvim
 if (g:isGUI)
 
+" windows gvim 增强显示
+set rop=type:directx,renmode:5
 " vim内置的配色方案(desert,elflord,evening,industry,peachpuff,ron,shine,sorbet等)
   colo evening
 " vim的第三方配置方案（插件）
@@ -240,7 +242,7 @@ set runtimepath+=$VIM\test
 set runtimepath+=$VIM\after
 
 
-call plug#begin('$VIM\Plugins')
+call plug#begin('$VIM\bundles')
 
 " 配色方案
 " Plugin 'flazz/vim-colorschemes'
@@ -277,6 +279,7 @@ Plug 'skywind3000/vim-quickui'
 
 " 模糊查找
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
+Plug 'tamago324/LeaderF-filer'
 
 " 注释插件
 Plug 'preservim/nerdcommenter'
@@ -336,6 +339,12 @@ Plug 'preservim/tagbar'
 " 在 sign 列中显示 git diff 标记
 Plug 'airblade/vim-gitgutter', {'on':'GitGutterToggle'}
 
+" 同时突出显示多个搜索，每个搜索具有不同的颜色
+Plug 'vim-scripts/MultipleSearch'
+
+" 语法高亮项的文本对象
+Plug 'kana/vim-textobj-syntax'
+
 " 图标插件
 Plug 'ryanoasis/vim-devicons'
 
@@ -392,7 +401,7 @@ endfunction
 " 快捷键
 " x——收起该节点的父节点
 
-" vim-dirvish(查找文件) {{{3
+" vim-dirvish(查找文件)(after/plugin/dirvish.vim) {{{3
 " 在 Vim 命令模式下输入 :Dirvish \正常模式下按下-,即可打开当前工作目录的文件浏览器,q退出文件浏览器
 " 使用 :Dirvish /path/to/directory 命令可以打开指定目录的文件浏览器
 " 将光标移动到目录上，按下回车键（Enter）即可进入该目录。按下 - 键可以返回上级目录
@@ -759,13 +768,28 @@ let g:quickui_color_scheme = 'papercol dark'
 
 call quickui#menu#reset()
 
-call quickui#menu#install("&File", [
-			\ [ "&Open\t(:w)", 'call feedkeys(":tabe ")'],
-			\ [ "&Save\t(:w)", 'write'],
-			\ [ "--", ],
+
+call quickui#menu#install("&Leaderf", [
 			\ [ "LeaderF &File", 'Leaderf file', 'Open file with leaderf'],
 			\ [ "LeaderF &Mru", 'Leaderf mru --regexMode', 'Open recently accessed files'],
 			\ [ "LeaderF &Buffer", 'Leaderf buffer', 'List current buffers in leaderf'],
+			\ [ "LeaderF &Line", 'Leaderf line', '查找当前文件中的行'],
+			\ [ "LeaderF buf&Tag", 'Leaderf bufTag', 'bufTag'],
+			\ [ "LeaderF &Colorscheme", 'Leaderf colorscheme'],
+			\ [ "LeaderF &Function", 'Leaderf function'],
+			\ [ "--", ],
+			\ [ "LeaderF cmd&History", 'Leaderf cmdHistory'],
+			\ [ "LeaderF &Jumps", 'Leaderf jumps'],
+			\ [ "--", ],
+			\ [ "LeaderF File&R", 'Leaderf filer'],
+			\ [ "LeaderF R&G", 'Leaderf rg'],
+			\ ])
+
+
+
+call quickui#menu#install("&File", [
+			\ [ "&Open\t(:w)", 'call feedkeys(":tabe ")'],
+			\ [ "&Save\t(:w)", 'write'],
 			\ [ "--", ],
 			\ [ "J&unk File", 'JunkFile', ''],
 			\ [ "Junk L&ist", 'JunkList', ''],
@@ -790,7 +814,8 @@ call quickui#menu#install("&File", [
 			\ [ "e&xit", 'qa' ],
 			\ ])
 
-call quickui#menu#install("&Leaderf", [
+
+call quickui#menu#install("&Command/Function", [
 			\ [ "LeaderF &File", 'Leaderf file', 'Open file with leaderf'],
 			\ [ "LeaderF &Mru", 'Leaderf mru --regexMode', 'Open recently accessed files'],
 			\ [ "LeaderF &Buffer", 'Leaderf buffer', 'List current buffers in leaderf'],
@@ -798,7 +823,6 @@ call quickui#menu#install("&Leaderf", [
 			\ [ "LeaderF buf&Tag", 'Leaderf bufTag', 'bufTag'],
 			\ [ "--", ],
 			\ ])
-
 
 
 call quickui#menu#install("&Git", [
@@ -849,11 +873,8 @@ noremap <space><space> :call quickui#menu#open()<cr>
 " 安装模糊匹配算法的 C 扩展,提高性能(需python支持)
 
 " 弹出窗口(tab进入normal模式不能使用很多功能)
-let g:Lf_WindowPosition = 'popup'
+" let g:Lf_WindowPosition = 'popup'
 " let g:Lf_WindowPosition = 'bottom'
-" Show icons, icons are shown by default
-let g:Lf_ShowDevIcons = 1
-let g:Lf_StlSeparator = { 'left': '', 'right': '' }
 
 
 " 在普通模式下不显示 Leaderf 的帮助信息
@@ -1276,7 +1297,7 @@ noremap <silent> <leader>cal :Calendar<cr>
 
   " vim-choosewin(对于多tab窗口跳转很有用） {{{3
   " 使用 <leader>- 来选择窗口
-nmap  <leader>-  <Plug>(choosewin)
+nmap  <leader>- :ChooseWin<cr>
 
   " winresizer(调整window大小) {{{3
 " 调整内部window
@@ -1912,9 +1933,6 @@ function! <SID>BufcloseCloseIt()
 	endif
 endfunction
 
-
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 快捷键 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1922,12 +1940,8 @@ endfunction
 " 退出
 nnoremap <leader>q :q<CR>
 
-" 一般来说,windows下通过AHK脚本把Capslk映射为Esc,在vim中为了保持通用性,将;;设置为esc，需要单个输入;的时候不影响，需要输入;;的时候停顿一下  
-" Esc键在键盘上较远,Ctrl-[要两手配合,Ctrl-c被占用
-inoremap ;; <ESC>
-cnoremap ;; <ESC>
-nnoremap ;; <Esc>
-vnoremap ;; <Esc>
+" 关于退出(Esc)，一般来说,windows下通过AHK脚本把Capslk映射为Esc,在vim中为了保持通用性, 使用Ctrl-[ (但要比较熟练)
+" Esc键在键盘上较远,Ctrl-c被占用
 
 " 快速移动
 nnoremap <C-u> 10k
@@ -2512,6 +2526,7 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 笔记 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " 模式(mode) {{{2
 "
 " 操作符待决模式（Operator-Pending mode） {{{3
@@ -2607,10 +2622,59 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " :[range] global[!] /{pattern}/ [cmd]
 
 
+" 文本对象 {{{2
+" default textobj  {{{3
+" aw/iw               一个单词/内含单词
+" aW/iW                   字串
+" as/is                   句子
+" ap/ip                   段落
+" a],a[/i],i[             []块
+" a),a(,ab/i),i(,ib       ()块
+" a>,a</i>,i<             <>块
+" at/it                   标签块(HTML,XML)
+" a},a{,aB/i},i{,iB       {}大块
+" a",a',a`/i",i',i`       引号字符串
+
+""custom textobj(不定期更新/修改) {{{3
+
+" textobj-user(替换了所有的标签符号,对于相同的嵌套括号不予预设) {{{4
+
+"搜索结果lastpat: / ?
+"日期date 时间time : d T
+"两数字之间dig.dig : m
+"php代码 : P
+"行Line : l
+"双引号quote : u
+"单引号quotex : x
+"方括号BracketsF : f
+"圆括号BracketsY : b (default textobj)
+"大括号Braces : k
+"尖括号<>  : j             
+
+" indent-object.vim(定义了一个新的文本对象，表示相同缩进级别的代码行。对 python/vim 脚本等很有用) {{{4
+
+" 定义了两个新的文本对象。这些非常相似 - 它们不同 仅在它们是否包含块下方的行
+" <count>ai	       缩进级别和上面的行。
+" <count>ii	       Inner Indentation level （上面没有一行）。
+" <count>aI	       缩进级别和高于/下方的线条。
+" <count>iI	       Inner Indentation level （没有上/下行）。
+
+" enhanced-object.vim {{{4
+" 对于中文的（），【】，｛｝等提供textobj支持,目前只支持了原生符号，后续可以加入扩展文本对象支持
+
+
+" vim-textobj-syntax(对于有些语法选中有些瑕疵) {{{4
+" ay/iy          语法高亮
+
+
+
+
+"string \"
+
 " 工具 {{{2
 
-
-
+" 这句话里含有“引号”，以及（括号）。
+" 再来一句，这句话里含有|“引号”，以及（括号）。
 
 
 
