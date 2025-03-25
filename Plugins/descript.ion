@@ -1,5 +1,0 @@
-Vundle.vim 插件管理器
-gruvbox 主题
-vim-easymotion 快速移动插件（中文、英文）
-vim-devicons 图标插件
-vim-airline 状态栏插件（提供状态栏、tab栏）
