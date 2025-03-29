@@ -2442,24 +2442,8 @@ autocmd BufEnter * if &diff | call SetupDiffMappings() | endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 统计相关 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 统计相关配置
-" 1. 统计当前字符之前的所有字节数
-command! -nargs=0 CountBytesBack :normal mxvgg"ay`x:echo strlen(@a)<CR>
 
-" 2. 统计当前字符之后的所有字节数
-command! -nargs=0 CountBytesForward :normal mxv$G"ay`x:echo strlen(@a)<CR>
-
-" 3. 统计当前文件所有字节数
-command! -nargs=0 CountBytesAll :normal mxggVG"ay`x:echo strlen(@a)<CR>
-
-" 4. 统计当前文件所有字符数
-command! -nargs=0 CountCharsAll :%s/./&/gn|noh
-
-" 5. 统计当前文件所有单词数
-command! -nargs=0 CountWordsAll :%s/\i\+/&/gn|noh
-
-" 6. 映射快捷键统计选中文本
-nmap <leader>gc g<C-g>
+" normal和visual模式下g<C-g>
 
 " 其他统计命令示例
 " :%s/./&/gn		字符数
@@ -2467,8 +2451,9 @@ nmap <leader>gc g<C-g>
 " :%s/^//n		行数
 " :%s/the/&/gn		任何地方出现的 "the"
 " :%s/\<the\>/&/gn	作为单词出现的 "the"
+" 中文统计  :%s/[\u4e00-\u9fa5\u3040-\u30FF]//gn
 
-
+noremap <leader>gz :s/[\u4e00-\u9fa5\u3040-\u30FF]//gn
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Session {{{1
@@ -2698,6 +2683,9 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " ……
 " range
 " 前缀 %,全局执行
+" . 表示当前行
+" 可以借用m标记
+" 可视模式选中
 
 " 将 substitute 命令的查找域留空，意味着 Vim 将会重用上次的查找模式
 
@@ -2710,8 +2698,10 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " 在多个文件中执行查找与替换
 
 " global命令 {{{3
-
 " :[range] global[!] /{pattern}/ [cmd]
+
+" global 中执行的命令只能是冒号命令。普通模式命令不能在这里使用。如果需要，可以使用 |:normal| 命令。
+" 可以在global命令中使用substitute命令
 
 
 " 文本对象 {{{2
@@ -2779,8 +2769,8 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 
 
 
-
-
+" todo
+" tab补全
 
 
 
