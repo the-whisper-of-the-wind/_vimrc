@@ -1,10 +1,6 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 先决设置 {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 实现Windows风格功能(可以根据mswin.vim的内容设置)
-" set 'selection', 'selectmode', 'mousemodel' and 'keymodel' for MS-Windows
-behave mswin
-
 " 设置路径(可以把vimrc放在指定文件夹）
 " _VIMRC文件所在的目录
 " Gvim on windows 是用配置文件 _vimrc 代替了 .vimrc，用 vimfiles目录 代替 .vim目录 
@@ -15,12 +11,6 @@ let $VIM_PARENT = fnamemodify($VIM, ':h')
 let mapleader = "\<space>"
 " :重新映射
 noremap <space> :
-
-" 设置延迟时间为 500 毫秒
-set timeoutlen=500  
-
-" 用于配置会话保存选项(缓冲区、标签页布局——窗口和缓冲区）
-set sessionoptions=buffers,tabpages
 
 " 语法高亮(hi高亮要放在其后面)
 syntax on     
@@ -345,7 +335,13 @@ Plug 'vim-scripts/MultipleSearch'
 " 语法高亮项的文本对象
 Plug 'kana/vim-textobj-syntax'
 
-" 图标插件
+" 更好的 % 导航并突出显示匹配的单词modern matchit 和 matchparen
+Plug 'andymass/vim-matchup'
+
+" subsititute/iabbrevG强
+Plug 'tpope/vim-abolish'
+
+"图标插件
 Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
@@ -854,11 +850,11 @@ if has('win32') || has('win64') || has('win16') || has('win95')
 endif
 
 call quickui#menu#install('Help (&?)', [
-			\ ["&Index", 'tab help index', ''],
-			\ ['Ti&ps', 'tab help tips', ''],
+			\ ["&Index\t(所有命令的一个完整列表)", 'tab help index', ''],
+			\ ["Ti&ps\t(一小部分会对很多用户有用的技巧)", 'tab help tips', ''],
 			\ ['--',''],
-			\ ["&Tutorial", 'tab help tutor', ''],
-			\ ['&Quick Reference', 'tab help quickref', ''],
+			\ ["&usr_toc.txt\t(使用手册大纲)", 'tab help usr_toc.txt', ''],
+			\ ["&Quick Reference\t(quickref目录)", 'tab help quickref', ''],
 			\ ['&Summary', 'tab help summary', ''],
 			\ ['--',''],
 			\ ['&Vim Script', 'tab help eval', ''],
@@ -1019,12 +1015,16 @@ autocmd FileType markdown nnoremap <buffer> <leader>rt :RemoveToc<CR>
 
 " vim-signature(Mark标记） {{{3
 
+" 小写字母标记是当前文件专用的,大写字母是全局的
+
 " 定义标记的颜色  GUI 模式下文本颜色为红色 终端模式下文本颜色为红色
 highlight SignatureMarkText guifg=red ctermfg=1
 " 设置标记符号的颜色 GUI 模式下符号颜色为绿色 终端模式下符号颜色为绿色
 highlight SignatureMarkSigns guifg=green ctermfg=2
 " 设置快捷键,现示当前缓冲区的标记列表
-nnoremap <leader>mk :SignatureListBufferMarks<CR>
+nnoremap <leader>ml :SignatureListBufferMarks<CR>
+" 显示大写全局标记
+nnoremap <leader>mg :SignatureListGlobalMarks<CR>
 
   " mx           Toggle mark 'x' and display it in the leftmost column
   " dmx          Remove mark 'x' where x is a-zA-Z
@@ -1318,6 +1318,15 @@ set updatetime=100
 nnoremap <leader>git :GitGutterToggle<cr>
 
 command! Gqf GitGutterQuickFix | copen
+
+
+" vim-matchup(%增强) {{{3
+
+
+" vim-abolish(s增强) {{{3
+
+
+
 """"""""""""""""""""""""""""""
 " 代码 {{{1
 """"""""""""""""""""""""""""""
@@ -1527,6 +1536,15 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 配色方案 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" term		黑白终端的属性
+" cterm		彩色终端的属性
+" ctermfg		彩色终端的前景色
+" ctermbg		彩色终端的背景色
+" gui		GUI 版本属性
+" guifg		GUI 版本的前景色
+" guibg		GUI 版本的背景色
+" 属性是 "bold" (粗体) 和 "underline" (下划线) 可以用于 "cterm" 和 "gui"。
+
 if  g:colors_name ==# 'evening'
         " 当使用 sevening 配色方案时
   " buffer配色
@@ -1549,6 +1567,10 @@ highlight CurSearch guibg=#FF8000 guifg=black ctermbg=3 ctermfg=0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " mswin {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 实现Windows风格功能(可以根据mswin.vim的内容设置)
+" set 'selection', 'selectmode', 'mousemodel' and 'keymodel' for MS-Windows
+behave mswin
+
 " 重新映射 Ctrl+Q 为 Ctrl+V 的功能
 " insert,command模式下<C-v>用来插入字符;normal模式下快区域选中
 noremap <C-Q> <C-V>
@@ -1636,6 +1658,14 @@ inoremap <F4> <C-O><C-W>c
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 去除VI一致性(必须);使用vim自己的键盘模式,而不是兼容vi的模式
 set nocompatible      
+
+" 设置延迟时间为 500 毫秒
+set timeoutlen=500  
+
+
+
+" 用于配置会话保存选项(缓冲区、标签页布局——窗口和缓冲区）
+set sessionoptions=buffers,tabpages
 
 " 设置 Vim 菜单的语言
 set langmenu=zh_CN.UTF-8
@@ -1739,10 +1769,11 @@ nnoremap <silent> <leader>? ?\V<C-r>=escape(@", getcmdtype().'?\')
 
 " 显示匹配的括号,()[]{} (可用%跳转，默认不包括<>)
 set showmatch     
-" 指定需要匹配的字符对(中英文所有的字符对)
-set showmatch matchpairs=(:),[:],{:},<:>,（:）,【:】,｛:｝,《:》
-" 添加软件包,在配对的关键字间跳转
-packadd! matchit
+	
+" 指定需要匹配的字符对,可以接受字符配对的必须不同，例如，不能在两个双引号间跳转。
+" 更高级的 "%" 的使用方式,参考vim-matchup插件使用/matchit等vim自带软件包
+set showmatch matchpairs=(:),[:],{:},<:>,（:）,【:】,｛:｝,《:》,‘:’,“:”,=:;
+
 
 " 设置自动补全的来源
 set complete=.,w,b,u,t,i,d 
@@ -1877,7 +1908,8 @@ endif
 set viminfo='10,\"100,:20,%,n$VIMRUNTIME/.viminfo
 au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
 
-"继续搜索光标下文字 expand("<cWORD>") 的功能是获取当前光标所在的字串
+"搜索光标下的单词用*/#
+"继续搜索光标下字串 expand("<cWORD>") 的功能是获取当前光标所在的字串
 nmap <leader>/ /<C-R>=expand("<cWORD>")<CR>
 "vmap <Leader>/ "ry/<C-R>r 原来的没有处理回车 使用寄存器
 vmap <leader>/ "ry/<c-r>=substitute(escape('<c-r>r', '\^$~/.[]'),'\r','\\n','ge')<CR>
@@ -2008,6 +2040,9 @@ noremap k gk
 " 历史命令
 cnoremap <c-n> <down>
 cnoremap <c-p> <up>
+
+" 在插入字符和替换字符两种方式之间切换
+cnoremap <c-o> <Insert>
 
 " insert和command模式下,<C-w>删除至上个单词的开头,<C-u>删除至上个单词的行首
 inoremap <C-d> <C-w>
@@ -2194,6 +2229,8 @@ augroup END
 map <silent> <leader>fdm :set fdm=marker<cr>
 map <silent> <leader>fdi :set fdm=indent<cr>
 map <silent> <leader>fds :set fdm=syntax<cr>
+map <silent> <leader>fde :set fdm=expr<cr>
+
 nmap [1 <esc>$a {{{1<esc>
 nmap [2 <esc>$a {{{2<esc>
 nmap [3 <esc>$a {{{3<esc>
@@ -2294,6 +2331,9 @@ imap <C-T><C-T> <c-r>=strftime("%H:%M:%S")<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "diff相关 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 在修改过的缓冲区中应用可以看到和原先载入的文件间的差异
+command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
+
 "diff直接跳到对应的字符
 " 跳转到前一个差异文本的位置
 function! Jump2PrevDiffText()
@@ -2528,7 +2568,17 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " 模式(mode) {{{2
-"
+
+" noraml模式 {{{3
+	" x  表示  dl  (删除当前光标下的字符)
+	" X  表示  dh  (删除光标左边的字符)
+	" D  表示  d$  (删除到行尾)
+	" C  表示  c$  (修改到行尾)
+	" s  表示  cl  (修改一个字符)
+	" S  表示  cc  (修改一整行)
+  " Y  表示  yy  (复制一整行)
+  " ~	修改光标下字符的大小写，并移动到下一个字符。这不是一个操作符(除非设置了 'tildeop')，所以你不能连接一个动作命令。这个命令在可视模式下也有效，它会改变被选中的所有文本的大小写。
+
 " 操作符待决模式（Operator-Pending mode） {{{3
 
 " 插入-普通模式(<C-o>) {{{3
@@ -2547,9 +2597,19 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " 可视模式 {{{3
 " v      激活面向字符的可视模式
 " V      激活面向行的可视模式
-" <C-v>  激活面向列块的可视模式
 " gv     重选上次的高亮选区
 " o        切换高亮选区的活动端
+
+" 可视列块模式 {{{4
+" <C-v>  激活面向列块的可视模式[<C-Q>代替]
+" 插入文本,"I{string}<Esc>" 命令把 {string} 插到可视列块的每一行的左边
+"A" 命令的效果与 "I" 命令一样，只是把文字插入可视列块的右边
+" 可视列块中的 "c" 命令会删除整个可视列块并转入 "插入" 模式,与 "I" 命令一样，短行不会发生变化
+"C" 命令从块的左边界开始删除所有行的后半段，然后状态切换到 "插入" 模式让你输入文本。新的文本被插入到每一行的末尾
+" 要以某一个字符完全填充整个块，可以使用 "r" 命令
+">" 命令把选中的文档向右移动一个 "平移单位"，中间用空白填充
+"J" 命令连接被选中的行。
+
 
 " 命令模式(★★★★★) {{{3
 
@@ -2592,6 +2652,27 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 "q:         打开 Ex 命令历史的命令行窗口
 "<Ctrl-f>   从命令行模式切换到命令行窗口
 
+
+" 命令行上移动光标时最常用的键:
+
+	" <Left>			左移一个字符
+	" <Right>			右移一个字符
+	" <S-Left> 或 <C-Left>	左移一个单词
+	" <S-Right> 或 <C-Right>	右移一个单词
+	" CTRL-B 或 <Home>	命令行行首
+	" CTRL-E 或 <End>		命令行行尾
+  " CTRL-W     删除光标前整个单词 
+  " CTRL-U     删除命令行上全部文字，从而让你从头开始。
+  " 插入键 <Insert>  在插入字符和替换字符两种方式之间切换
+
+
+" 选 项 简 称 {{{3
+" 你可以从这儿找到完整的选项全称和简称的列表: |option-list|。
+
+
+
+
+
 " 运行 Shell 命令
 " 在 Vim 的命令行模式中，给命令加一个叹号前缀（参见 :h :! ）就可以调用 外部程序
 
@@ -2615,7 +2696,18 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " 标志位 n 会抑制正常的替换行为，即让 Vim 不执行替换操作，而只是报告本次substitute 命令匹配的个数。
 " 标志位 & 仅仅用于指示 Vim 重用上一次 substitute 命令所用过的标志位。
 " ……
+" range
+" 前缀 %,全局执行
+
+" 将 substitute 命令的查找域留空，意味着 Vim 将会重用上次的查找模式
+
 " 用寄存器的内容替换
+
+" 重复上一次 substitute 命令
+" 在整个文件范围内重复面向行的替换操作 :g&
+" 修正 substitute 命令的执行范围 可以指定一个新的范围，并使用 :&& 命令重新执行替换操作
+
+" 在多个文件中执行查找与替换
 
 " global命令 {{{3
 
@@ -2668,13 +2760,26 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 
 
 
+" 各种窗口 {{{2
+" 选项窗口(:options) {{{3
+" 如果要找一个选项 :optons,这会打开一个新窗口，其中给出一个选项的列表，并对每个选项提供一行解释。这些选项根据种类分组。
 
-"string \"
 
-" 工具 {{{2
+" 各种杂项操作 {{{2
+" 读、写文件的一部分 {{{3
+" 在一个文件中包含另一个文件 ":read {filename}" ,":read" 支持范围前缀。文件将被插入到范围指定的最后一行的下面
+" 保 存 部 分 行 要把一部分行写入到文件，可以使用 ":write" 命令。
+" 添 加 内 容 到 文 件 中  
 
-" 这句话里含有“引号”，以及（括号）。
-" 再来一句，这句话里含有|“引号”，以及（括号）。
+" 排版文本 {{{3
+
+" 查阅 man 信息 {{{3
+" 编辑一个脚本文件或者 C 程序的时候，有时你会需要从 man 手册中查询某个命令或者函数的用法 (使用 Unix 的情况下)。
+" 在对应的单词上输入K,Vim 会在对应的单词上执行外部命令: man
+
+
+
+
 
 
 
