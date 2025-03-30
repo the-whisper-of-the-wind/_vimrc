@@ -26,7 +26,7 @@ endif
 if (g:isGUI)
 
 " windows gvim 增强显示
-set rop=type:directx,renmode:5
+  set rop=type:directx,renmode:5
 " vim内置的配色方案(desert,elflord,evening,industry,peachpuff,ron,shine,sorbet等)
   colo evening
 " vim的第三方配置方案（插件）
@@ -296,8 +296,6 @@ Plug 'preservim/vim-markdown'
 
 " Mark插件
 Plug 'kshenoy/vim-signature'
-" 书签
-Plug 'MattesGroeger/vim-bookmarks'
 " 查看寄存器
 Plug 'junegunn/vim-peekaboo'
 
@@ -346,7 +344,6 @@ Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
-
 " 插件配置 {{{2
 
 " nerdtree(书签、直观显示目录结构) {{{3
@@ -376,23 +373,21 @@ nnoremap <leader>n :NERDTreeToggle<CR>
 " 书签保存的文件
 let NERDTreeBookmarksFile=$VIM.'/NerdBookmarks.txt'
 
-"在tree窗口中才能执行
-" 创建标签
-nmap <C-f7> <esc>:Bookmark 
-" 删除标签
-nmap <C-F8> <esc> :ClearBookmarks 
 
-" 当 NERDTree 窗口打开时，映射 Shift+字母 到对应盘符
-autocmd FileType nerdtree nmap <buffer> <S-D> :call CustomNERDTreeFind('D:\\')<CR>
-autocmd FileType nerdtree nmap <buffer> <S-C> :call CustomNERDTreeFind('C:\\')<CR>
-autocmd FileType nerdtree nmap <buffer> <S-Z> :call CustomNERDTreeFind('Z:\\')<CR>
+augroup nerdtree
+    autocmd!
+      "在tree窗口中才能执行
+      " 创建标签
+      autocmd FileType nerdtree nmap <buffer> <C-f7> :Bookmark
+      " 删除标签
+      autocmd FileType nerdtree nmap <buffer> <C-f8> :ClearBookmarks 
 
-function! CustomNERDTreeFind(path)
-    " 关闭当前的 NERDTree 窗口
-    execute 'NERDTreeClose'
-    " 重新打开 NERDTree 并定位到指定路径
-    execute 'NERDTree ' . a:path
-endfunction
+      " 当 NERDTree 窗口打开时，映射 Shift+字母 到对应盘符
+      autocmd FileType nerdtree nmap <buffer> <S-D> :NERDTree d:<CR>
+      autocmd FileType nerdtree nmap <buffer> <S-C> :NERDTree c:<CR>
+      autocmd FileType nerdtree nmap <buffer> <S-Z> :NERDTree z:<CR>
+augroup END
+
 
 " 快捷键
 " x——收起该节点的父节点
@@ -451,8 +446,6 @@ if !exists('g:airline_symbols')
   let g:airline_symbols.linenr = ' L:'
   let g:airline_symbols.maxlinenr = '☰'
   let g:airline_symbols.colnr = '  C:'
-
-
 
 " 定义函数来获取文件大小
 function! GetFileSize()
@@ -556,24 +549,6 @@ nnoremap <leader>9 <Plug>AirlineSelectTab9
 nnoremap <leader>0 <Plug>AirlineSelectTab0
 nnoremap <leader>- <Plug>AirlineSelectPrevTab
 nnoremap <leader>+ <Plug>AirlineSelectNextTab
-" Ctrl+T 新建 buffer
-nnoremap <C-T> :enew<CR>
-" Ctrl+W 关闭 buffer
-nnoremap <C-W> :bd<CR>
-
-" tab相关快捷键
-" 映射 t + s 组合键来新建一个标签页
-nnoremap <silent> ts :tabnew<CR>
-" 映射 t + c 组合键来关闭当前标签页
-nnoremap <silent> tc :tabclose<CR>
-" 映射 t + h 组合键来切换到上一个标签页
-nnoremap <silent> th :tabprev<CR>
-" 映射 t + l 组合键来切换到下一个标签页
-nnoremap <silent> tl :tabnext<CR>
-" 映射 t + 数字 组合键跳转到对应的标签页
-for i in range(1, 9)
-    execute "nnoremap <silent> t".i " :tabn ".i."<CR>"
-endfor
 
 " rainbow {{{3
 " 在nerdtree中禁用
@@ -1014,17 +989,23 @@ autocmd FileType markdown nnoremap <buffer> <leader>rt :RemoveToc<CR>
 
 
 " vim-signature(Mark标记） {{{3
-
 " 小写字母标记是当前文件专用的,大写字母是全局的
 
-" 定义标记的颜色  GUI 模式下文本颜色为红色 终端模式下文本颜色为红色
+" 定义标记的颜色  
 highlight SignatureMarkText guifg=red ctermfg=1
-" 设置标记符号的颜色 GUI 模式下符号颜色为绿色 终端模式下符号颜色为绿色
-highlight SignatureMarkSigns guifg=green ctermfg=2
+" 设置标记符号的颜色 
+hi SignatureMarkerText guifg=#0080FF ctermfg=2
+
+" 标记行颜色
+hi SignatureMarkLine guifg=#FF8000 guibg=#525252 ctermfg=NONE ctermbg=1
+hi SignatureMarkerLine guifg=#00CCCC guibg=#525252 ctermfg=NONE ctermbg=1
+
 " 设置快捷键,现示当前缓冲区的标记列表
 nnoremap <leader>ml :SignatureListBufferMarks<CR>
 " 显示大写全局标记
 nnoremap <leader>mg :SignatureListGlobalMarks<CR>
+" 显示特殊标记(可多次标记)
+nnoremap <leader>mt :SignatureListMarkers<CR>
 
   " mx           Toggle mark 'x' and display it in the leftmost column
   " dmx          Remove mark 'x' where x is a-zA-Z
@@ -1054,19 +1035,6 @@ nnoremap <leader>mg :SignatureListGlobalMarks<CR>
 
 " g'：与 ' 命令类似，用于跳转到标记处，但 g' 会精确跳转到标记所在的行和列位置，而 ' 只跳转到标记所在行的行首
 
-" vim-bookmarks {{{3
-highlight BookmarkSign guifg=#0080FF guibg=NONE ctermfg=NONE ctermbg=1
-highlight BookmarkAnnotationSign guifg=#0080FF guibg=NONE ctermfg=NONE ctermbg=1
-highlight BookmarkLine guifg=#FF8000 guibg=#525252 ctermfg=NONE ctermbg=1
-highlight BookmarkAnnotationLine guifg=#FF8000 guibg=#525252 ctermfg=NONE ctermbg=1
-
-let g:bookmark_sign = '󰍎'
-let g:bookmark_annotation_sign = '##'
-
-let g:bookmark_highlight_lines = 1
-" 在状态行上显示注释文本
-let g:bookmark_display_annotation = 1
-let g:bookmark_location_list = 0
 
 " vim-fugitive(git插件) {{{3
 
@@ -1974,6 +1942,28 @@ nnoremap <leader>q :q<CR>
 
 " 关于退出(Esc)，一般来说,windows下通过AHK脚本把Capslk映射为Esc,在vim中为了保持通用性, 使用Ctrl-[ (但要比较熟练)
 " Esc键在键盘上较远,Ctrl-c被占用
+
+
+" Ctrl+T 新建 buffer
+nnoremap <C-T> :enew<CR>
+" Ctrl+W 关闭 buffer
+nnoremap <C-W> :bd<CR>
+
+" tab相关快捷键
+" 映射 t + s 组合键来新建一个标签页
+nnoremap <silent> ts :tabnew<CR>
+" 映射 t + c 组合键来关闭当前标签页
+nnoremap <silent> tc :tabclose<CR>
+" 映射 t + h 组合键来切换到上一个标签页
+nnoremap <silent> th :tabprev<CR>
+" 映射 t + l 组合键来切换到下一个标签页
+nnoremap <silent> tl :tabnext<CR>
+" 映射 t + 数字 组合键跳转到对应的标签页
+for i in range(1, 9)
+    execute "nnoremap <silent> t".i " :tabn ".i."<CR>"
+endfor
+
+
 
 " 快速移动
 nnoremap <C-u> 10k
