@@ -44,6 +44,7 @@ hi cursorline guibg=#525252
 nnoremap <silent> <F10> :call ToggleTransparency()<CR>
 " 定义一个变量来跟踪标题栏的透明状态
 let g:caption_transparent = 0
+
 " 定义切换标题栏透明状态的函数(g:作为作用域前缀用于定义全局作用域的变量)
 function! ToggleTransparency()
     if g:caption_transparent
@@ -336,8 +337,11 @@ Plug 'kana/vim-textobj-syntax'
 " 更好的 % 导航并突出显示匹配的单词modern matchit 和 matchparen
 Plug 'andymass/vim-matchup'
 
-" subsititute/iabbrevG强
+" subsititute/iabbrev增强
 Plug 'tpope/vim-abolish'
+
+" buffer删除
+Plug 'Asheq/close-buffers.vim'
 
 "图标插件
 Plug 'ryanoasis/vim-devicons'
@@ -362,7 +366,6 @@ let NERDTreeShowHidden=1
 " 改变文件夹的箭头图标
 let NERDTreeDirArrowCollapsible="󰡄"
 let NERDTreeDirArrowExpandable=""
-
 
 " " 将选中的项移动到窗口的中央位置
 let NERDTreeAutoCenter=1
@@ -547,8 +550,10 @@ nnoremap <leader>7 <Plug>AirlineSelectTab7
 nnoremap <leader>8 <Plug>AirlineSelectTab8
 nnoremap <leader>9 <Plug>AirlineSelectTab9
 nnoremap <leader>0 <Plug>AirlineSelectTab0
-nnoremap <leader>- <Plug>AirlineSelectPrevTab
+nnoremap <leader>= <Plug>AirlineSelectPrevTab
 nnoremap <leader>+ <Plug>AirlineSelectNextTab
+
+
 
 " rainbow {{{3
 " 在nerdtree中禁用
@@ -726,8 +731,6 @@ nnoremap <leader>[ viw<esc>bi[[<esc>ea]]<esc>
 " auto-pairs {{{3
 
 let g:AutoPairsShortcutToggle = '<M-;>'
-
-
 
 "quickui {{{3
 
@@ -1293,7 +1296,16 @@ command! Gqf GitGutterQuickFix | copen
 
 " vim-abolish(s增强) {{{3
 
+" close-buffers.vim {{{3
+nnoremap <leader><BS> :Bdelete other<CR>
 
+" :Bdelete other	  bdelete当前窗口中除缓冲区之外的所有缓冲区	
+" :Bdelete hidden	  bdelete缓冲区在窗口中不可见	
+" :Bdelete all	    bdelete所有缓冲区	:bufdo bdelete
+" :Bdelete this	    bdelete当前窗口中的缓冲区	:bdelete
+" :Bdelete nameless	bdelete没有名称的缓冲区：[无名称]	
+" :Bdelete select	  允许您以交互方式选择要bdelete	
+" :Bdelete menu	    允许您以交互方式选择上述其他命令之一	
 
 """"""""""""""""""""""""""""""
 " 代码 {{{1
@@ -1958,6 +1970,8 @@ nnoremap <silent> tc :tabclose<CR>
 nnoremap <silent> th :tabprev<CR>
 " 映射 t + l 组合键来切换到下一个标签页
 nnoremap <silent> tl :tabnext<CR>
+
+nnoremap <silent> to :tabonly<CR>
 " 映射 t + 数字 组合键跳转到对应的标签页
 for i in range(1, 9)
     execute "nnoremap <silent> t".i " :tabn ".i."<CR>"
@@ -2759,8 +2773,18 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 
 
 
-" todo
-" tab补全
+" vim9script {{{2
+
+
+
+
+
+
+
+" todo {{{1
+" usr_41.txt
+" 学习vim9script
+
 
 
 
