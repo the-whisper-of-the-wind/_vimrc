@@ -177,6 +177,7 @@ command! SmallerAll call DecreaseBothFontSizes()
 	noremap <leader>gi :!start nircmd shexec open "<cWORD>"<CR><CR>
 	noremap <silent> <leader><cr> :!start nircmd shexec open "<cWORD>"<CR><CR>
 	vnoremap <leader>gi "ry:!start nircmd shexec open "<C-R>r"<CR><CR>
+
 " 启动 Total Commander 并定位到当前文件所在目录
 	noremap <silent> <leader>gz :!start <C-R>=eval("g:COMMANDER_EXE")<CR> /A /T /O /S /L="%:p"<CR><CR>
 " 打开 Windos 资源管理器并选中当前文件
@@ -303,8 +304,8 @@ Plug 'junegunn/vim-peekaboo'
 " git插件
 Plug 'tpope/vim-fugitive'
 
-" coc.nvim 插件
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" 补全插件
+Plug 'ervandew/supertab'
 
 " vim笔记用到的插件
 Plug 'vimwiki/vimwiki'
@@ -342,6 +343,9 @@ Plug 'tpope/vim-abolish'
 
 " buffer删除
 Plug 'Asheq/close-buffers.vim'
+
+" 终端软件
+Plug 'voldikss/vim-floaterm'
 
 "图标插件
 Plug 'ryanoasis/vim-devicons'
@@ -390,6 +394,9 @@ augroup nerdtree
       autocmd FileType nerdtree nmap <buffer> <S-C> :NERDTree c:<CR>
       autocmd FileType nerdtree nmap <buffer> <S-Z> :NERDTree z:<CR>
 augroup END
+
+
+" 文件/文件夹重命名:在选择的节点按m,然后选择(m)ove the current node。移动等同于重命名
 
 
 " 快捷键
@@ -1041,20 +1048,31 @@ nnoremap <leader>mt :SignatureListMarkers<CR>
 
 " vim-fugitive(git插件) {{{3
 
+" supertab {{{3
+let g:SuperTabDefaultCompletionType="context"
+" 设置按下<Tab>后默认的补全方式,默认是<C-P>,
+" 现在改为<C-X><C-O>. 关于<C-P>的补全方式,
+" 还有其他的补全方式,你可以看看下面的一些帮助:
+" :help ins-completion
+" :help compl-omni
+let g:SuperTabRetainCompletionType=2
+" 0 - 不记录上次的补全方式
+" 1 - 记住上次的补全方式,直到用其他的补全命令改变它
+" 2 - 记住上次的补全方式,直到按ESC退出插入模式为止
 
-" coc.nvim插件 {{{3
-
-" <C-n> 正向遍历其列表项，<C-p> 对其进行反向遍历
-" " 启用 coc.nvim 的命令行补全
-inoremap <silent><expr> <C-Space> coc#refresh()
-
-" " 当在命令行输入时触发补全
-function! s:check_back_space() abort
-   let col = col('.') - 1
-   return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-
+"vim自带的补全
+"Ctrl+X Ctrl+L 整行补全
+"Ctrl+X Ctrl+N 根据当前文件里关键字补全
+"Ctrl+X Ctrl+K 根据字典补全
+"Ctrl+X Ctrl+T 根据同义词字典补全
+"Ctrl+X Ctrl+I 根据头文件内关键字补全
+"Ctrl+X Ctrl+] 根据标签补全
+"Ctrl+X Ctrl+F 补全文件名
+"Ctrl+X Ctrl+D 补全宏定义
+"Ctrl+X Ctrl+V 补全vim命令
+"Ctrl+X Ctrl+U 用户自定义补全方式
+"Ctrl+X Ctrl+O 全能 (omni) 补全					
+"Ctrl+X Ctrl+S 拼写建议
 
 
 " 高亮选中关键字 开关 toggle highlight  {{{3
