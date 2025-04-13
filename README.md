@@ -14,7 +14,7 @@
 + 相同文件夹请把仓库文件夹和默认文件夹合并，相同文件替换为仓库文件  
 + 下载plug-vim放在autoload目录下,进入_virmc运行:PlugInstall  
 + 个别插件需要python3,node.js等环境支持   
-+ 如果需要开箱即用的vim,提供了realse,realse版本一般落后于仓库文件  
++ 如果需要开箱即用的vim,提供了release,release版本一般落后于仓库文件  
 
 ## 注意事项
 
