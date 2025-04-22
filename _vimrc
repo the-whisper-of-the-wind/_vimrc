@@ -44,7 +44,6 @@ hi cursorline guibg=#525252
 nnoremap <silent> <F10> :call ToggleTransparency()<CR>
 " 定义一个变量来跟踪标题栏的透明状态
 let g:caption_transparent = 0
-
 " 定义切换标题栏透明状态的函数(g:作为作用域前缀用于定义全局作用域的变量)
 function! ToggleTransparency()
     if g:caption_transparent
@@ -76,8 +75,30 @@ function! ToggleCaption()
         let g:caption_enabled = 1
     endif
 endfunction
+
+" 启动gvim后最大化
+au vimenter * :call libcallnr("vimtweak64.dll", "EnableMaximize", 1)
+" 最大化快捷键
+" 绑定 F12 键来切换窗口最大化
+nnoremap <F12> :call EnableMaximize()<cr>
+imap <F12> <c-o>:call EnableMaximize()<cr>
+" 定义一个变量来手动跟踪标题栏的状态
+let g:EnableMaximize_enabled = 1
+" 定义切换标题栏的函数
+function! EnableMaximize()
+    if g:EnableMaximize_enabled
+        call libcallnr("vimtweak64.dll", "EnableMaximize", 0)
+        let g:EnableMaximize_enabled = 0
+    else
+        call libcallnr("vimtweak64.dll", "EnableMaximize", 1)
+        let g:EnableMaximize_enabled = 1
+    endif
+endfunction
+
 endif
- 
+
+
+
 " 终端
 if (!g:isGUI)
 
@@ -171,7 +192,7 @@ command! SmallerAll call DecreaseBothFontSizes()
     " \ silent! execute "rviminfo " . $VIMRUNTIME . "/_viminfo"
 
 " 打开浏览器
-"map <leader>gf :update<CR>:silent !start c:\progra~1\intern~1\iexplore.exe file://%:p
+  " map <leader>gl :update<CR>:silent !start d:\05_Tools\liulanqi\CentBrowser\Application\chrome.exe file://%:p
 " 使用 nircmd 工具打开文件或链接
 	noremap <silent> <leader>gp :!start nircmd shexec open "%:p"<CR><CR><CR>
 	noremap <leader>gi :!start nircmd shexec open "<cWORD>"<CR><CR>
@@ -347,7 +368,15 @@ Plug 'Asheq/close-buffers.vim'
 " 终端软件
 Plug 'voldikss/vim-floaterm'
 
-"图标插件
+
+" IDE
+" C/C++编译
+Plug 'skywind3000/asynctasks.vim'
+" 在 Vim 中运行异步 Shell 命令并输出到 Quickfix 窗口
+Plug 'skywind3000/asyncrun.vim'
+
+
+" 图标插件
 Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
@@ -1049,7 +1078,7 @@ nnoremap <leader>mt :SignatureListMarkers<CR>
 " vim-fugitive(git插件) {{{3
 
 " supertab {{{3
-let g:SuperTabDefaultCompletionType="context"
+let g:SuperTabDefaultCompletionType="<C-X><C-O>"
 " 设置按下<Tab>后默认的补全方式,默认是<C-P>,
 " 现在改为<C-X><C-O>. 关于<C-P>的补全方式,
 " 还有其他的补全方式,你可以看看下面的一些帮助:
@@ -1268,10 +1297,12 @@ endfunction
 " vim笔记配置 {{{3
 " vimwiki {{{4
 let $VIM_PARENT = fnamemodify($VIM, ':h')
-let g:vimwiki_list = [{'path': $VIM_PARENT. g:slash .'vimwiki', 'syntax': 'markdown', 'ext': 'md','filetype': 'markdown' }]
+let g:vimwiki_list = [{'path': $VIM_PARENT. g:slash .'vimwiki/unix', 'syntax': 'markdown', 'ext': 'md','filetype': 'markdown' },
+                    \ {'path': $VIM_PARENT. g:slash .'vimwiki/其他', 'syntax': 'markdown', 'ext': 'md','filetype': 'markdown' } ]
 
-" 后设置 .md 文件的文件类型为 markdown（覆盖 Vimwiki 的默认行为）
-autocmd BufEnter *.md if &filetype !=# 'markdown' | set filetype=markdown | endif
+
+" " 后设置 .md 文件的文件类型为 markdown（覆盖 Vimwiki 的默认行为）
+" autocmd BufEnter *.md if &filetype !=# 'markdown' | set filetype=markdown | endif
 
 " calendar {{{4
 noremap <silent> <leader>cal :Calendar<cr>
@@ -1530,6 +1561,19 @@ if has("cscope") && executable("cscope")
 	nmap <C-_>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 endif
 
+" asynctasks.vim {{{2
+
+
+
+
+
+
+
+" asyncrun.vim {{{2
+
+
+let g:asyncrun_open = 8
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 配色方案 {{{1
@@ -1659,8 +1703,6 @@ set nocompatible
 
 " 设置延迟时间为 500 毫秒
 set timeoutlen=500  
-
-
 
 " 用于配置会话保存选项(缓冲区、标签页布局——窗口和缓冲区）
 set sessionoptions=buffers,tabpages
@@ -2170,7 +2212,8 @@ vmap <silent> <leader>vd :s/^\(.*\)\(\n\1\)\+$/\1/<cr>:noh<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 输入法相关(status栏显示） {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"默认在非中文状态
+"默认在非中文状态(一般情况下,切中文需要Ctrl+Space切输入法,再切中文,使用以下配置可以在插入模式和搜索模式省略这一操作)
+
 " 用于控制在插入模式下输入法的初始状态。iminsert = 0 表示在进入插入模式时，输入法默认处于英文输入状态
 set iminsert=0
 " 控制在搜索模式下输入法的状态。imsearch = 2 通常意味着在搜索时，输入法保持上次搜索结束时的状态。
@@ -2181,6 +2224,7 @@ autocmd InsertLeave  * :set iminsert=0
 autocmd InsertEnter  * :set iminsert=2
 " 在插入模式下文本发生变化时触发该命令,输入法状态设置为保持上次插入结束时的状态
 autocmd InsertChange * :set iminsert=2
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 文件类型相关 {{{1
@@ -2802,9 +2846,6 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " todo {{{1
 " usr_41.txt
 " 学习vim9script
-
-
-
 
 
 
