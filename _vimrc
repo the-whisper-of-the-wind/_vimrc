@@ -827,16 +827,11 @@ call quickui#menu#install("&File", [
 
 
 call quickui#menu#install("&Command/Function", [
-			\ [ "LeaderF &File", 'Leaderf file', 'Open file with leaderf'],
-			\ [ "LeaderF &Mru", 'Leaderf mru --regexMode', 'Open recently accessed files'],
-			\ [ "LeaderF &Buffer", 'Leaderf buffer', 'List current buffers in leaderf'],
-			\ [ "LeaderF &Line", 'Leaderf line', '查找当前文件中的行'],
-			\ [ "LeaderF buf&Tag", 'Leaderf bufTag', 'bufTag'],
-			\ [ "--", ],
 			\ ])
 
 
 call quickui#menu#install("&Git", [
+			\ ["Git &Add\t(Fugitive)", 'Git add '],
 			\ ["Git &Status\t(Fugitive)", 'Git'],
 			\ ["Git &Pull\t(Fugitive)", 'Git pull --rebase origin main'],
 			\ ["Git P&ush\t(Fugitive)", 'Git push -u origin main'],
@@ -1321,7 +1316,7 @@ noremap <silent> <leader>cal :Calendar<cr>
 " 按 E 键查看事件列表，按 T 键查看任务列表。 另外，按 ？键查看快速帮助。
 
   " vim-choosewin(对于多tab窗口跳转很有用） {{{3
-  " 使用 <leader>- 来选择窗口
+" 使用 <leader>- 来选择窗口
 nmap  <leader>- :ChooseWin<cr>
 
   " winresizer(调整window大小) {{{3
