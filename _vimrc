@@ -831,12 +831,13 @@ call quickui#menu#install("&Command/Function", [
 
 
 call quickui#menu#install("&Git", [
-			\ ["Git &Add\t(Fugitive)", 'Git add '],
-			\ ["Git &Status\t(Fugitive)", 'Git'],
-			\ ["Git &Pull\t(Fugitive)", 'Git pull --rebase origin main'],
-			\ ["Git P&ush\t(Fugitive)", 'Git push -u origin main'],
-			\ ["Git Fe&tch\t(Fugitive)", 'Gfetch'],
-			\ ["Git R&ead\t(Fugitive)", 'Gread'],
+				\ ['Fugitive',''],
+			\ ["Git &Add\t(当前文件)", 'Git add %:t'],
+			\ ["Git &Status\t", 'Git'],
+			\ ["Git &Pull\t", 'Git pull --rebase origin main'],
+			\ ["Git P&ush\t", 'Git push -u origin main'],
+			\ ["Git Fe&tch\t", 'Gfetch'],
+			\ ["Git R&ead\t", 'Gread'],
 			\ ["Git &Flog\t(vim-flog)", 'Flog'],
 			\ ])
 
@@ -851,7 +852,7 @@ if has('win32') || has('win64') || has('win16') || has('win95')
 				\ ["Project &Push\t(Tortoise)", 'call svnhelp#tp_push()', 'TortoiseGit'],
 				\ ["Project S&ync\t(Tortoise)", 'call svnhelp#tp_sync()', 'TortoiseGit'],
 				\ ['--',''],
-				\ ["File &Add\t(Tortoise)", 'call svnhelp#tf_add()', 'TortoiseGit / TortoiseSvn'],
+				\ ["File Ad&d\t(Tortoise)", 'call svnhelp#tf_add()', 'TortoiseGit / TortoiseSvn'],
 				\ ["File &Blame\t(Tortoise)", 'call svnhelp#tf_blame()', 'TortoiseGit / TortoiseSvn'],
 				\ ["File Co&mmit\t(Tortoise)", 'call svnhelp#tf_commit()', 'TortoiseGit / TortoiseSvn'],
 				\ ["File D&iff\t(Tortoise)", 'call svnhelp#tf_diff()', 'TortoiseGit / TortoiseSvn'],
