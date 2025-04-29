@@ -2850,12 +2850,6 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 
 
 
-" vim9script {{{2
-
-
-
-
-
 
 
 " todo {{{1
