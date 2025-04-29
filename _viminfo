@@ -1,0 +1,1012 @@
+# 这个 viminfo 文件是由 Vim 9.1 生成的。
+# 如果要自行修改请特别小心！
+
+# Viminfo version
+|1,4
+
+# 此文件建立时 'encoding' 的值
+*encoding=utf-8
+
+
+# hlsearch on (H) or off (h):
+~H
+# 最后 搜索模式:
+~MSle0~/ga
+
+# 最后 替换 搜索模式:
+~MSle0&vimtweak\.dll
+
+# 最近的替换字符串:
+$
+
+# 命令行 历史记录 (从新到旧):
+:edit d:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|2,0,1745895842,,"edit d:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+:AsyncRun 
+|2,0,1745895235,,"AsyncRun "
+:h InsertChange
+|2,0,1745892778,,"h InsertChange"
+:h InsertEnter
+|2,0,1745892764,,"h InsertEnter"
+:h insetenter
+|2,0,1745892746,,"h insetenter"
+:h iminsert
+|2,0,1745892436,,"h iminsert"
+:lmap
+|2,0,1745892430,,"lmap"
+:h lamp
+|2,0,1745892425,,"h lamp"
+:h iminset
+|2,0,1745892383,,"h iminset"
+:斤斤计较
+|2,0,1745892010,,"斤斤计较"
+:jjj jjj jjj 
+|2,0,1745891941,,"jjj jjj jjj "
+:jjjJjjjj Jjj
+|2,0,1745891885,,"jjjJjjjj Jjj"
+:jjjjj 
+|2,0,1745891875,,"jjjjj "
+:jjjjjjjjjjj救济金
+|2,0,1745891784,,"jjjjjjjjjjj救济金"
+:j解决
+|2,0,1745891778,,"j解决"
+:jjjjjj jj jjjj
+|2,0,1745891768,,"jjjjjj jj jjjj"
+:jjj jjj
+|2,0,1745891749,,"jjj jjj"
+:jjjjjJjj jj jjj
+|2,0,1745891745,,"jjjjjJjj jj jjj"
+:jjjjjj
+|2,0,1745891739,,"jjjjjj"
+:mm棉棉
+|2,0,1745891679,,"mm棉棉"
+
+# 查找字符串 历史记录 (从新到旧):
+?/ga
+|2,1,1745890192,47,"ga"
+?/airline
+|2,1,1745889672,47,"airline"
+?/laststatus
+|2,1,1745888002,47,"laststatus"
+?/a
+|2,1,1745887764,47,"a"
+?/<m-f2>
+|2,1,1745887752,47,"<m-f2>"
+?/nnoremap <silent> sh :split<CR
+|2,1,1745886251,47,"nnoremap <silent> sh :split<CR"
+?/<m-g>
+|2,1,1745853149,47,"<m-g>"
+?/leader\ze[^\/]*[\/]\=$
+|2,1,1745853092,47,"leader\\ze[^\\/]*[\\/]\\=$"
+?/l\ze[^\/]*[\/]\=$
+|2,1,1745853082,47,"l\\ze[^\\/]*[\\/]\\=$"
+?/bundle\ze[^\/]*[\/]\=$
+|2,1,1745853076,47,"bundle\\ze[^\\/]*[\\/]\\=$"
+?/<c-t>
+|2,1,1745852899,47,"<c-t>"
+?/<M-G>
+|2,1,1745852881,47,"<M-G>"
+?/tc
+|2,1,1745850586,47,"tc"
+?/:tc
+|2,1,1745850583,47,":tc"
+?/:ts
+|2,1,1745850578,47,":ts"
+?/ts
+|2,1,1745850572,47,"ts"
+?/<c-w>
+|2,1,1745850522,47,"<c-w>"
+?/sc
+|2,1,1745850270,47,"sc"
+?/:bd
+|2,1,1745845019,47,":bd"
+?/buffer
+|2,1,1745844826,47,"buffer"
+?/tab
+|2,1,1745844727,47,"tab"
+?/vimwiki
+|2,1,1745844493,47,"vimwiki"
+?/alist
+|2,1,1745842291,47,"alist"
+?/tagbar
+|2,1,1745834712,47,"tagbar"
+?/tag
+|2,1,1745834702,47,"tag"
+?/<leader>l
+|2,1,1745834696,47,"<leader>l"
+?/asy
+|2,1,1745828747,47,"asy"
+?/re
+|2,1,1745766226,47,"re"
+?/shutdown
+|2,1,1745766162,47,"shutdown"
+?/shutdow
+|2,1,1745766158,47,"shutdow"
+?/airline_tabsel
+|2,1,1745758317,47,"airline_tabsel"
+?/lucius
+|2,1,1745758288,47,"lucius"
+?/airline_t
+|2,1,1745758235,47,"airline_t"
+?/airline_tabse
+|2,1,1745758217,47,"airline_tabse"
+?/bundle
+|2,1,1745758190,47,"bundle"
+?/markdown
+|2,1,1745757784,47,"markdown"
+?/中文
+|2,1,1745730809,47,"中文"
+?/diff
+|2,1,1745424042,47,"diff"
+?/[c
+|2,1,1745423959,47,"[c"
+?/{{{
+|2,1,1745421714,47,"{{{"
+?/{{{1
+|2,1,1745421702,47,"{{{1"
+?/fen
+|2,1,1745420678,47,"fen"
+?/<space>
+|2,1,1745420467,47,"<space>"
+? >"
+|2,1,1745420454,,">\""
+?/"\<space>"
+|2,1,1745420451,47,"\"\\<space>\""
+? \<space\>
+|2,1,1745420440,,"\\<space\\>"
+? \<VIM_PARENT\>
+|2,1,1745420426,,"\\<VIM_PARENT\\>"
+?/$VIM_PARENT
+|2,1,1745420387,47,"$VIM_PARENT"
+?/\Vk
+|2,1,1745420383,47,"\\Vk"
+?/vimtweak
+|2,1,1745418858,47,"vimtweak"
+? vimtweak\.dll
+|2,1,1745416069,,"vimtweak\\.dll"
+?/<leader>gi
+|2,1,1745413933,47,"<leader>gi"
+?/  autocmd FileType vim set foldmarker
+|2,1,1745413879,47,"  autocmd FileType vim set foldmarker"
+?/foldmark
+|2,1,1745413814,47,"foldmark"
+?/foldmarkder
+|2,1,1745413810,47,"foldmarkder"
+? 打开浏览器
+|2,1,1745413299,,"打开浏览器"
+?/指
+|2,1,1745412912,47,"指"
+?/异
+|2,1,1745412842,47,"异"
+?/LWA_ALPHA
+|2,1,1745344048,47,"LWA_ALPHA"
+?/vimtweak\ze[^\/]*[\/]\=$
+|2,1,1745343171,47,"vimtweak\\ze[^\\/]*[\\/]\\=$"
+?/taglist
+|2,1,1745342535,47,"taglist"
+?/doc\ze[^\/]*[\/]\=$
+|2,1,1745342299,47,"doc\\ze[^\\/]*[\\/]\\=$"
+?/site\ze[^\/]*[\/]\=$
+|2,1,1745342297,47,"site\\ze[^\\/]*[\\/]\\=$"
+?/github\ze[^\/]*[\/]\=$
+|2,1,1745342294,47,"github\\ze[^\\/]*[\\/]\\=$"
+?/mucomplete
+|2,1,1745340944,47,"mucomplete"
+?/lastp
+|2,1,1745340523,47,"lastp"
+?/last
+|2,1,1745340509,47,"last"
+?/textobj
+|2,1,1745340449,47,"textobj"
+?/encoding
+|2,1,1745339395,47,"encoding"
+?/gbk
+|2,1,1745339273,47,"gbk"
+?/encs
+|2,1,1745339228,47,"encs"
+?/async
+|2,1,1745339214,47,"async"
+?/g:asyncrun_encs
+|2,1,1745339163,47,"g:asyncrun_encs"
+?/asyncrun\.vim
+|2,1,1745338396,47,"asyncrun\\.vim"
+?/Git
+|2,1,1745338299,47,"Git"
+?/git
+|2,1,1745336893,47,"git"
+?/g:asyncrun_open
+|2,1,1745298289,47,"g:asyncrun_open"
+?/ide
+|2,1,1745296741,47,"ide"
+?/supertab
+|2,1,1745293421,47,"supertab"
+?/cterm
+|2,1,1745292075,47,"cterm"
+?/rainbow\ze[^\/]*[\/]\=$
+|2,1,1745291749,47,"rainbow\\ze[^\\/]*[\\/]\\=$"
+?/plug
+|2,1,1745291731,47,"plug"
+?/vimwiki 
+|2,1,1745290512,47,"vimwiki "
+?/再
+|2,1,1745241696,47,"再"
+?/在
+|2,1,1745241686,47,"在"
+?/Z
+|2,1,1745241637,47,"Z"
+?/easymo\ze[^\/]*[\/]\=$
+|2,1,1745241590,47,"easymo\\ze[^\\/]*[\\/]\\=$"
+?/输入法
+|2,1,1745241021,47,"输入法"
+?/jjj积极窘境积极窘境锦江
+|2,1,1745240846,47,"jjj积极窘境积极窘境锦江"
+?/舅舅积极窘境
+|2,1,1745240630,47,"舅舅积极窘境"
+?/学习
+|2,1,1745240555,47,"学习"
+?/用于
+|2,1,1745240137,47,"用于"
+?/gla
+|2,1,1745208300,47,"gla"
+?/glaz
+|2,1,1745208295,47,"glaz"
+?/glazewm
+|2,1,1745208240,47,"glazewm"
+?/close-buffer
+|2,1,1745208062,47,"close-buffer"
+?/nerdtree
+|2,1,1745122857,47,"nerdtree"
+?/utools
+|2,1,1745120059,47,"utools"
+?/F12
+|2,1,1745072709,47,"F12"
+?/F2
+|2,1,1745072705,47,"F2"
+?/zoom
+|2,1,1745072469,47,"zoom"
+?/_vimrc
+|2,1,1745072371,47,"_vimrc"
+?/vim
+|2,1,1745072364,47,"vim"
+?/vim$
+|2,1,1745072328,47,"vim$"
+?/^vim
+|2,1,1745072321,47,"^vim"
+?/close
+|2,1,1744964146,47,"close"
+?/fugitive
+|2,1,1744957729,47,"fugitive"
+?/icon
+|2,1,1744908285,47,"icon"
+?/GetClipHtml
+|2,1,1744903148,47,"GetClipHtml"
+?/html
+|2,1,1744902777,47,"html"
+?/cliphtml
+|2,1,1744902773,47,"cliphtml"
+?/cliphtmk
+|2,1,1744902770,47,"cliphtmk"
+?/fencview
+|2,1,1744901771,47,"fencview"
+?/beyond
+|2,1,1744559540,47,"beyond"
+?/by
+|2,1,1744559520,47,"by"
+?/contentplugins
+|2,1,1744559139,47,"contentplugins"
+?/tctorrent
+|2,1,1744559115,47,"tctorrent"
+?/ntlinks
+|2,1,1744559094,47,"ntlinks"
+?/alt+q
+|2,1,1744546722,47,"alt+q"
+?/q
+|2,1,1744546719,47,"q"
+?/alt+
+|2,1,1744546711,47,"alt+"
+?/omn
+|2,1,1744544906,47,"omn"
+?/补全
+|2,1,1744544415,47,"补全"
+?/vim-fugitive
+|2,1,1744544170,47,"vim-fugitive"
+?/coc
+|2,1,1744543696,47,"coc"
+?/F4M
+|2,1,1744467835,47,"F4M"
+?/F4
+|2,1,1744464515,47,"F4"
+?/F
+|2,1,1744464191,47,"F"
+?/custom_open_command01
+|2,1,1744464009,47,"custom_open_command01"
+?/notepad
+|2,1,1744463878,47,"notepad"
+?/notep
+|2,1,1744463870,47,"notep"
+?/F4Menu
+|2,1,1744463850,47,"F4Menu"
+?/F4menu
+|2,1,1744463844,47,"F4menu"
+?/wfx
+|2,1,1744441217,47,"wfx"
+?/unsit
+|2,1,1744441132,47,"unsit"
+?/webdav
+|2,1,1744441113,47,"webdav"
+?/resitry
+|2,1,1744441095,47,"resitry"
+?/totalcmd
+|2,1,1744440698,47,"totalcmd"
+?/procview
+|2,1,1744440654,47,"procview"
+?/floaterm
+|2,1,1744430747,47,"floaterm"
+?/float
+|2,1,1744430678,47,"float"
+?/pla
+|2,1,1744430532,47,"pla"
+?/<c-q>
+|2,1,1744429308,47,"<c-q>"
+?/<c-k>
+|2,1,1744429259,47,"<c-k>"
+?/bat
+|2,1,1744386354,47,"bat"
+?/nircmd
+|2,1,1744385474,47,"nircmd"
+?/A_scri
+|2,1,1744384533,47,"A_scri"
+?/A_
+|2,1,1744384237,47,"A_"
+?/s
+|2,1,1744384212,47,"s"
+?/A_s
+|2,1,1744384130,47,"A_s"
+?/em_txt_to_pdf
+|2,1,1744358123,47,"em_txt_to_pdf"
+?/ini\ze[^\/]*[\/]\=$
+|2,1,1744358103,47,"ini\\ze[^\\/]*[\\/]\\=$"
+?/ne
+|2,1,1744357595,47,"ne"
+?/test
+|2,1,1744357589,47,"test"
+?/delete
+|2,1,1744357576,47,"delete"
+?/test\ze[^\/]*[\/]\=$
+|2,1,1744357535,47,"test\\ze[^\\/]*[\\/]\\=$"
+?/{
+|2,1,1744357473,47,"{"
+?/D
+|2,1,1744357441,47,"D"
+?/删除
+|2,1,1744357340,47,"删除"
+?/dirvish
+|2,1,1744357264,47,"dirvish"
+?/execm
+|2,1,1743942280,47,"execm"
+?/%u
+|2,1,1743942149,47,"%u"
+?/commander
+|2,1,1743933877,47,"commander"
+?/pandoc
+|2,1,1743932453,47,"pandoc"
+?/ini
+|2,1,1743930279,47,"ini"
+?/infow
+|2,1,1743924282,47,"infow"
+?/TitleWindow3
+|2,1,1743923756,47,"TitleWindow3"
+?/TitleWindow3||attach<@%AUTORUN_TCHANDLE%>"
+|2,1,1743923752,47,"TitleWindow3||attach<@%AUTORUN_TCHANDLE%>\""
+?/infow=
+|2,1,1743923726,47,"infow="
+?/d:
+|2,1,1743922853,47,"d:"
+?/time
+|2,1,1743845177,47,"time"
+?/softdir
+|2,1,1743785790,47,"softdir"
+?/任正
+|2,1,1743610567,47,"任正"
+?/任
+|2,1,1743609936,47,"任"
+?/starttc
+|2,1,1743609064,47,"starttc"
+?/mm0
+|2,1,1743609044,47,"mm0"
+?/m1
+|2,1,1743608951,47,"m1"
+?/mmc
+|2,1,1743608931,47,"mmc"
+?/\/t
+|2,1,1743608910,47,"\\/t"
+?/\/W
+|2,1,1743608885,47,"\\/W"
+?/T$
+|2,1,1743608869,47,"T$"
+?/T
+|2,1,1743608862,47,"T"
+?/|/T
+|2,1,1743608858,47,"|/T"
+?/tcfs
+|2,1,1743608663,47,"tcfs"
+?/t
+|2,1,1743349228,47,"t"
+?/<leader>9
+|2,1,1743349182,47,"<leader>9"
+?/after\ze[^\/]*[\/]\=$
+|2,1,1743349012,47,"after\\ze[^\\/]*[\\/]\\=$"
+?/<leader><BS>
+|2,1,1743348048,47,"<leader><BS>"
+?/signaturemarkerline
+|2,1,1743318209,47,"signaturemarkerline"
+?/signaturemarkertexthl
+|2,1,1743318187,47,"signaturemarkertexthl"
+?/signaturemarkertext
+|2,1,1743318046,47,"signaturemarkertext"
+?/SignatureMarkSigns
+|2,1,1743318023,47,"SignatureMarkSigns"
+?/signaturemark
+|2,1,1743317619,47,"signaturemark"
+?/signaturemarksigns
+|2,1,1743317161,47,"signaturemarksigns"
+?/guifg
+|2,1,1743317107,47,"guifg"
+?/guifh
+|2,1,1743317102,47,"guifh"
+?/book
+|2,1,1743316898,47,"book"
+?/bookmarks
+|2,1,1743316893,47,"bookmarks"
+?/标记
+|2,1,1743316853,47,"标记"
+?/1
+|2,1,1743315296,47,"1"
+?/sofdir
+|2,1,1743314998,47,"sofdir"
+?/标题
+|2,1,1743255257,47,"标题"
+?/c.*d.*e.*z
+|2,1,1743255100,47,"c.*d.*e.*z"
+?/D:
+|2,1,1743255064,47,"D:"
+?/2/2
+|2,1,1743254536,47,"2/2"
+?/gv
+|2,1,1743254445,47,"gv"
+?/插入
+|2,1,1743254292,47,"插入"
+?/<c-a>
+|2,1,1743254265,47,"<c-a>"
+?/nerd
+|2,1,1743253047,47,"nerd"
+? autocmd
+|2,1,1743252972,,"autocmd"
+?/autoload
+|2,1,1743252957,47,"autoload"
+? autoload
+|2,1,1743252947,,"autoload"
+? <leader>gz
+|2,1,1743252771,,"<leader>gz"
+?/%s\/the/&/gn
+|2,1,1743252728,47,"%s\\/the/&/gn"
+?/%s/the/&/gn
+|2,1,1743252716,47,"%s/the/&/gn"
+? the
+|2,1,1743252579,,"the"
+?/&
+|2,1,1743252452,47,"&"
+?/substitute
+|2,1,1743251649,47,"substitute"
+? [\u4e00-\u9fa5\u3040-\u30FF]
+|2,1,1743251580,,"[\\u4e00-\\u9fa5\\u3040-\\u30FF]"
+? [\u4E00-\u9FCC]
+|2,1,1743240269,,"[\\u4E00-\\u9FCC]"
+? ^
+|2,1,1743239341,,"^"
+? .
+|2,1,1743239224,,"."
+?/<leader>gc
+|2,1,1743238396,47,"<leader>gc"
+?/fnamemodify
+|2,1,1743237179,47,"fnamemodify"
+? renzhengqi
+|2,1,1743229175,,"renzhengqi"
+?/abolish
+|2,1,1743228965,47,"abolish"
+? \v\C%(Fengzhiqingyu|fengzhiqingyu|FENGZHIQINGYU|RENZHENGQI|renzhengqi|Renzhengqi)
+|2,1,1743228932,,"\\v\\C%(Fengzhiqingyu|fengzhiqingyu|FENGZHIQINGYU|RENZHENGQI|renzhengqi|Renzhengqi)"
+?/quickui
+|2,1,1743186638,47,"quickui"
+?/<insert>
+|2,1,1743185636,47,"<insert>"
+?/cnoremap
+|2,1,1743185567,47,"cnoremap"
+?/thegreat pig
+|2,1,1743184962,47,"thegreat pig"
+?/:SignatureListBufferMark
+|2,1,1743171976,47,":SignatureListBufferMark"
+?/signature
+|2,1,1743171790,47,"signature"
+?/mark
+|2,1,1743171777,47,"mark"
+?/hi
+|2,1,1743170943,47,"hi"
+?/background
+|2,1,1743170783,47,"background"
+?/cmdheight
+|2,1,1743170643,47,"cmdheight"
+?/list$
+|2,1,1743170564,47,"list$"
+?/list
+|2,1,1743170558,47,"list"
+?/sides
+|2,1,1743170465,47,"sides"
+?/scrolloff
+|2,1,1743170378,47,"scrolloff"
+?/so
+|2,1,1743170315,47,"so"
+?/$so
+|2,1,1743170312,47,"$so"
+?/ 4 显示文本
+|2,1,1743170060,47," 4 显示文本"
+?/enter
+|2,1,1743170014,47,"enter"
+?/\<Enter\>
+|2,1,1743170007,47,"\\<Enter\\>"
+?/<Enter>
+|2,1,1743169992,47,"<Enter>"
+?/<enter>
+|2,1,1743169984,47,"<enter>"
+?/ 2 移动、搜索以及正则表达式
+|2,1,1743169919,47," 2 移动、搜索以及正则表达式"
+?/rtp
+|2,1,1743169640,47,"rtp"
+?/stp
+|2,1,1743169635,47,"stp"
+?/Diff
+|2,1,1743169462,47,"Diff"
+?/mouse
+|2,1,1743169112,47,"mouse"
+?/nrfor
+|2,1,1743168830,47,"nrfor"
+?/display
+|2,1,1743168809,47,"display"
+?/ttimeout
+|2,1,1743168637,47,"ttimeout"
+?/wildmenu
+|2,1,1743168617,47,"wildmenu"
+?/ruler
+|2,1,1743168591,47,"ruler"
+?/uodofile
+|2,1,1743168280,47,"uodofile"
+?/matchup#
+|2,1,1743150027,47,"matchup#"
+?/"
+|2,1,1743149994,47,"\""
+?/matchup_surround_
+|2,1,1743149927,47,"matchup_surround_"
+?/match
+|2,1,1743149775,47,"match"
+?/<C-v>
+|2,1,1743147764,47,"<C-v>"
+?/matvh
+|2,1,1743146871,47,"matvh"
+?/<leader>\/
+|2,1,1743146287,47,"<leader>\\/"
+? \<C\>
+|2,1,1743146268,,"\\<C\\>"
+? \<if\>
+|2,1,1743146081,,"\\<if\\>"
+?/<leader>/
+|2,1,1743146015,47,"<leader>/"
+?/"选中后进行查找替换
+|2,1,1743145990,47,"\"选中后进行查找替换"
+? \<command\>
+|2,1,1743145925,,"\\<command\\>"
+? \<autocmd\>
+|2,1,1743145911,,"\\<autocmd\\>"
+?/rul
+|2,1,1743145719,47,"rul"
+?/iskeyword
+|2,1,1743144289,47,"iskeyword"
+?/J
+|2,1,1743142578,47,"J"
+?/<leader>fdm
+|2,1,1743140732,47,"<leader>fdm"
+?/matchit
+|2,1,1743094630,47,"matchit"
+?/dpc\ze[^\/]*[\/]\=$
+|2,1,1743087155,47,"dpc\\ze[^\\/]*[\\/]\\=$"
+?/\/ "
+|2,1,1743086270,47,"\\/ \""
+?/scripthome
+|2,1,1743086246,47,"scripthome"
+?/asc_uname
+|2,1,1743086237,47,"asc_uname"
+?/<leader>//
+|2,1,1743086196,47,"<leader>//"
+?/s:scripthome
+|2,1,1743086006,47,"s:scripthome"
+?/%
+|2,1,1743009313,47,"%"
+?/alt+f
+|2,1,1743008708,47,"alt+f"
+?/zlt+f
+|2,1,1743008703,47,"zlt+f"
+?/%commander
+|2,1,1743005858,47,"%commander"
+?/ahk
+|2,1,1743005500,47,"ahk"
+?/GetBarName
+|2,1,1743002643,47,"GetBarName"
+?/enconding
+|2,1,1743002335,47,"enconding"
+?/encond
+|2,1,1743002309,47,"encond"
+?/白
+|2,1,1742831283,47,"白"
+?/alt
+|2,1,1742830882,47,"alt"
+?/ShowMatchMenu
+|2,1,1742830805,47,"ShowMatchMenu"
+?//alt
+|2,1,1742830249,47,"/alt"
+?/Autorun_ModifyDialogs
+|2,1,1742825634,47,"Autorun_ModifyDialogs"
+?/aucfg
+|2,1,1742825013,47,"aucfg"
+?/after
+|2,1,1742743691,47,"after"
+?/;;
+|2,1,1742743304,47,";;"
+?/bracketsy
+|2,1,1742742544,47,"bracketsy"
+?/BracketsY
+|2,1,1742742448,47,"BracketsY"
+?/an
+|2,1,1742742435,47,"an"
+?/obj
+|2,1,1742740694,47,"obj"
+?/ay
+|2,1,1742740615,47,"ay"
+?/FTRun(
+|2,1,1742737318,47,"FTRun("
+?/EnhanceTextObject
+|2,1,1742737268,47,"EnhanceTextObject"
+?/,
+|2,1,1742736776,47,","
+?/count
+|2,1,1742735623,47,"count"
+?/braces
+|2,1,1742731344,47,"braces"
+?/plugin\ze[^\/]*[\/]\=$
+|2,1,1742729477,47,"plugin\\ze[^\\/]*[\\/]\\=$"
+? \<y\>
+|2,1,1742716776,,"\\<y\\>"
+?/leaderf
+|2,1,1742712750,47,"leaderf"
+?/lea
+|2,1,1742712747,47,"lea"
+?/g:Lf_IgnoreCurrentBufferName
+|2,1,1742710506,47,"g:Lf_IgnoreCurrentBufferName"
+?/g:Lf_UseCache
+|2,1,1742710469,47,"g:Lf_UseCache"
+?/g:Lf_HideHelp
+|2,1,1742710451,47,"g:Lf_HideHelp"
+?/g:Lf_WindowPosition
+|2,1,1742710382,47,"g:Lf_WindowPosition"
+?/g:Lf_StlSeparator
+|2,1,1742710319,47,"g:Lf_StlSeparator"
+?/g:Lf_ShowDevIcons
+|2,1,1742710180,47,"g:Lf_ShowDevIcons"
+?/~
+|2,1,1742707361,47,"~"
+?/user\ze[^\/]*[\/]\=$
+|2,1,1742707210,47,"user\\ze[^\\/]*[\\/]\\=$"
+?/vimrc\ze[^\/]*[\/]\=$
+|2,1,1742707121,47,"vimrc\\ze[^\\/]*[\\/]\\=$"
+?/plugins
+|2,1,1742658545,47,"plugins"
+
+# 表达式 历史记录 (从新到旧):
+=escape(@", getcmdtype().'/\')
+|2,2,1745420382,,"escape(@\", getcmdtype().'/\\')"
+
+# 输入行 历史记录 (从新到旧):
+@y
+|2,3,1745844632,,"y"
+@starttc
+|2,3,1745208609,,"starttc"
+@d:\SoftDir\软件说明\software.md
+|2,3,1743785873,,"d:\\SoftDir\\软件说明\\software.md"
+
+# 输入行 历史记录 (从新到旧):
+
+# 寄存器:
+"0	CHAR	0
+	d:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\gvim.exe
+|3,0,0,0,1,0,1745895478,"d:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\gvim.exe"
+""1	LINE	0
+	
+|3,1,1,1,1,0,1745895881,""
+"2	LINE	0
+	
+|3,0,2,1,1,0,1745895519,""
+"3	LINE	0
+	"默认在非中文状态(一般情况下,切中文需要Ctrl+Space切输入法,再切中文,使用以下配置可以在插入模式和搜索/命令行模式省略这一操作)
+|3,0,3,1,1,0,1745893532,"\"默认在非中文状态(一般情况下,切中文需要Ctrl+Space切输入法,再切中文,使用以下配置可以在插入模式和搜索/命令行模式省略这一操作)"
+"4	LINE	0
+	
+|3,0,4,1,1,0,1745893256,""
+"5	LINE	0
+	" 当进入插入模式时,输入法状态设置保持上次插入结束时的状态
+|3,0,5,1,1,0,1745892594,"\" 当进入插入模式时,输入法状态设置保持上次插入结束时的状态"
+"6	LINE	0
+	" 当进入插入模式时,输入法状态设置为保持上次插入结束时的状态
+|3,0,6,1,1,0,1745892584,"\" 当进入插入模式时,输入法状态设置为保持上次插入结束时的状态"
+"7	LINE	0
+	"用在buffer之间切换,Ctrl+^在两个buf中切换
+	nnoremap <M-F3> :bn<cr>
+	nnoremap <M-F2> :bp<cr>
+|3,0,7,1,3,0,1745887756,"\"用在buffer之间切换,Ctrl+^在两个buf中切换","nnoremap <M-F3> :bn<cr>","nnoremap <M-F2> :bp<cr>"
+"8	LINE	0
+	
+|3,0,8,1,1,0,1745887430,""
+"9	LINE	0
+	" 切换到上一个标签页
+|3,0,9,1,1,0,1745887407,"\" 切换到上一个标签页"
+"a	CHAR	0
+	vimtweak.dll
+|3,0,10,0,1,0,1745414039,"vimtweak.dll"
+"g	CHAR	0
+	gqjjukkkuukkkkuuuukkk/leagg/leaderfjpa erzR lkkkkk fe
+|3,0,16,0,1,0,1742712770,"gqjjukkkuukkkkuuuukkk/leagg/leaderfjpa erzR lkkkkk fe"
+"j	CHAR	0
+	jkk l h erzR fe
+|3,0,19,0,1,0,1742712792,"jkk l h erzR fe"
+"l	CHAR	0
+	lllll
+|3,0,21,0,1,0,1745845546,"lllll"
+"r	CHAR	0
+	nnoremap <silent> sh :split<CR
+|3,0,27,0,1,0,1745886249,"nnoremap <silent> sh :split<CR"
+"z	CHAR	0
+	RkkjjjkkjzRM er
+|3,0,35,0,1,0,1745893083,"RkkjjjkkjzRM er"
+"-	CHAR	0
+	\gvim.exe
+|3,0,36,0,1,0,1745895704,"\\gvim.exe"
+
+# 文件标记:
+'J  227  8  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\doc\usr_20.cnx
+|4,74,227,8,1743185763,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\doc\\usr_20.cnx"
+'K  218  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\doc\usr_12.cnx
+|4,75,218,0,1743184464,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\doc\\usr_12.cnx"
+'0  2  312  D:\SoftDir\Tools\everything\Everything.exe
+|4,48,2,312,1745896325,"D:\\SoftDir\\Tools\\everything\\Everything.exe"
+'1  38  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,49,38,0,1745895936,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+'2  38  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,50,38,0,1745895936,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+'3  47  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,51,47,0,1745895831,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+'4  47  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,52,47,0,1745895831,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+'5  48  53  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,53,48,53,1745895721,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+'6  47  53  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,54,47,53,1745895721,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+'7  48  53  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,55,48,53,1745895721,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+'8  47  53  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,56,47,53,1745895721,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+'9  40  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,57,40,0,1745895523,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+
+# 跳转列表 (从新到旧):
+-'  2  312  D:\SoftDir\Tools\everything\Everything.exe
+|4,39,2,312,1745896325,"D:\\SoftDir\\Tools\\everything\\Everything.exe"
+-'  1  0  D:\SoftDir\Tools\everything\Everything.exe
+|4,39,1,0,1745896324,"D:\\SoftDir\\Tools\\everything\\Everything.exe"
+-'  38  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,38,0,1745895936,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  38  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,38,0,1745895936,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  48  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,48,0,1745895842,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  48  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,48,0,1745895842,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  47  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,47,0,1745895831,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  47  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,47,0,1745895831,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  47  53  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,47,53,1745895721,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  40  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,40,0,1745895668,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  39  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,39,0,1745895668,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  40  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,40,0,1745895668,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  39  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,39,0,1745895668,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  39  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,39,0,1745895668,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  39  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,39,0,1745895523,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  33  96  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,33,96,1745895486,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  33  96  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,33,96,1745895486,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  33  96  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,33,96,1745895486,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  33  96  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,33,96,1745895486,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  33  96  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,33,96,1745895486,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  1  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,1,0,1745895369,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  1  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,1,0,1745895369,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  1  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,1,0,1745895369,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  1  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,1,0,1745895369,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  1  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\startup_nircmd.ncl
+|4,39,1,0,1745895369,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\startup_nircmd.ncl"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  36  0  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,36,0,1745895236,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+-'  1909  11  D:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\_vimrc
+|4,39,1909,11,1745895223,"D:\\SoftDir\\totalcmd_TheWhisperOfTheWind\\Tools\\vim\\vim_TheWhisperOfTheWind\\_vimrc"
+
+# 缓冲区列表:
+%D:\SoftDir\Tools\everything\Everything.exe	2	312
+
+# 文件内的标记历史记录 (从新到旧):
+
+> D:\SoftDir\Tools\everything\Everything.exe
+	*	1745896325	0
+	"	2	312

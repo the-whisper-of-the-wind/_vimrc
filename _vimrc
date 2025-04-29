@@ -1,4 +1,3 @@
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 先决设置 {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 设置路径(可以把vimrc放在指定文件夹）
@@ -76,8 +75,10 @@ function! ToggleCaption()
     endif
 endfunction
 
+"启动的时候最大化
+au GUIEnter * simalt ~x  
 " 启动gvim后最大化
-au vimenter * :call libcallnr("vimtweak64.dll", "EnableMaximize", 1)
+" au vimenter * :call libcallnr("vimtweak64.dll", "EnableMaximize", 1)
 " 最大化快捷键
 " 绑定 F12 键来切换窗口最大化
 nnoremap <F12> :call EnableMaximize()<cr>
@@ -190,9 +191,9 @@ command! SmallerAll call DecreaseBothFontSizes()
   " autocmd! VimEnter * nested if argc() == 0 && filereadable($VIMRUNTIME . "/Session.vim") |
     " \ silent! execute "source " . $VIMRUNTIME . "/Session.vim"|
     " \ silent! execute "rviminfo " . $VIMRUNTIME . "/_viminfo"
-
 " 打开浏览器
   " map <leader>gl :update<CR>:silent !start d:\05_Tools\liulanqi\CentBrowser\Application\chrome.exe file://%:p
+
 " 使用 nircmd 工具打开文件或链接
 	noremap <silent> <leader>gp :!start nircmd shexec open "%:p"<CR><CR><CR>
 	noremap <leader>gi :!start nircmd shexec open "<cWORD>"<CR><CR>
@@ -486,23 +487,23 @@ if !exists('g:airline_symbols')
   let g:airline_symbols.maxlinenr = '☰'
   let g:airline_symbols.colnr = '  C:'
 
-" 定义函数来获取文件大小
-function! GetFileSize()
-    if expand('%:p') != ''
-        let size = getfsize(expand('%:p'))
-        if size < 0
-            return 'N/A'
-        elseif size < 1024
-            return size . 'B'
-        elseif size < 1024 * 1024
-            return printf('%.1fK', size / 1024.0)
-        else
-            return printf('%.1fM', size / (1024.0 * 1024))
-        endif
-    else
-        return 'N/A'
-    endif
-endfunction
+" 定义函数来获取文件大小(一般处理成字节,但是太长了,去掉)
+" function! GetFileSize()
+    " if expand('%:p') != ''
+        " let size = getfsize(expand('%:p'))
+        " if size < 0
+            " return 'N/A'
+        " elseif size < 1024
+            " return size . 'B'
+        " elseif size < 1024 * 1024
+            " return printf('%.1fK', size / 1024.0)
+        " else
+            " return printf('%.1fM', size / (1024.0 * 1024))
+        " endif
+    " else
+        " return 'N/A'
+    " endif
+" endfunction
 
 " 定义函数获取折叠方式
 function! AirlineGetFoldMethod()
@@ -522,7 +523,7 @@ endfunction
 
 "输入和命令状态,&iminsert：插入模式下输入法的状态,0：表示在插入模式下使用英文输入法,其他非零值：可能对应不同的输入法状态;&imsearch：搜索模式下输入法的状态，和 iminsert 类似
 function! IMInsertSearch() 
-	return "i" . &iminsert . "s" . &imsearch
+	return "i" . &iminsert . "s" . &imsearch . "c" . &imcmdline
 endfunction
 
 " 使用 VimEnter 自动命令确保插件加载完成后再执行代码
@@ -531,8 +532,8 @@ autocmd VimEnter * call AddInfo()
 function! AddInfo()
     " 获取原有的 airline_section_z 内容
     let original_section_z = g:airline_section_z
-    " 自定义 airline 的配置，在原有内容(文件类型、编码、查找域、行数、列数)后添加(文件大小、字数、折叠方式、页面格式FO、输入法状态)
-    let g:airline_section_z = original_section_z . ' [%{GetFileSize()}] [%{AirlineGetFoldMethod()}] [%{&fo}] [%{IMInsertSearch()}]'
+    " 自定义 airline 的配置，在原有内容(文件类型、编码、查找域、行数、列数)后添加(折叠方式、页面格式FO、输入法状态、字符编码)
+    let g:airline_section_z = original_section_z . '[%{AirlineGetFoldMethod()}] [%{&fo}] [%{IMInsertSearch()}] [A=%b,H=%02B]'
 endfunction
 
 " airline——tabline(tab、buffer、window) {{{4
@@ -1077,7 +1078,7 @@ nnoremap <leader>mt :SignatureListMarkers<CR>
 
 " vim-fugitive(git插件) {{{3
 
-" supertab {{{3
+" supertab 
 let g:SuperTabDefaultCompletionType="<C-X><C-O>"
 " 设置按下<Tab>后默认的补全方式,默认是<C-P>,
 " 现在改为<C-X><C-O>. 关于<C-P>的补全方式,
@@ -1104,7 +1105,7 @@ let g:SuperTabRetainCompletionType=2
 "Ctrl+X Ctrl+S 拼写建议
 
 
-" 高亮选中关键字 开关 toggle highlight  {{{3
+" 高亮选中关键字 开关 toggle highlight  
 " z\以切换高亮显示开/关。当空闲时 高亮显示光标下的所有单饲。在学习奇怪的源 代码时非常有用。
 nnoremap z\ :if AutoHighlightToggle()<Bar>set hls<Bar>endif<CR>
 " 切换自动高亮功能的开启和关闭状态
@@ -1165,7 +1166,7 @@ let g:ywpunc = {
 			\'>' : '》',
 			\'-' : '－',
 			\'*' : '×',
-			\'/' : '、',
+			\'\' : '、',
 			\'+' : '＋',
 			\';' : '；',
 			\'?' : '？',
@@ -1298,11 +1299,14 @@ endfunction
 " vimwiki {{{4
 let $VIM_PARENT = fnamemodify($VIM, ':h')
 let g:vimwiki_list = [{'path': $VIM_PARENT. g:slash .'vimwiki/unix', 'syntax': 'markdown', 'ext': 'md','filetype': 'markdown' },
+                    \ {'path': $VIM_PARENT. g:slash .'vimwiki/windows','syntax': 'markdown', 'ext': 'md','filetype': 'markdown' },
+                    \ {'path': $VIM_PARENT. g:slash .'vimwiki/robot','syntax': 'markdown', 'ext': 'md','filetype': 'markdown' },
                     \ {'path': $VIM_PARENT. g:slash .'vimwiki/其他', 'syntax': 'markdown', 'ext': 'md','filetype': 'markdown' } ]
 
 
-" " 后设置 .md 文件的文件类型为 markdown（覆盖 Vimwiki 的默认行为）
-" autocmd BufEnter *.md if &filetype !=# 'markdown' | set filetype=markdown | endif
+" 后设置 .md 文件的文件类型为 markdown（覆盖 Vimwiki 的默认行为）
+" 否则md文件的filetype默认为vimwiki,会让md插件和tagbar不起作用
+autocmd BufEnter *.md if &filetype !=# 'markdown' | set filetype=markdown | endif
 
 " calendar {{{4
 noremap <silent> <leader>cal :Calendar<cr>
@@ -1330,8 +1334,8 @@ let g:winresizer_gui_enable = 0
 
 " vim-gitgutter {{{3
 " 在修改块之间跳转
-nmap ]c <Plug>(GitGutterNextHunk)
-nmap [c <Plug>(GitGutterPrevHunk)
+nmap ]g <Plug>(GitGutterNextHunk)
+nmap [g <Plug>(GitGutterPrevHunk)
 
 set updatetime=100
 
@@ -1473,7 +1477,7 @@ endfunction
 command! -nargs=0 Toc call IToc()
 
 
-" tagbar(支持更多的语言) {{{2
+" tagbar(支持更多的 语言) {{{2
 nmap <F7> :TagbarToggle<CR>
 let g:tagbar_left = 1
 let g:tagbar_ctags_bin = $VIM.g:slash."cmdtools/ctags-p6.1.20250302.0-x64/ctags.exe"
@@ -1573,7 +1577,9 @@ endif
 
 
 let g:asyncrun_open = 8
+let g:asyncrun_encs='gbk'
 
+nnoremap <F9> :call asyncrun#quickfix_toggle(8)<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 配色方案 {{{1
@@ -2016,27 +2022,40 @@ nnoremap <leader>q :q<CR>
 " Esc键在键盘上较远,Ctrl-c被占用
 
 
-" Ctrl+T 新建 buffer
-nnoremap <C-T> :enew<CR>
-" Ctrl+W 关闭 buffer
-nnoremap <C-W> :bd<CR>
+" 新建 buffer(用edit命令)
+" nnoremap <C-T> :enew<CR>
+" 关闭 buffer
+nnoremap <M-g> :bd!<cr>
+inoremap <M-g> <esc>:bd!<cr>
+
 
 " tab相关快捷键
 " 映射 t + s 组合键来新建一个标签页
-nnoremap <silent> ts :tabnew<CR>
+nnoremap <silent> tt :tabnew<CR>
 " 映射 t + c 组合键来关闭当前标签页
 nnoremap <silent> tc :tabclose<CR>
-" 映射 t + h 组合键来切换到上一个标签页
-nnoremap <silent> th :tabprev<CR>
-" 映射 t + l 组合键来切换到下一个标签页
-nnoremap <silent> tl :tabnext<CR>
-
-nnoremap <silent> to :tabonly<CR>
+nnoremap <silent> t<BS> :tabonly<CR>
+" 标签移动
+nnoremap tH :silent! tabm -<cr>
+nnoremap tL :silent! tabm +<cr>
+" 切换签页
+nnoremap <silent> <C-F2> :tabprev<CR>
+nnoremap <silent> <C-F3> :tabnext<CR>
 " 映射 t + 数字 组合键跳转到对应的标签页
 for i in range(1, 9)
     execute "nnoremap <silent> t".i " :tabn ".i."<CR>"
 endfor
 
+
+" 映射 sc 组合键关闭当前屏幕
+nnoremap <silent> tw :close<CR>
+" 映射 so 组合键关闭其他屏幕
+nnoremap <silent> to :only<CR>
+"新建窗口 :w 文件名
+map tj <C-W>n<C-W>J
+map tk <C-W>n<C-W>K
+map th <C-W>n<C-W>H
+map tl <C-W>n<C-W>L
 
 
 " 快速移动
@@ -2063,15 +2082,6 @@ nnoremap ,. vaW
 
 "恢复上一次的选择
 nnoremap <A-BS> `<v`>
-
-" 映射 sh 组合键进行上下分屏
-nnoremap <silent> sh :split<CR>
-" 映射 sv 组合键进行左右分屏
-nnoremap <silent> sv :vsplit<CR>
-" 映射 sc 组合键关闭当前屏幕
-nnoremap <silent> sc :close<CR>
-" 映射 so 组合键关闭其他屏幕
-nnoremap <silent> so :only<CR>
 
 " 设置window分割线及边缘颜色
 set fillchars+=vert:│
@@ -2212,15 +2222,19 @@ vmap <silent> <leader>vd :s/^\(.*\)\(\n\1\)\+$/\1/<cr>:noh<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 输入法相关(status栏显示） {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"默认在非中文状态(一般情况下,切中文需要Ctrl+Space切输入法,再切中文,使用以下配置可以在插入模式和搜索模式省略这一操作)
+"(使用默认美式键盘和拼音输入法,把拼音输入法设为默认输入法,拼音输入法初始状态使用英文) 
+" 在normal模式为非中文,进入插入/搜索/命令模式为拼音输入法,要使用中文用Shift切换,也可用Ctrl+space切换为美式键盘
 
-" 用于控制在插入模式下输入法的初始状态。iminsert = 0 表示在进入插入模式时，输入法默认处于英文输入状态
+" 默认非中文 
 set iminsert=0
-" 控制在搜索模式下输入法的状态。imsearch = 2 通常意味着在搜索时，输入法保持上次搜索结束时的状态。
+" 控制在搜索模式下输入法的状态
 set imsearch=2
+" 置位，开始编辑命令行时总是打开输入方法(IM)
+set imcmdline
+
 "在输入模式中自动切换,当退出插入模式时，将输入法状态设置为英文输入状态
 autocmd InsertLeave  * :set iminsert=0
-" 当进入插入模式时,输入法状态设置为保持上次插入结束时的状态
+" 当进入插入模式时,输入法状态设置为默认输入法
 autocmd InsertEnter  * :set iminsert=2
 " 在插入模式下文本发生变化时触发该命令,输入法状态设置为保持上次插入结束时的状态
 autocmd InsertChange * :set iminsert=2
@@ -2287,8 +2301,9 @@ augroup vimscript_folding
   autocmd!
   " 设置文件类型为 vim 时的折叠方式为 marker
   autocmd FileType vim set foldmethod=marker
-  " 自定义折叠标记（默认是 {{{ 和 }}}，此处显式声明）
+  " 自定义折叠标记（默认是{{{和}}}，此处显式声明）
   autocmd FileType vim set foldmarker={{{,}}}
+
 augroup END
 
 " 折叠模式设置映射
