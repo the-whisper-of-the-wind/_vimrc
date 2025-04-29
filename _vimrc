@@ -838,7 +838,8 @@ call quickui#menu#install("&Command/Function", [
 
 call quickui#menu#install("&Git", [
 			\ ["Git &Status\t(Fugitive)", 'Git'],
-			\ ["Git P&ush\t(Fugitive)", 'Gpush'],
+			\ ["Git &Pull\t(Fugitive)", 'Git pull --rebase origin main'],
+			\ ["Git P&ush\t(Fugitive)", 'Git push -u origin main'],
 			\ ["Git Fe&tch\t(Fugitive)", 'Gfetch'],
 			\ ["Git R&ead\t(Fugitive)", 'Gread'],
 			\ ["Git &Flog\t(vim-flog)", 'Flog'],
