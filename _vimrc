@@ -259,7 +259,7 @@ set runtimepath+=$VIM\after
 call plug#begin('$VIM\bundles')
 
 " 配色方案
-" Plugin 'flazz/vim-colorschemes'
+Plug 'flazz/vim-colorschemes'
 Plug 'ghifarit53/tokyonight-vim'
 Plug 'joshdick/onedark.vim'
 
