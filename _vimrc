@@ -154,7 +154,7 @@ if (has("win32") || has("win64"))
 " 在新标签页中打开 $VIMRUNTIME/_vimrc 文件
 	map <silent> <leader>ee :tabe $VIMRUNTIME\_vimrc<cr>
 " 重新加载 $VIMRUNTIME/_vimrc 配置文件
-	map <silent> <leader>er :source $VIMRUNTIME\_vimrc<cr>
+  map <silent> <leader>er :source $VIMRUNTIME\_vimrc<cr>
 " 重新加载配置文件
 	autocmd! bufwritepost .vimrc source $VIMRUNTIME\_vimrc
 
@@ -259,9 +259,6 @@ set runtimepath+=$VIM\after
 call plug#begin('$VIM\bundles')
 
 " 配色方案
-Plug 'flazz/vim-colorschemes'
-Plug 'ghifarit53/tokyonight-vim'
-Plug 'joshdick/onedark.vim'
 
 " 文件目录树
 " 按需加载
@@ -325,6 +322,8 @@ Plug 'junegunn/vim-peekaboo'
 
 " git插件
 Plug 'tpope/vim-fugitive'
+" 在 sign 列中显示 git diff 标记
+Plug 'mhinz/vim-signify'
 
 " 补全插件
 Plug 'ervandew/supertab'
@@ -337,9 +336,9 @@ Plug 'itchyny/calendar.vim'
 
 " 在不同窗口/标签上显示 A/B/C 等编号，然后字母直接跳转
 Plug 't9md/vim-choosewin', {'on':'ChooseWin'}
-
 " 调整 vim 窗口
 Plug 'simeji/winresizer'
+
 
 " 多游标插件
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
@@ -348,8 +347,6 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'vim-scripts/taglist.vim'
 Plug 'preservim/tagbar'
 
-" 在 sign 列中显示 git diff 标记
-Plug 'airblade/vim-gitgutter', {'on':'GitGutterToggle'}
 
 " 同时突出显示多个搜索，每个搜索具有不同的颜色
 Plug 'vim-scripts/MultipleSearch'
@@ -366,16 +363,12 @@ Plug 'tpope/vim-abolish'
 " buffer删除
 Plug 'Asheq/close-buffers.vim'
 
-" 终端软件
-Plug 'voldikss/vim-floaterm'
-
 
 " IDE
 " C/C++编译
 Plug 'skywind3000/asynctasks.vim'
 " 在 Vim 中运行异步 Shell 命令并输出到 Quickfix 窗口
 Plug 'skywind3000/asyncrun.vim'
-
 
 " 图标插件
 Plug 'ryanoasis/vim-devicons'
@@ -1329,17 +1322,29 @@ let g:winresizer_gui_enable = 0
 
 " vim-visual-multi {{{3
 
-" vim-gitgutter {{{3
-" 在修改块之间跳转
-nmap ]g <Plug>(GitGutterNextHunk)
-nmap [g <Plug>(GitGutterPrevHunk)
 
-set updatetime=100
+" mhinz/vim-signify {{{3
+" 设置符号颜色（无背景）
+highlight SignifySignAdd    ctermfg=green  guifg=#00ff00 ctermbg=NONE guibg=NONE
+highlight SignifySignChange ctermfg=yellow guifg=#ffff00 ctermbg=NONE guibg=NONE
+highlight SignifySignDelete ctermfg=red    guifg=#ff0000 ctermbg=NONE guibg=NONE
 
-nnoremap <leader>git :GitGutterToggle<cr>
+nnoremap <leader>git :SignifyToggle<cr>
 
-command! Gqf GitGutterQuickFix | copen
+" 对比提交前后记录
+" SignifyDiff
 
+
+" ]c 跳转到下一个修改块
+" [c 跳转到上一个修改块
+" ]C 跳转到最后一个修改块
+" [C 跳转到第一个修改块
+
+" 将当前修改块恢复为基本版本
+" SignifyHunkUndo
+
+" 在浮动窗口（Nvim）、弹出窗口（Vim）或预览窗口显示当前修改块的差异
+" SignifyHunkDiff  
 
 " vim-matchup(%增强) {{{3
 
@@ -1751,6 +1756,10 @@ highlight CursorLineNr guifg=#FAA93F
 " 去掉 sign column 的白色背景
 hi! SignColumn guifg=NONE guibg=NONE ctermbg=NONE
 
+
+
+
+" 其他配置...
 " 修正补全目录的色彩：默认太难看
 " hi! Pmenu guibg=gray guifg=black ctermbg=gray ctermfg=black
 " hi! PmenuSel guibg=gray guifg=brown ctermbg=brown ctermfg=gray
@@ -2882,6 +2891,7 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " usr_41.txt
 " 学习vim9script
 
+" 插件分类
 
 
 
