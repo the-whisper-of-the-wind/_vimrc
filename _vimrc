@@ -363,7 +363,7 @@ Plug 'tpope/vim-abolish'
 " buffer删除
 Plug 'Asheq/close-buffers.vim'
 
-" emacs命令行模拟
+" emacs命令模式readline模拟
 Plug 'entrez/reedline.vim'
 
 " IDE
@@ -2010,8 +2010,7 @@ inoremap <C-Z> <C-O>u
 noremap <C-Y> <C-R>
 
 " 将 Ctrl + A 映射为全选操作
-" noremap <C-A> ggVG
-cnoremap <C-A> <C-C>ggVG
+noremap <C-A> ggVG
 onoremap <C-A> <C-C>ggVG
 snoremap <C-A> <C-C>ggVG
 xnoremap <C-A> <C-C>ggVG
@@ -2037,7 +2036,6 @@ inoremap <c-f> <Right>
 inoremap <c-h> <Backspace>
 " CTRL+K----删除光标位置到行末的内容
 inoremap <c-k> <c-o>"zd$
-" cnoremap <C-K> <C-\>egetcmdline()[:getcmdpos()-2]<CR>
 " CTRL+U----删除字符到行首 
 inoremap <c-u> <C-O>"zd0
 " CTRL+W----删除光标左边的一个单词
@@ -2172,9 +2170,6 @@ xnoremap >  >gv
 noremap j gj
 noremap k gk
 
-" 历史命令
-cnoremap <c-n> <down>
-cnoremap <c-p> <up>
 
 " 在插入字符和替换字符两种方式之间切换
 cnoremap <c-o> <Insert>
