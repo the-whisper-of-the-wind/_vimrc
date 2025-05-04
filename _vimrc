@@ -363,6 +363,8 @@ Plug 'tpope/vim-abolish'
 " buffer删除
 Plug 'Asheq/close-buffers.vim'
 
+" emacs命令行模拟
+Plug 'entrez/reedline.vim'
 
 " IDE
 " C/C++编译
@@ -759,6 +761,11 @@ nnoremap <leader>[ viw<esc>bi[[<esc>ea]]<esc>
 "  'word'        ds'          word               
 
 " auto-pairs {{{3
+let g:AutoPairsFlyMode = 0
+" 这行配置会影响<M-b>的映射
+let g:AutoPairsShortcutBackInsert = '<M-S-b>'
+
+
 
 let g:AutoPairsShortcutToggle = '<M-;>'
 
@@ -1315,7 +1322,7 @@ nmap  <leader>- :ChooseWin<cr>
 
   " winresizer(调整window大小) {{{3
 " 调整内部window
-let g:winresizer_start_key = '<C-e>'
+let g:winresizer_start_key = '<C-S-e>'
 " 调整GUI大小
 let g:winresizer_gui_enable = 0
 " let g:winresizer_gui_start_key='<C-m>'
@@ -1613,95 +1620,6 @@ if  g:colors_name ==# 'evening'
 " 高亮搜索
 highlight Search guibg=#FABD2F guifg=black ctermbg=3 ctermfg=0
 highlight CurSearch guibg=#FF8000 guifg=black ctermbg=3 ctermfg=0
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" mswin {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 实现Windows风格功能(可以根据mswin.vim的内容设置)
-" set 'selection', 'selectmode', 'mousemodel' and 'keymodel' for MS-Windows
-behave mswin
-
-" 重新映射 Ctrl+Q 为 Ctrl+V 的功能
-" insert,command模式下<C-v>用来插入字符;normal模式下快区域选中
-noremap <C-Q> <C-V>
-
-" 允许退格键删除缩进、换行符和行首内容,
-set backspace=indent,eol,start 
-" 允许方向键在行首和行尾时换行
-set whichwrap+=<,>,[,]
-
-" 在可视模式下,退格键可以删除
-vnoremap <BS> d
-
-" 映射 Ctrl+X 和 Shift+Del 为剪切操作
-vnoremap <C-X> "+x
-vnoremap <S-Del> "+x
-
-" 映射 Alt+A 和 Alt+X 为数字加减
-nnoremap <A-a> <C-a>
-nnoremap <A-x> <C-x>
-
-" 在可视模式下，Ctrl+C 和 Ctrl+Insert 会将选中的内容复制到系统剪贴板
-vnoremap <C-C> "+y
-vnoremap <C-Insert> "+y
-
-" 将 Ctrl + V 和 Shift + Insert 这两个按键组合映射为粘贴操作
-map <C-V> "+gP
-map <S-Insert> "+gP
-
-" 在命令行模式下，将 <C-V> 和 <S-Insert> 映射为从系统剪贴板插入文本的操作
-cmap <C-V> <C-R>+
-cmap <S-Insert> <C-R>+
-
-" 将 Alt + V 和 Alt + C 在命令行模式（cmap）和插入模式（inoremap）下映射为插入默认寄存器内容的操作
-cmap <A-v> <C-R>"
-inoremap <A-v> <C-R>"
-cmap <A-c> <C-R>"
-inoremap <A-c> <C-R>"
-
-" 在插入模式下，将 Ctrl + Backspace 映射为删除前一个单词的操作
-inoremap <C-BS> <C-W>
-
-" 优化在插入模式和可视模式下的粘贴功能，尤其是处理块选择和行选择的粘贴情况
-exe 'inoremap <script> <C-V>' paste#paste_cmd['i']
-exe 'vnoremap <script> <C-V>' paste#paste_cmd['v']
-
-imap <S-Insert> <C-V>
-vmap <S-Insert> <C-V>
-
-" 方便在不同模式下使用 Ctrl + S 来保存文件
-noremap <C-s> :update<CR>
-noremap <C-S> :update<CR>
-vnoremap <C-S> <C-C>:update<CR>
-inoremap <C-S> <C-O>:update<CR>
-
-" 在非 Unix 系统上，为了让 Ctrl + V 正常工作，关闭自动选择功能
-if !has("unix")
-	set guioptions-=a
-endif
-
-" 在普通模式下，Ctrl + Z 直接映射为 u 命令进行撤销操作
-noremap <C-Z> u
-" 在插入模式下，使用 <C-O> 临时切换到普通模式执行 u 命令
-inoremap <C-Z> <C-O>u
-
-" 在普通模式下，Ctrl + Y 映射为 <C-R> 命令进行重做操作
-noremap <C-Y> <C-R>
-" 在插入模式下，同样使用 <C-O> 临时切换到普通模式执行 <C-R> 命令
-inoremap <C-Y> <C-O><C-R>
-
-" 将 Ctrl + A 映射为全选操作
-noremap <C-A> ggVG
-inoremap <C-A> <C-C>ggVG
-cnoremap <C-A> <C-C>ggVG
-onoremap <C-A> <C-C>ggVG
-snoremap <C-A> <C-C>ggVG
-xnoremap <C-A> <C-C>ggVG
-
-" 在普通模式下，F4 直接映射为 <C-W>c 命令关闭当前窗口
-noremap <F4> <C-W>c
-" 在插入模式下，使用 <C-O> 临时切换到普通模式执行 <C-W>c 命令
-inoremap <F4> <C-O><C-W>c
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 通用设置 {{{1
@@ -2018,8 +1936,146 @@ function! <SID>BufcloseCloseIt()
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 快捷键 {{{1
+" keymaps {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 实现Windows风格功能(可以根据mswin.vim的内容设置)
+" set 'selection', 'selectmode', 'mousemodel' and 'keymodel' for MS-Windows
+behave mswin
+
+" 重新映射 Ctrl+Q 为 Ctrl+V 的功能
+" insert,command模式下<C-v>用来插入字符;normal模式下快区域选中
+noremap <C-Q> <C-V>
+
+" 允许退格键删除缩进、换行符和行首内容,
+set backspace=indent,eol,start 
+" 允许方向键在行首和行尾时换行
+set whichwrap+=<,>,[,]
+
+" 在可视模式下,退格键可以删除
+vnoremap <BS> d
+
+" 映射 Ctrl+X 和 Shift+Del 为剪切操作
+vnoremap <C-X> "+x
+vnoremap <S-Del> "+x
+
+" 映射 Alt+A 和 Alt+X 为数字加减
+nnoremap <A-a> <C-a>
+nnoremap <A-x> <C-x>
+
+" 在可视模式下，Ctrl+C 和 Ctrl+Insert 会将选中的内容复制到系统剪贴板
+vnoremap <C-C> "+y
+vnoremap <C-Insert> "+y
+
+" 将 Ctrl + V 和 Shift + Insert 这两个按键组合映射为粘贴操作
+map <C-V> "+gP
+map <S-Insert> "+gP
+
+" 在命令行模式下，将 <C-V> 和 <S-Insert> 映射为从系统剪贴板插入文本的操作
+cmap <C-V> <C-R>+
+cmap <S-Insert> <C-R>+
+
+" 将 Alt + V 和 Alt + C 在命令行模式（cmap）和插入模式（inoremap）下映射为插入默认寄存器内容的操作
+cmap <A-v> <C-R>"
+inoremap <A-v> <C-R>"
+cmap <A-c> <C-R>"
+inoremap <A-c> <C-R>"
+
+" 在插入模式下，将 Ctrl + Backspace 映射为删除前一个单词的操作
+inoremap <C-BS> <C-W>
+
+" 优化在插入模式和可视模式下的粘贴功能，尤其是处理块选择和行选择的粘贴情况
+exe 'inoremap <script> <C-V>' paste#paste_cmd['i']
+exe 'vnoremap <script> <C-V>' paste#paste_cmd['v']
+
+imap <S-Insert> <C-V>
+vmap <S-Insert> <C-V>
+
+" 方便在不同模式下使用 Ctrl + S 来保存文件
+noremap <C-s> :update<CR>
+noremap <C-S> :update<CR>
+vnoremap <C-S> <C-C>:update<CR>
+inoremap <C-S> <C-O>:update<CR>
+
+" 在非 Unix 系统上，为了让 Ctrl + V 正常工作，关闭自动选择功能
+if !has("unix")
+	set guioptions-=a
+endif
+
+" 在普通模式下，Ctrl + Z 直接映射为 u 命令进行撤销操作
+noremap <C-Z> u
+" 在插入模式下，使用 <C-O> 临时切换到普通模式执行 u 命令
+inoremap <C-Z> <C-O>u
+
+" 在普通模式下，Ctrl + Y 映射为 <C-R> 命令进行重做操作
+noremap <C-Y> <C-R>
+
+" 将 Ctrl + A 映射为全选操作
+" noremap <C-A> ggVG
+cnoremap <C-A> <C-C>ggVG
+onoremap <C-A> <C-C>ggVG
+snoremap <C-A> <C-C>ggVG
+xnoremap <C-A> <C-C>ggVG
+
+" 在普通模式下，F4 直接映射为 <C-W>c 命令关闭当前窗口
+noremap <F4> inoremap <c-d><C-W>c
+" 在插入模式下，使用 <C-O> 临时切换到普通模式执行 <C-W>c 命令
+inoremap <F4> <C-O><C-W>c
+
+
+" emacs insert模式
+" CTRL+A----移动到行首，同 <Home>
+inoremap <c-a> <Home>
+" CTRL+B----向后移动，同 <Left>
+inoremap <c-b> <Left>
+" CTRL+D----删除光标前的字符，同 <Delete> ，或者没有内容时，退出会话 " inoremap <C-d> <C-w>
+inoremap <c-d> <Delete>
+" CTRL+E----移动到行末，同 <End>
+inoremap <c-e> <End>
+" CTRL+F----向前移动，同 <Right>
+inoremap <c-f> <Right>
+" CTRL+H----删除光标左边的字符，同 <Backspace>
+inoremap <c-h> <Backspace>
+" CTRL+K----删除光标位置到行末的内容
+inoremap <c-k> <c-o>"zd$
+" cnoremap <C-K> <C-\>egetcmdline()[:getcmdpos()-2]<CR>
+" CTRL+U----删除字符到行首 
+inoremap <c-u> <C-O>"zd0
+" CTRL+W----删除光标左边的一个单词
+inoremap <c-w> <c-o>"zdb
+" ALT+d----删除光标后（右边）一个单词
+inoremap <m-d> <C-o>"zdw
+" CTRL+Y----粘贴最近删除的单词
+inoremap <c-y> <c-r>z
+" CTRL+T----交换前后两个字符
+inoremap <c-t> <c-o>h<c-o>x<c-o>p
+" CTRL+X----列出可能的补全
+" vim相关
+" CTRL+_----撤销（undo），有的终端将 CTRL+_ 映射为 CTRL+/ 或 CTRL+7
+inoremap <c-_> <C-o>u
+" ALT+b----向后（左边）移动一个单词
+inoremap <m-b> <C-o>b
+" ALT+f----向前（右边）移动一个单词
+inoremap <m-f> <C-o>e
+" ALT+t----交换单词
+inoremap <m-t> <C-o>b<c-o>daw<esc>ea<space><esc>pi
+
+" CTRL+X CTRL+X--连续按两次 CTRL+X，光标在当前位置和行首来回跳转 
+
+" CTRL+L----清屏并重新显示
+" CTRL+N----移动到命令历史的下一行，同 <Down>
+" CTRL+O----类似回车，但是会显示下一行历史
+" CTRL+P----移动到命令历史的上一行，同 <Up>
+" CTRL+R----历史命令反向搜索，使用 CTRL+G 退出搜索
+" CTRL+S----历史命令正向搜索，使用 CTRL+G 退出搜索
+" CTRL+V----# 输入字符字面量，先按 CTRL+V 再按任意键
+" CTRL+Y----粘贴前面 CTRL+u/k/w 删除过的内容
+" inoremap <c-y>
+" 在插入模式下，同样使用 <C-O> 临时切换到普通模式执行 <C-R> 命令
+" inoremap <C-Y> <C-O><C-R>
+" CTRL+C----结束当前命令
+
+
+
 " 保存<C-s>
 " 退出
 nnoremap <leader>q :q<CR>
@@ -2072,9 +2128,8 @@ vnoremap <C-d> 10j
 
 "翻页
 noremap <C-j> <C-f>
-noremap <C-k> <C-b>
+nnoremap <C-k> <C-b>
 inoremap <C-j> <C-o><PageDown>
-inoremap <C-k> <C-o><PageUp>
 vnoremap <C-j> <S-PageDown>
 vnoremap <C-k> <S-PageUp>
 
@@ -2124,18 +2179,11 @@ cnoremap <c-p> <up>
 " 在插入字符和替换字符两种方式之间切换
 cnoremap <c-o> <Insert>
 
-" insert和command模式下,<C-w>删除至上个单词的开头,<C-u>删除至上个单词的行首
-inoremap <C-d> <C-w>
 
 " 输入状态下移动
 inoremap <Up> <C-o>k
 inoremap <Down> <C-o>j
-inoremap <C-h> <C-o>h
 inoremap <C-j> <C-o>j
-inoremap <C-k> <C-o>k
-inoremap <C-l> <C-o><right>
-inoremap <C-b> <C-o>b
-inoremap <C-w> <C-o>w
 
 
 "重复执行上一次的命令
@@ -2892,7 +2940,3 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " 学习vim9script
 
 " 插件分类
-
-
-
-
