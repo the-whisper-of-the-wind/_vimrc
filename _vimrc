@@ -8,8 +8,6 @@ let $VIM_PARENT = fnamemodify($VIM, ':h')
 
 " 将空格键设置为 <leader> 键,\会把<space>转义   let 用于操作变量（Variables）/set 用于操作选项（Options）
 let mapleader = "\<space>"
-" :重新映射
-noremap <space> :
 
 " 语法高亮(hi高亮要放在其后面)
 syntax on     
@@ -97,7 +95,6 @@ function! EnableMaximize()
 endfunction
 
 endif
-
 
 
 " 终端
@@ -607,7 +604,7 @@ let g:indentLine_char = '|'
 " 用于设置缩进线在终端模式下的颜色
 let g:indentLine_color_term = 239
 " GVim
-let g:indentLine_color_gui = '#7eade5'
+let g:indentLine_color_gui = '#ffffff'
 
 " vim-easymotion {{{3
 " 启用默认快捷键
@@ -955,7 +952,7 @@ let g:NERDCustomDelimiters = {
 " 在md文件中预览开关
 autocmd FileType markdown nnoremap <buffer> <leader><leader>p <Plug>MarkdownPreviewToggle
 
-" Markdown图像粘贴 {{{3
+" img-paste(Markdown图像粘贴) {{{3
 
 " 在md文件中快捷键进行图像粘贴
 autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
@@ -1675,6 +1672,10 @@ highlight CursorLineNr guifg=#FAA93F
 hi! SignColumn guifg=NONE guibg=NONE ctermbg=NONE
 
 
+" 允许退格键删除缩进、换行符和行首内容,
+set backspace=indent,eol,start 
+" 允许方向键在行首和行尾时换行
+set whichwrap+=<,>,[,]
 
 
 " 其他配置...
@@ -1942,14 +1943,12 @@ endfunction
 " set 'selection', 'selectmode', 'mousemodel' and 'keymodel' for MS-Windows
 behave mswin
 
+" :重新映射
+noremap <space> :
+
 " 重新映射 Ctrl+Q 为 Ctrl+V 的功能
 " insert,command模式下<C-v>用来插入字符;normal模式下快区域选中
 noremap <C-Q> <C-V>
-
-" 允许退格键删除缩进、换行符和行首内容,
-set backspace=indent,eol,start 
-" 允许方向键在行首和行尾时换行
-set whichwrap+=<,>,[,]
 
 " 在可视模式下,退格键可以删除
 vnoremap <BS> d
@@ -1980,8 +1979,6 @@ inoremap <A-v> <C-R>"
 cmap <A-c> <C-R>"
 inoremap <A-c> <C-R>"
 
-" 在插入模式下，将 Ctrl + Backspace 映射为删除前一个单词的操作
-inoremap <C-BS> <C-W>
 
 " 优化在插入模式和可视模式下的粘贴功能，尤其是处理块选择和行选择的粘贴情况
 exe 'inoremap <script> <C-V>' paste#paste_cmd['i']
@@ -2003,8 +2000,6 @@ endif
 
 " 在普通模式下，Ctrl + Z 直接映射为 u 命令进行撤销操作
 noremap <C-Z> u
-" 在插入模式下，使用 <C-O> 临时切换到普通模式执行 u 命令
-inoremap <C-Z> <C-O>u
 
 " 在普通模式下，Ctrl + Y 映射为 <C-R> 命令进行重做操作
 noremap <C-Y> <C-R>
@@ -2021,43 +2016,72 @@ noremap <F4> inoremap <c-d><C-W>c
 inoremap <F4> <C-O><C-W>c
 
 
-" emacs insert模式
+" emacs insert模式-(单行操作)
 " CTRL+A----移动到行首，同 <Home>
 inoremap <c-a> <Home>
-" CTRL+B----向后移动，同 <Left>
-inoremap <c-b> <Left>
-" CTRL+D----删除光标前的字符，同 <Delete> ，或者没有内容时，退出会话 " inoremap <C-d> <C-w>
-inoremap <c-d> <Delete>
 " CTRL+E----移动到行末，同 <End>
 inoremap <c-e> <End>
+
+" CTRL+B----向后移动，同 <Left>
+inoremap <c-b> <Left>
 " CTRL+F----向前移动，同 <Right>
 inoremap <c-f> <Right>
+" 由于是单行操作,所以上下不需要(Ctrl+n/Ctrl+p有更重要的键)
+" CTRL+P----向上移动
+" CTRL+N----向下移动
+
+" CTRL+D----删除光标前的字符，同 <Delete> ，或者没有内容时，退出会话 
+inoremap <c-d> <Delete>
 " CTRL+H----删除光标左边的字符，同 <Backspace>
 inoremap <c-h> <Backspace>
+
 " CTRL+K----删除光标位置到行末的内容
 inoremap <c-k> <c-o>"zd$
 " CTRL+U----删除字符到行首 
 inoremap <c-u> <C-O>"zd0
+
 " CTRL+W----删除光标左边的一个单词
-inoremap <c-w> <c-o>"zdb
+function! CheckLineEnd() 
+    " 获取当前光标列号（插入模式下通过 <C-O> 切换到普通模式获取）
+    let l:current_col = col('.')
+    let l:line_end_col = col('$') " 行末列号（行长度+1）
+
+    " 判断是否在行末
+    if l:current_col == l:line_end_col
+        return "\<C-O>\"zdiw"
+    else
+        return "\<C-O>\"zdb"
+    endif
+endfunction
+" 动态映射 <C-w>
+inoremap <expr> <C-w> CheckLineEnd()
 " ALT+d----删除光标后（右边）一个单词
 inoremap <m-d> <C-o>"zdw
+
+
 " CTRL+Y----粘贴最近删除的单词
 inoremap <c-y> <c-r>z
+
 " CTRL+T----交换前后两个字符
 inoremap <c-t> <c-o>h<c-o>x<c-o>p
+" ALT+t----交换单词
+inoremap <m-t> <C-o>b<c-o>daw<esc>ea<space><esc>pi
+
 " CTRL+X----列出可能的补全
 " vim相关
 " CTRL+_----撤销（undo），有的终端将 CTRL+_ 映射为 CTRL+/ 或 CTRL+7
 inoremap <c-_> <C-o>u
+
 " ALT+b----向后（左边）移动一个单词
 inoremap <m-b> <C-o>b
 " ALT+f----向前（右边）移动一个单词
 inoremap <m-f> <C-o>e
-" ALT+t----交换单词
-inoremap <m-t> <C-o>b<c-o>daw<esc>ea<space><esc>pi
+
+
 
 " CTRL+X CTRL+X--连续按两次 CTRL+X，光标在当前位置和行首来回跳转 
+
+
 
 " CTRL+L----清屏并重新显示
 " CTRL+N----移动到命令历史的下一行，同 <Down>
@@ -2075,6 +2099,7 @@ inoremap <m-t> <C-o>b<c-o>daw<esc>ea<space><esc>pi
 
 
 " 保存<C-s>
+nnoremap <leader>w :w<CR>
 " 退出
 nnoremap <leader>q :q<CR>
 
