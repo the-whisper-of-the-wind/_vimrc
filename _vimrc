@@ -1915,7 +1915,82 @@ nmap <Leader>p ggVGy:exec 'tabnew'<CR>P:exec '%s/.*\|//g'<CR>
 "grep和findstr都不支持中文 
 
 
+" wget/curl {{{2
+"用wget下载url链接，然后读取
+function! GetWgetHtml(url)
+	let l:cmd = substitute(a:url,"%","\\\\%","g")
 
+"wget的写法
+	"let l:cmd = '!wget "' . l:cmd . '"'
+	"let l:cmd = l:cmd . ' -O ' . expand('$TEMP').'\wget.html'
+	"let l:cmd = l:cmd . ' -o ' . expand('$TEMP').'\wget.log'
+	""注释掉，然后读取.wgetrc中的设置
+	""let l:cmd = l:cmd . ' -e "http_proxy=127.0.0.1:1080"'
+	""let l:cmd = l:cmd . ' -e "https_proxy=127.0.0.1:1080"'
+	"let l:cmd = l:cmd . ' --no-check-certificate'
+	"let l:cmd = l:cmd . ' --user-agent="Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.154 Safari/537.36"'
+	""echom l:cmd
+	"silent exe l:cmd
+	"silent execute "tabnew"
+	"silent execute "r " . expand('$TEMP').'\wget.html'
+	"%s/\r//gg | norm gg
+	"silent execute "set filetype=html"
+
+"curl的写法，对于中文url还有问题
+	let l:cmd = 'curl -s "' . l:cmd . '"'
+	"let l:cmd = l:cmd . ' --silent'
+	"let l:cmd = l:cmd . ' --proxy "127.0.0.1:1080"'
+	"let l:cmd = l:cmd . ' --user-agent "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"'
+	silent execute "tabnew"
+	echom l:cmd
+	silent execute "r!" . l:cmd
+	%s/\r//gg | norm ggd/<!DOCTYPE
+	silent execute "set filetype=html"
+endfunction
+
+command! -range=% -nargs=1 WGET call GetWgetHtml(<args>)
+
+nmap <leader>gg :silent! WGET('<C-R>=getline('.')<cr>')<cr>
+vmap <Leader>gg "ry:silent! WGET('<C-R>r')<cr>
+"剪贴板中的url链接
+nmap <leader>gc :silent! WGET('<C-R>*')<cr>
+
+"调用wget来直接下载
+function! GetWgetDownload(url)
+	let l:cmd = substitute(a:url,"%","\\\\%","g")
+	let l:cmd = '!wget "' . l:cmd . '"'
+	"let l:cmd = l:cmd . ' -e "http_proxy=127.0.0.1:8787"'
+	"let l:cmd = l:cmd . ' -e "https_proxy=127.0.0.1:8787"'
+	let l:cmd = l:cmd . ' --no-check-certificate'
+	let l:cmd = l:cmd . ' --user-agent="Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.154 Safari/537.36"'
+	"echom l:cmd
+	silent exe l:cmd
+endfunction
+"cid": "1223938526501013360", "cid": "1224000875610113824",
+
+" 在命令模式中使用Vim范围  :10,20WGETDOWN   " 下载10-20行的所有URL
+command! -range=% -nargs=1 WGETDOWN call GetWgetDownload(<args>)
+
+nmap <silent><leader>gd :silent! WGETDOWN('<C-R>=getline('.')<cr>')<cr>
+vmap <silent><Leader>gd "ry:silent! WGETDOWN('<C-R>r')<cr>
+
+
+" 使用方法
+" 网页预览 (wget)---把网页html在新buffer打开
+  " 命令模式：:WGET https://example.com
+      " 快捷键：
+      " 普通模式：光标放在URL行按 <leader>gg
+      " 可视模式：选中URL后按 <leader>gg
+      " 剪贴板：复制URL后按 <leader>gc
+
+" 文件下载 (wgetdown)---直接下载文件到当前目录
+  " 命令模式：:WGETDOWN https://example.com/file.zip
+      " 快捷键：
+      " 普通模式：光标在URL行按 <leader>gd
+      " 可视模式：选中URL后按 <leader>gd
+      
+
+" }}}
 
 
 " 删除buffer时不关闭窗口
@@ -2170,6 +2245,12 @@ nnoremap ,. vaW
 
 "恢复上一次的选择
 nnoremap <A-BS> `<v`>
+
+"自动跳转到粘贴文本的最后
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
+
 
 " 设置window分割线及边缘颜色
 set fillchars+=vert:│
