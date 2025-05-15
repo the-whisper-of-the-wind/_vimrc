@@ -207,39 +207,43 @@ command! SmallerAll call DecreaseBothFontSizes()
 " 用来测试
 "au GUIEnter * silent exe "!start nircmd infobox 12345"
 
-" else
-" " 当前系统不是 Windows
-	" let g:isWin = 0
-" " 用于表示非 Windows 系统的路径分隔符
-	" let g:slash = '/'
 
-" " 在新标签页中打开 $HOME/.vimrc 文件
-	" map <silent> <leader>ee :tabe $HOME/.vimrc<cr>
-" " 重新加载 ~/.vimrc 配置文件
-	" map <silent> <leader>er :source ~/.vimrc<cr>
-	" command! -nargs=? RW :w !sudo tee %
-	" autocmd! bufwritepost .vimrc source ~/.vimrc
 
-	" "set guifont=YaHeiConsolas\ 12
-	" "set guifontwide=YaHeiConsolas\ 12
-	" set guifont=DejaVu\ Sans\ Mono\ 12
-	" set guifontwide=WenQuanYi\ Zenhei\ 12
 
-" " 在退出 Vim 时，如果 $HOME/.vim 目录不存在则创建该目录，并保存当前会话信息到 $HOME/.vim/Session.vim 文件
-	" autocmd VimLeave * nested if (!isdirectory($HOME . "/.vim")) |
-		" \ call mkdir($HOME . "/.vim") |
-		" \ endif |
-		" \ execute "mksession! " . $HOME . "/.vim/Session.vim"
-" " 在启动 Vim 时，如果没有指定文件且 $HOME/.vim/Session.vim 文件存在，则恢复上次的会话
-	" autocmd VimEnter * nested if argc() == 0 && filereadable($HOME . "/.vim/Session.vim") |
-		" \ execute "source " . $HOME . "/.vim/Session.vim"
 
-" " 使用 Firefox 浏览器打开当前光标下的链接
-	" map <leader>gi :!firefox <cWORD><CR><CR>
-" " 在当前文件所在目录打开 GNOME 终端
-	" command! SHELL silent cd %:p:h|silent exe '!setsid gnome-terminal'|silent cd -
-" " 打开 Nautilus 文件管理器并定位到当前文件所在目录
-	" command! Nautilus silent !nautilus %:p:h
+else
+" 当前系统不是 Windows
+  let g:isWin = 0
+" 用于表示非 Windows 系统的路径分隔符
+  let g:slash = '/'
+
+" 在新标签页中打开 $HOME/.vimrc 文件
+  map <silent> <leader>ee :tabe $HOME/.vimrc<cr>
+" 重新加载 ~/.vimrc 配置文件
+  map <silent> <leader>er :source ~/.vimrc<cr>
+  command! -nargs=? RW :w !sudo tee %
+  autocmd! bufwritepost .vimrc source ~/.vimrc
+
+  "set guifont=YaHeiConsolas\ 12
+  "set guifontwide=YaHeiConsolas\ 12
+  set guifont=DejaVu\ Sans\ Mono\ 12
+  set guifontwide=WenQuanYi\ Zenhei\ 12
+
+" 在退出 Vim 时，如果 $HOME/.vim 目录不存在则创建该目录，并保存当前会话信息到 $HOME/.vim/Session.vim 文件
+  autocmd VimLeave * nested if (!isdirectory($HOME . "/.vim")) |
+    \ call mkdir($HOME . "/.vim") |
+    \ endif |
+    \ execute "mksession! " . $HOME . "/.vim/Session.vim"
+" 在启动 Vim 时，如果没有指定文件且 $HOME/.vim/Session.vim 文件存在，则恢复上次的会话
+  autocmd VimEnter * nested if argc() == 0 && filereadable($HOME . "/.vim/Session.vim") |
+    \ execute "source " . $HOME . "/.vim/Session.vim"
+
+" 使用 Firefox 浏览器打开当前光标下的链接
+  map <leader>gi :!firefox <cWORD><CR><CR>
+" 在当前文件所在目录打开 GNOME 终端
+  command! SHELL silent cd %:p:h|silent exe '!setsid gnome-terminal'|silent cd -
+" 打开 Nautilus 文件管理器并定位到当前文件所在目录
+  command! Nautilus silent !nautilus %:p:h
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2945,6 +2949,12 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " 保 存 部 分 行 要把一部分行写入到文件，可以使用 ":write" 命令。
 " 添 加 内 容 到 文 件 中  
 
+" 文件操作 {{{2
+" vim 本身的命令行启动参数其实还支持很多功能，请查阅‘:help starting’
+" 在命令行里可以使用vim 文件名 打开文件,在vim的命令行里不支持vim命令,可以使用vi命令
+
+
+
 " 排版文本 {{{3
 
 " 查阅 man 信息 {{{3
@@ -2957,6 +2967,34 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 
 " todo {{{1
 " usr_41.txt
-" 学习vim9script
+
+" viml {{{1
+" 在写脚本的时候最好命令写全称,保证可读性
+" 创建变量用‘:let’命令
+" 调用函数用‘:call’命令
+" 在 VimL 中要求第一个词是钦定的 ex 命令  let i = -1  call abs(-1)
+
+" viml特点:弱类型强作用域----变量无类型,但是值有类型
+" VimL 语言级的作用域 g: l: s: a:   该变量在什么范围内可见，可被操作（读值或赋值）
+" Vim 实体作用域 b: w: t:    buffer（缓冲文件），window（窗口），tabpage（标签页）
+" 作用域前缀其实是个字典,以上介绍的各种作用域前缀，不仅是种语法约定的标记，它们本身也是个变量，是可以容纳保存其他变量的字典类型变量。
+
+" 其他特殊变量前缀 $ v: & ,这几个符号其实并不是作用域标记。
+
+
+" 自动加载脚本机制
+" Vim 插件搜索目录
+" VimL 的自动加载函数（延时加载）
+
+
+
+
+
+
+
+
+
+
+
 
 " 插件分类
