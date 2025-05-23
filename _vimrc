@@ -300,9 +300,9 @@ Plug 'preservim/nerdcommenter'
 Plug 'iamcco/markdown-preview.nvim'
 
 " 即时创建表
-Plug 'dhruvasagar/vim-table-mode'
+Plug 'dhruvasagar/vim-table-mode' , {'on': 'TableModeToggle'}
 
-" 对齐插件
+" 对齐插件(要提前把符号设置好)
 Plug 'junegunn/vim-easy-align'
 
 " Markdown图像粘贴
@@ -965,15 +965,14 @@ autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownCli
 let g:mdip_imgdir = 'image'
 let g:mdip_imgname = 'image'
 
-" 即时生成表插件 {{{3
+" 即时生成表插件(vim-table-mode) {{{3
 
 " 特定类型文件快捷键启用
 " autocmd FileType markdown TableModeEnable
-
 " 设置快捷键来启动表格模式
 nmap <leader>tm :TableModeToggle<CR>
-
-" 在完成的表格上方或者下方键入补充边框线
+ 
+" 与 Markdown 兼容的表格在完成的表格上方或者下方键入补充边框线
 let g:table_mode_corner='|'
 
 " easy-align {{{3
@@ -1024,6 +1023,49 @@ autocmd FileType markdown nnoremap <buffer> <leader>gt :GenTocGFM<CR>
 
 " 在md文件中删除目录
 autocmd FileType markdown nnoremap <buffer> <leader>rt :RemoveToc<CR>
+
+" tabular(用于文本过滤和对齐) {{{3
+" 高级的用法涉及正则
+
+nmap <Leader>a  :Tabularize /
+nmap <Leader>a= :Tabularize /=
+nmap <Leader>a: :Tabularize /:
+nmap <Leader>a:: :Tabularize /:\zs
+nmap <Leader>a, :Tabularize /,
+nmap <Leader>a<Bar> :Tabularize /<Bar>
+nmap <Leader>a<Tab> :Tabularize /<Tab>
+nmap <Leader>as :Tabularize /\s
+
+vmap <Leader>a  :Tabularize /
+vmap <Leader>a= :Tabularize /=
+vmap <Leader>a: :Tabularize /:
+vmap <Leader>a:: :Tabularize /:\zs
+vmap <Leader>a, :Tabularize /,
+vmap <Leader>a<Bar> :Tabularize /<Bar>
+vmap <Leader>a<Tab> :Tabularize /<Tab>
+vmap <Leader>as :Tabularize /\s
+
+
+inoremap <silent> <Bar>  <Bar><Esc>:call <SID>align()<CR>a
+ 
+function! s:align()
+  let p = '^\s*|\s.*\s|\s*$'
+  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+    Tabularize/|/l1
+    normal! 0
+    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+  endif
+endfunction
+
+
+
+
+
+
+
+
 
 
 " vim-signature(Mark标记） {{{3
@@ -2152,9 +2194,9 @@ inoremap <m-t> <C-o>b<c-o>daw<esc>ea<space><esc>pi
 inoremap <c-_> <C-o>u
 
 " ALT+b----向后（左边）移动一个单词
-inoremap <m-b> <C-o>b
+inoremap <m-b> <C-Left>
 " ALT+f----向前（右边）移动一个单词
-inoremap <m-f> <C-o>e
+inoremap <m-f> <C-Right>
 
 
 
@@ -3034,14 +3076,23 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " vim 本身的命令行启动参数其实还支持很多功能，请查阅‘:help starting’
 " 在命令行里可以使用vim 文件名 打开文件,在vim的命令行里不支持vim命令,可以使用vi命令
 
+" 折叠 {{{2
 
+" 所有的折叠命令用 "z" 开头。
+ " | zo | 打开 (open) 在光标下的折叠             |
+ " | zO | 循环打开 (Open) 光标下的折叠           |
+ " | zc | 关闭 (close) 在光标下的折叠            |
+ " | zC | 循环关闭 (Close) 在光标下的所有折叠    |
+ " | za | 当光标位于一关闭的折叠上时，打开之     |
+ " | zv | 当处在一关闭的折叠上时，循环地打开折叠 |
+ " | zj | 向下移动,到达下一个折叠的开始          |
+ " | zk | 向上移动,到达上一个折叠的开始          |
 
 " 排版文本 {{{3
 
 " 查阅 man 信息 {{{3
 " 编辑一个脚本文件或者 C 程序的时候，有时你会需要从 man 手册中查询某个命令或者函数的用法 (使用 Unix 的情况下)。
 " 在对应的单词上输入K,Vim 会在对应的单词上执行外部命令: man
-
 
 
 
