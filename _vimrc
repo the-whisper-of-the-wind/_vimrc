@@ -2,11 +2,11 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 设置路径(可以把vimrc放在指定文件夹）
 " _VIMRC文件所在的目录
-" Gvim on windows 是用配置文件 _vimrc 代替了 .vimrc，用 vimfiles目录 代替 .vim目录 
 let $VIM = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 let $VIM_PARENT = fnamemodify($VIM, ':h')
 
-" 将空格键设置为 <leader> 键,\会把<space>转义   let 用于操作变量（Variables）/set 用于操作选项（Options）
+" 将空格键设置为 <leader> 键,\会把<space>转义   
+" let 用于操作变量（Variables）/set 用于操作选项（Options）
 let mapleader = "\<space>"
 
 " 语法高亮(hi高亮要放在其后面)
@@ -965,6 +965,11 @@ autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownCli
 let g:mdip_imgdir = 'image'
 let g:mdip_imgname = 'image'
 
+
+
+
+
+
 " 即时生成表插件(vim-table-mode) {{{3
 
 " 特定类型文件快捷键启用
@@ -974,6 +979,7 @@ nmap <leader>tm :TableModeToggle<CR>
  
 " 与 Markdown 兼容的表格在完成的表格上方或者下方键入补充边框线
 let g:table_mode_corner='|'
+
 
 " easy-align {{{3
 " 快捷键定义
@@ -1008,21 +1014,6 @@ let g:easy_align_ignore_groups = ['Comment', 'String']
 " Right-left ALTERNATING alignment around all occurrences of delimiters
 ":EasyAlign! **=
 
-
-" Markdown目录生成 {{{3
-
-" 自动更新目录
-" autocmd BufWritePost *.md :GenTocGFM
-
-" 在md文件中添加目录(根据不同需求选择)
-" 方式：GenTocGFM(此命令适用于 GitHub 存储库中的 Markdown 文件，如 和 GitBook 的 Markdown 文件)
-"       GenTocRedcarpet(此命令适用于 Jekyll 或其他任何使用 Redcarpet 作为其 Markdown 解析器的地方)
-"       GenTocGitLab(此命令适用于 GitLab 仓库和 wiki)
-"       GenTocMarked(为 iamcco/markdown-preview.vim 生成目录，该目录使用 Marked markdown 解析器)
-autocmd FileType markdown nnoremap <buffer> <leader>gt :GenTocGFM<CR>
-
-" 在md文件中删除目录
-autocmd FileType markdown nnoremap <buffer> <leader>rt :RemoveToc<CR>
 
 " tabular(用于文本过滤和对齐) {{{3
 " 高级的用法涉及正则
@@ -1059,6 +1050,21 @@ function! s:align()
   endif
 endfunction
 
+
+" Markdown目录生成 {{{3
+
+" 自动更新目录
+" autocmd BufWritePost *.md :GenTocGFM
+
+" 在md文件中添加目录(根据不同需求选择)
+" 方式：GenTocGFM(此命令适用于 GitHub 存储库中的 Markdown 文件，如 和 GitBook 的 Markdown 文件)
+"       GenTocRedcarpet(此命令适用于 Jekyll 或其他任何使用 Redcarpet 作为其 Markdown 解析器的地方)
+"       GenTocGitLab(此命令适用于 GitLab 仓库和 wiki)
+"       GenTocMarked(为 iamcco/markdown-preview.vim 生成目录，该目录使用 Marked markdown 解析器)
+autocmd FileType markdown nnoremap <buffer> <leader>gt :GenTocGFM<CR>
+
+" 在md文件中删除目录
+autocmd FileType markdown nnoremap <buffer> <leader>rt :RemoveToc<CR>
 
 
 
@@ -1667,7 +1673,7 @@ highlight CurSearch guibg=#FF8000 guifg=black ctermbg=3 ctermfg=0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 通用设置 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 去除VI一致性(必须);使用vim自己的键盘模式,而不是兼容vi的模式
+" 去除VI一致性(必须);使用vim自己的键盘模式,而不是兼容vi的模式,否则有很多的vim高级语法用不了
 set nocompatible      
 
 " 设置延迟时间为 500 毫秒
@@ -1704,6 +1710,9 @@ set t_Co=256
 
 "无菜单、工具栏 go=e显示标签栏
 set go=           
+
+" 命令行的高度
+set cmdheight=1
 
 " 显示行号number nu nonumber nonu
 set nu            
@@ -1882,6 +1891,8 @@ set smarttab
 set shiftwidth=2
 " tab转化为2个字符
 set tabstop=2
+
+set textwidth=78
 
 " vim记住的历史操作的数量，默认的是20
 set history=1000  
@@ -2319,9 +2330,9 @@ xnoremap <  <gv
 xnoremap >  >gv
 
 " 可以跨行（用gj、gk）也可以
-noremap j gj
-noremap k gk
-
+" 用下面的配置会有一个问题:对于数字+j/k的移动遇到折行会有出错，所以注释掉，如果想要使用，上下移动要配合移动插件使用
+" nnoremap j gj
+" nnoremap k gk
 
 " 在插入字符和替换字符两种方式之间切换
 cnoremap <c-o> <Insert>
@@ -3130,3 +3141,6 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 
 
 " 插件分类
+
+
+
