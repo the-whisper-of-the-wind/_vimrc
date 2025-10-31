@@ -1,8 +1,8 @@
 # _vimrc
 
-    终端vim/neovim在类Unix和MacOs系统下有着非常优秀的表现，如果有足够的耐心和时间你可以通过不同的终端工具、vim/neovim插件和配置来打造属于自己的vim/neovim;即使你没有那么多的时间和精力,也有很多开箱即用的优秀配置可以直接通过命令行安装使用.   
-    但是Windows作为使用人数最多的操作系统，终端vim/neovim在其上的表现并没有类Unix和MacOs系统那么优秀，如果非要使用会带来很多不便,因此gvim(GUI vim)便成了Windows系统下的首选，比起neovide等neovim的GUI版本，gvim在兼容性、细节上的表现更好，可以最大程度还原终端vim的使用体验.
-    因此这是一个windows下针对中文用户的gvim配置,纯粹的文本编辑器(可以自行扩展成IDE）,希望给你在windows上带来一个好的vim编辑体验.
+终端vim/neovim在类Unix和MacOs系统下有着非常优秀的表现，如果有足够的耐心和时间你可以通过不同的终端工具、vim/neovim插件和配置来打造属于自己的vim/neovim;即使你没有那么多的时间和精力,也有很多开箱即用的优秀配置可以直接通过命令行安装使用.   
+但是Windows作为使用人数最多的操作系统，终端vim/neovim在其上的表现并没有类Unix和MacOs系统那么优秀，如果非要使用会带来很多不便,因此gvim(GUI vim)便成了Windows系统下的首选，比起neovide等neovim的GUI版本，gvim在兼容性、细节上的表现更好，可以最大程度还原终端vim的使用体验.  
+因此这是一个windows下针对中文用户的gvim配置,纯粹的文本编辑器(可以自行扩展成IDE）,希望给你在windows上带来一个好的vim编辑体验.  
 
 ## 特点
 
