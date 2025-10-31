@@ -31,28 +31,10 @@ if (g:isGUI)
  "colo onedark
 " 高亮显示当前光标所在的行
 	set cursorline
-" 高亮显示当前光标所在的列
-" set cursorcolumn
+" 高亮显示当前光标所在的列(这个设置对中文不友好)
+ " set cursorcolumn
 " 自定义当前行背景颜色,默认#666666(对高亮的定义要放在语法高亮的后面)
 hi cursorline guibg=#525252
-
-" gvim标题栏透明
-" 绑定 F10 键来切换标题栏的透明状态
-nnoremap <silent> <F10> :call ToggleTransparency()<CR>
-" 定义一个变量来跟踪标题栏的透明状态
-let g:caption_transparent = 0
-" 定义切换标题栏透明状态的函数(g:作为作用域前缀用于定义全局作用域的变量)
-function! ToggleTransparency()
-    if g:caption_transparent
-        " 不透明（Alpha 值为 255）
-        call libcallnr("vimtweak64.dll", "SetAlpha", 255)
-        let g:caption_transparent = 0
-    else
-        " 透明（Alpha 值为 200）
-        call libcallnr("vimtweak64.dll", "SetAlpha", 200)
-        let g:caption_transparent = 1
-    endif
-endfunction
 
 " 启动gvim后自动去标题栏
 au vimenter * call libcallnr("vimtweak64.dll","EnableCaption",0)
@@ -115,20 +97,6 @@ if (!g:isGUI)
 
 endif
 
-" 设置普通模式下光标的颜色为白色
-hi Cursor guifg=#000000 guibg=#FFFFFF ctermfg=0 ctermbg=256
-" 设置插入模式下光标的颜色为橙色（橙色相近编号 208）
-augroup InsertModeCursor
-    autocmd!
-    autocmd InsertEnter * hi Cursor guifg=NONE guibg=#FFA500 ctermfg=NONE ctermbg=208
-    autocmd InsertLeave * hi Cursor guifg=#000000 guibg=#FFFFFF ctermfg=0 ctermbg=256
-augroup END
-" 设置命令模式下光标的颜色为红色（红色编号 1）
-augroup CmdlineModeCursor
-    autocmd!
-    autocmd CmdlineEnter * hi Cursor guifg=NONE guibg=Red ctermfg=NONE ctermbg=1
-    autocmd CmdlineLeave * hi Cursor guifg=#000000 guibg=#FFFFFF ctermfg=0 ctermbg=256
-augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 不同OS {{{1
@@ -139,17 +107,17 @@ if (has("win32") || has("win64"))
 	let g:slash = '\'
 
 " TC路径设置
-	let g:COMMANDER_PATH = fnamemodify($VIM, ':h:h:h')
-  let g:COMMANDER_EXE = g:COMMANDER_PATH . g:slash . 'TOTALCMD.EXE'
-	" let g:COMMANDER_PATH = "d:/SoftDir/totalcmd_TheWhisperOfTheWind"
-	" let g:COMMANDER_EXE = "d:/SoftDir/totalcmd_TheWhisperOfTheWind/TOTALCMD.EXE"
+	" let g:COMMANDER_PATH = fnamemodify($VIM, ':h:h:h')
+  " let g:COMMANDER_EXE = g:COMMANDER_PATH . g:slash . 'TOTALCMD.EXE'
+	let g:COMMANDER_PATH = "d:/SoftDir/totalcmd_TheWhisperOfTheWind"
+	let g:COMMANDER_EXE = "d:/SoftDir/totalcmd_TheWhisperOfTheWind/TOTALCMD.EXE"
 
 " 将终端编码设置为与当前编码相同,通常win下的encoding为cp936
 	let &termencoding=&encoding
 
 "set dir=.,c:\\temp    set dir=c:\\temp
 " 在新标签页中打开 $VIMRUNTIME/_vimrc 文件
-	map <silent> <leader>ee :tabe $VIMRUNTIME\_vimrc<cr>
+	map <silent> <leader>ee :tabedit $VIMRUNTIME\_vimrc<cr>
 " 重新加载 $VIMRUNTIME/_vimrc 配置文件
   map <silent> <leader>er :source $VIMRUNTIME\_vimrc<cr>
 " 重新加载配置文件
@@ -199,14 +167,13 @@ command! SmallerAll call DecreaseBothFontSizes()
 
 " 启动 Total Commander 并定位到当前文件所在目录
 	noremap <silent> <leader>gz :!start <C-R>=eval("g:COMMANDER_EXE")<CR> /A /T /O /S /L="%:p"<CR><CR>
-" 打开 Windos 资源管理器并选中当前文件
+" 打开 Windows 资源管理器并选中当前文件
 	noremap <silent> <leader>ge :!start explorer /n,/e,/select,"%:p"<CR>
 " 在当前文件所在目录打开命令提示符
 	command! SHELL silent cd %:p:h|silent exe "!start cmd"|silent cd -
 
 " 用来测试
 "au GUIEnter * silent exe "!start nircmd infobox 12345"
-
 
 
 
@@ -261,10 +228,7 @@ call plug#begin('$VIM\bundles')
 
 " 配色方案
 
-" 文件目录树
 " 按需加载
-Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }                      
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " 目录查看器
 Plug 'justinmk/vim-dirvish'
@@ -381,52 +345,11 @@ call plug#end()
 " 插件配置 {{{2
 
 " nerdtree(书签、直观显示目录结构) {{{3
-" 设置显示书签
-let NERDTreeShowBookmarks=1
+" 注：以往都会安装nerdtree作为文件目录树，但目前来说使用nerdtree的意义不大，速度较慢，功能较为简单；最好结合专业的文
+" 件管理工具使用。windows下使用gvim，因此最好使用GUI的终端管理器（比如
+" Totalcommander等）；类unix系统下使用终端vim，对于TUI的终端管理器兼容性更好;
+" 如果要结合vim插件使用，可以找viml9的插件
 
-" 设置显示文件
-let NERDTreeShowFiles=1
-
-" 设置显示隐藏文件
-let NERDTreeShowHidden=1
-
-" " 设置显示行号
-" let NERDTreeShowLineNumbers=1
-
-" 改变文件夹的箭头图标
-let NERDTreeDirArrowCollapsible="󰡄"
-let NERDTreeDirArrowExpandable=""
-
-" " 将选中的项移动到窗口的中央位置
-let NERDTreeAutoCenter=1
-
-" 定义 <leader>n 快捷键来打开或关闭 NERDTree
-nnoremap <leader>n :NERDTreeToggle<CR>
-
-" 书签保存的文件
-let NERDTreeBookmarksFile=$VIM.'/NerdBookmarks.txt'
-
-
-augroup nerdtree
-    autocmd!
-      "在tree窗口中才能执行
-      " 创建标签
-      autocmd FileType nerdtree nmap <buffer> <C-f7> :Bookmark
-      " 删除标签
-      autocmd FileType nerdtree nmap <buffer> <C-f8> :ClearBookmarks 
-
-      " 当 NERDTree 窗口打开时，映射 Shift+字母 到对应盘符
-      autocmd FileType nerdtree nmap <buffer> <S-D> :NERDTree d:<CR>
-      autocmd FileType nerdtree nmap <buffer> <S-C> :NERDTree c:<CR>
-      autocmd FileType nerdtree nmap <buffer> <S-Z> :NERDTree z:<CR>
-augroup END
-
-
-" 文件/文件夹重命名:在选择的节点按m,然后选择(m)ove the current node。移动等同于重命名
-
-
-" 快捷键
-" x——收起该节点的父节点
 
 " vim-dirvish(查找文件)(after/plugin/dirvish.vim) {{{3
 " 在 Vim 命令模式下输入 :Dirvish \正常模式下按下-,即可打开当前工作目录的文件浏览器,q退出文件浏览器
@@ -466,13 +389,15 @@ let g:airline_powerline_fonts = 1
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
   endif
-  let g:airline_left_sep = ''
-  let g:airline_left_alt_sep = '╱'
+  " let g:airline_left_sep = ''
+  let g:airline_left_sep = ''
   " let g:airline_left_alt_sep = ''
   " let g:airline_left_alt_sep = ''
-  let g:airline_right_sep = ''
-  let g:airline_right_alt_sep = '╱'
+  let g:airline_left_alt_sep = ''
+  " let g:airline_right_sep = ''
+  let g:airline_right_sep = ''
   " let g:airline_right_alt_sep = ''
+  let g:airline_right_alt_sep = ''
   let g:airline_symbols.branch = ''
   " 文件被追踪
   let g:airline_symbols.dirty='⚡'
@@ -483,7 +408,8 @@ if !exists('g:airline_symbols')
   let g:airline_symbols.maxlinenr = '☰'
   let g:airline_symbols.colnr = '  C:'
 
-" 定义函数来获取文件大小(一般处理成字节,但是太长了,去掉)
+" 定义函数来获取文件大小(一般处理成字节,但是太长了,去掉),这一般是文件管理器的
+" 功能
 " function! GetFileSize()
     " if expand('%:p') != ''
         " let size = getfsize(expand('%:p'))
@@ -517,7 +443,7 @@ endfunction
 " l:含义：对长行不进行自动换行
 
 
-"输入和命令状态,&iminsert：插入模式下输入法的状态,0：表示在插入模式下使用英文输入法,其他非零值：可能对应不同的输入法状态;&imsearch：搜索模式下输入法的状态，和 iminsert 类似
+" 输入和命令状态,&iminsert：插入模式下输入法的状态,0：表示在插入模式下使用英文输入法,其他非零值：可能对应不同的输入法状态;&imsearch：搜索模式下输入法的状态，和 iminsert 类似
 function! IMInsertSearch() 
 	return "i" . &iminsert . "s" . &imsearch . "c" . &imcmdline
 endfunction
@@ -542,7 +468,7 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
 
 " 调整 vim-airline 插件在 tabline 中显示缓冲区索引的方式
-  let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tabline#buffer_idx_mode = 1
 
 " tab number
 let g:airline#extensions#tabline#tab_nr_type = 1 
@@ -571,8 +497,8 @@ let g:airline#extensions#tabline#fnametruncate = 10
 " 关闭空白符检测
 let g:airline#extensions#whitespace#enabled = 0
 
-" buffer相关快捷键
-" 不同buffer切换
+" buffer/tab相关快捷键
+" 不同buffer/tab切换
 nnoremap <leader>1 <Plug>AirlineSelectTab1
 nnoremap <leader>2 <Plug>AirlineSelectTab2
 nnoremap <leader>3 <Plug>AirlineSelectTab3
@@ -598,17 +524,18 @@ let g:rainbow_active = 1
 "RainbowToggleOn
 "RainbowToggleOff
 
-" indentLine {{{3
-" 启用 indentLine 插件
+" indentLine {{{3 " 启用 indentLine 插件
 let g:indentLine_enabled = 1
  
 " 指定缩进线所使用的字符
-let g:indentLine_char = '|'
+let g:indentLine_char = '│'
  
 " 用于设置缩进线在终端模式下的颜色
 let g:indentLine_color_term = 239
 " GVim
-let g:indentLine_color_gui = '#ffffff'
+" let g:indentLine_color_gui = '#ffffff'
+let g:indentLine_color_gui = '#0080ff'
+
 
 " vim-easymotion {{{3
 " 启用默认快捷键
@@ -646,7 +573,7 @@ let g:EasyMotion_CN_do_shade = 0
 " 颜色设置
 hi link EasyMotion_CNTarget ErrorMsg
 hi link EasyMotion_CNShade  Comment
-" " 如果定位英文，就\\两下再输入字母
+" " 如果全局定位英文，就\\两下再输入字母
 " nnoremap <silent> \\ :call EasyMotion_CN#F('dir',0)<CR>
 " nnoremap <silent> \? :call EasyMotion_CN#F('dir',1)<CR>
 " nmap s <Plug>(easymotion-s2)
@@ -762,11 +689,6 @@ nnoremap <leader>[ viw<esc>bi[[<esc>ea]]<esc>
 "  'word'        ds'          word               
 
 " auto-pairs {{{3
-let g:AutoPairsFlyMode = 0
-" 这行配置会影响<M-b>的映射
-let g:AutoPairsShortcutBackInsert = '<M-S-b>'
-
-
 
 let g:AutoPairsShortcutToggle = '<M-;>'
 
@@ -893,7 +815,8 @@ let g:Lf_UseCache = 0
 " 在查找时忽略当前缓冲区的名称
 let g:Lf_IgnoreCurrentBufferName = 1
 
-
+" <leader>n搜索参考
+" d:\SoftDir\totalcmd_TheWhisperOfTheWind\Tools\vim\vim_TheWhisperOfTheWind\after\plugin\leaderf.vim
 
 " 使用 rg（ripgrep）在当前缓冲区中搜索当前光标所在的单词
 noremap <leader>fg :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR>
@@ -956,7 +879,7 @@ let g:NERDCustomDelimiters = {
 " 在md文件中预览开关
 autocmd FileType markdown nnoremap <buffer> <leader><leader>p <Plug>MarkdownPreviewToggle
 
-" img-paste(Markdown图像粘贴) {{{3
+" Markdown图像粘贴 {{{3
 
 " 在md文件中快捷键进行图像粘贴
 autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
@@ -970,7 +893,7 @@ let g:mdip_imgname = 'image'
 
 
 
-" 即时生成表插件(vim-table-mode) {{{3
+" 即时生成表插件(vim-table-mode) {{{3 
 
 " 特定类型文件快捷键启用
 " autocmd FileType markdown TableModeEnable
@@ -1074,7 +997,7 @@ autocmd FileType markdown nnoremap <buffer> <leader>rt :RemoveToc<CR>
 
 
 
-" vim-signature(Mark标记） {{{3
+" vim-signature(Mark标记）{{{3
 " 小写字母标记是当前文件专用的,大写字母是全局的
 
 " 定义标记的颜色  
@@ -1124,7 +1047,7 @@ nnoremap <leader>mt :SignatureListMarkers<CR>
 
 " vim-fugitive(git插件) {{{3
 
-" supertab 
+" supertab {{{3
 let g:SuperTabDefaultCompletionType="<C-X><C-O>"
 " 设置按下<Tab>后默认的补全方式,默认是<C-P>,
 " 现在改为<C-X><C-O>. 关于<C-P>的补全方式,
@@ -1651,8 +1574,20 @@ nnoremap <F9> :call asyncrun#quickfix_toggle(8)<cr>
 " guibg		GUI 版本的背景色
 " 属性是 "bold" (粗体) 和 "underline" (下划线) 可以用于 "cterm" 和 "gui"。
 
-if  g:colors_name ==# 'evening'
-        " 当使用 sevening 配色方案时
+" if  g:colors_name ==# 'evening'
+        " " 当使用 sevening 配色方案时
+  " " buffer配色
+        " highlight airline_tabsel gui=bold guifg=#00ffff guibg=#333333
+    " " 文件更改后/右侧tab配色
+        " highlight airline_tabmod gui=bold guifg=#FFFFFF guibg=#333333
+    " " 右侧buffers
+        " highlight airline_tablabel_right gui=bold guifg=#4C0099 guibg=#E0E0E0
+
+    " " elseif &background ==# 'onedark'
+        " " " 当使用 onedark 配色方案时
+        " " highlight airline_tablabel_right gui=bold guifg=#000000 guibg=#FFFFFF
+    " endif
+
   " buffer配色
         highlight airline_tabsel gui=bold guifg=#00ffff guibg=#333333
     " 文件更改后/右侧tab配色
@@ -1660,20 +1595,29 @@ if  g:colors_name ==# 'evening'
     " 右侧buffers
         highlight airline_tablabel_right gui=bold guifg=#4C0099 guibg=#E0E0E0
 
-    " elseif &background ==# 'onedark'
-        " " 当使用 onedark 配色方案时
-        " highlight airline_tablabel_right gui=bold guifg=#000000 guibg=#FFFFFF
-    endif
-
-
 " 高亮搜索
-highlight Search guibg=#FABD2F guifg=black ctermbg=3 ctermfg=0
-highlight CurSearch guibg=#FF8000 guifg=black ctermbg=3 ctermfg=0
+highlight Search guibg=#5391ec guifg=white ctermbg=4 ctermfg=15
+highlight CurSearch guibg=#ff0000 guifg=white ctermbg=9 ctermfg=15
+
+" 设置普通模式下光标的颜色为白色
+hi Cursor guifg=#000000 guibg=#FFFFFF ctermfg=0 ctermbg=256
+" 设置插入模式下光标的颜色为橙色（橙色相近编号 208）
+augroup InsertModeCursor
+    autocmd!
+    autocmd InsertEnter * hi Cursor guifg=NONE guibg=#FFA500 ctermfg=NONE ctermbg=208
+    autocmd InsertLeave * hi Cursor guifg=#000000 guibg=#FFFFFF ctermfg=0 ctermbg=256
+augroup END
+" 设置命令模式下光标的颜色为红色（红色编号 1）
+augroup CmdlineModeCursor
+    autocmd!
+    autocmd CmdlineEnter * hi Cursor guifg=NONE guibg=Red ctermfg=NONE ctermbg=1
+    autocmd CmdlineLeave * hi Cursor guifg=#000000 guibg=#FFFFFF ctermfg=0 ctermbg=256
+augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 通用设置 {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 去除VI一致性(必须);使用vim自己的键盘模式,而不是兼容vi的模式,否则有很多的vim高级语法用不了
+" 去除VI一致性(必须);使用vim自己的键盘模式,而不是兼容vi的模式
 set nocompatible      
 
 " 设置延迟时间为 500 毫秒
@@ -1932,7 +1876,6 @@ if has("autocmd")
 endif
 
 " 恢复上次文件打开位置
-"set viminfo='10,\"100,:20,%,n~/.viminfo
 set viminfo='10,\"100,:20,%,n$VIMRUNTIME/.viminfo
 au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
 
@@ -1968,7 +1911,7 @@ nmap <Leader>p ggVGy:exec 'tabnew'<CR>P:exec '%s/.*\|//g'<CR>
 "grep和findstr都不支持中文 
 
 
-" wget/curl {{{2
+" wget/curl 
 "用wget下载url链接，然后读取
 function! GetWgetHtml(url)
 	let l:cmd = substitute(a:url,"%","\\\\%","g")
@@ -2043,7 +1986,7 @@ vmap <silent><Leader>gd "ry:silent! WGETDOWN('<C-R>r')<cr>
       " 可视模式：选中URL后按 <leader>gd
       
 
-" }}}
+" 
 
 
 " 删除buffer时不关闭窗口
@@ -2116,6 +2059,7 @@ inoremap <A-c> <C-R>"
 exe 'inoremap <script> <C-V>' paste#paste_cmd['i']
 exe 'vnoremap <script> <C-V>' paste#paste_cmd['v']
 
+
 imap <S-Insert> <C-V>
 vmap <S-Insert> <C-V>
 
@@ -2143,7 +2087,7 @@ snoremap <C-A> <C-C>ggVG
 xnoremap <C-A> <C-C>ggVG
 
 " 在普通模式下，F4 直接映射为 <C-W>c 命令关闭当前窗口
-noremap <F4> inoremap <c-d><C-W>c
+nnoremap <F4>  <c-d><C-W>c
 " 在插入模式下，使用 <C-O> 临时切换到普通模式执行 <C-W>c 命令
 inoremap <F4> <C-O><C-W>c
 
@@ -2158,38 +2102,24 @@ inoremap <c-e> <End>
 inoremap <c-b> <Left>
 " CTRL+F----向前移动，同 <Right>
 inoremap <c-f> <Right>
+
 " 由于是单行操作,所以上下不需要(Ctrl+n/Ctrl+p有更重要的键)
 " CTRL+P----向上移动
 " CTRL+N----向下移动
 
 " CTRL+D----删除光标前的字符，同 <Delete> ，或者没有内容时，退出会话 
 inoremap <c-d> <Delete>
-" CTRL+H----删除光标左边的字符，同 <Backspace>
-inoremap <c-h> <Backspace>
+" CTRL+H----删除光标左边的字符，同 <Backspace>———默认
 
 " CTRL+K----删除光标位置到行末的内容
 inoremap <c-k> <c-o>"zd$
-" CTRL+U----删除字符到行首 
-inoremap <c-u> <C-O>"zd0
 
-" CTRL+W----删除光标左边的一个单词
-function! CheckLineEnd() 
-    " 获取当前光标列号（插入模式下通过 <C-O> 切换到普通模式获取）
-    let l:current_col = col('.')
-    let l:line_end_col = col('$') " 行末列号（行长度+1）
+" CTRL+U----删除字符到行首————默认 
 
-    " 判断是否在行末
-    if l:current_col == l:line_end_col
-        return "\<C-O>\"zdiw"
-    else
-        return "\<C-O>\"zdb"
-    endif
-endfunction
-" 动态映射 <C-w>
-inoremap <expr> <C-w> CheckLineEnd()
+" CTRL+W----删除光标左边的一个单词————默认
+
 " ALT+d----删除光标后（右边）一个单词
 inoremap <m-d> <C-o>"zdw
-
 
 " CTRL+Y----粘贴最近删除的单词
 inoremap <c-y> <c-r>z
@@ -2229,7 +2159,6 @@ inoremap <m-f> <C-Right>
 " CTRL+C----结束当前命令
 
 
-
 " 保存<C-s>
 nnoremap <leader>w :w<CR>
 " 退出
@@ -2245,6 +2174,11 @@ nnoremap <leader>q :q<CR>
 nnoremap <M-g> :bd!<cr>
 inoremap <M-g> <esc>:bd!<cr>
 
+" 在多开tab后使用(在一个tab里面切换不同的buffer)
+" 下一个buffer
+nnoremap <M-F3> :bn<cr>     
+" 上一个buffer
+nnoremap <M-F2> :bp<cr>     
 
 " tab相关快捷键
 " 映射 t + s 组合键来新建一个标签页
@@ -2903,7 +2837,7 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 "   %      整个文件（:1,$ 的简写形式）
 
 " 使用‘:t’和‘:m’命令复制和移动行
-" :copy 命令（及其简写形式 :t）  :t不会使用寄存器
+" :copy 命令（及其简写形式 :t）  :t不会使用寄存器,使用yyp命令则会使用寄存器
 
 " 命令       用途
 " :6t.       把第 6 行复制到当前行下方
@@ -3083,21 +3017,7 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 " 保 存 部 分 行 要把一部分行写入到文件，可以使用 ":write" 命令。
 " 添 加 内 容 到 文 件 中  
 
-" 文件操作 {{{2
-" vim 本身的命令行启动参数其实还支持很多功能，请查阅‘:help starting’
-" 在命令行里可以使用vim 文件名 打开文件,在vim的命令行里不支持vim命令,可以使用vi命令
-
-" 折叠 {{{2
-
-" 所有的折叠命令用 "z" 开头。
- " | zo | 打开 (open) 在光标下的折叠             |
- " | zO | 循环打开 (Open) 光标下的折叠           |
- " | zc | 关闭 (close) 在光标下的折叠            |
- " | zC | 循环关闭 (Close) 在光标下的所有折叠    |
- " | za | 当光标位于一关闭的折叠上时，打开之     |
- " | zv | 当处在一关闭的折叠上时，循环地打开折叠 |
- " | zj | 向下移动,到达下一个折叠的开始          |
- " | zk | 向上移动,到达上一个折叠的开始          |
+" 排版文本 {{{3
 
 " 排版文本 {{{3
 
@@ -3134,13 +3054,5 @@ command! -nargs=? SL call Session("LOAD",<f-args>)
 
 
 
-
-
-
-
-
-
-" 插件分类
-
-
+" 插件分类 {{{1
 
